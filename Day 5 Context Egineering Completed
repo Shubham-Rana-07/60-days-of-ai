@@ -1,0 +1,181 @@
+# Day 5 – Context Engineering
+
+## Prompt A (Without Context)
+
+### Prompt
+
+# Day 5 – Context Engineering
+
+## Prompt A (Without Context)
+
+### Prompt
+
+Create a 30-day learning roadmap.
+
+Include:
+
+* Weekly milestones
+* Daily tasks
+* Resources
+* Projects
+* Final outcome
+
+Make it practical and beginner-friendly.
+
+### Output
+
+### Week 1: Programming Fundamentals
+
+* Day 1-2: Learn Python basics
+* Day 3-4: Variables, loops, functions
+* Day 5-6: Practice coding problems
+* Day 7: Mini quiz
+
+Resources:
+
+* Python Official Docs
+* W3Schools
+* freeCodeCamp
+
+### Week 2: Data Analysis Basics
+
+* Learn Pandas and NumPy
+* Data cleaning exercises
+* Work with CSV datasets
+
+Project:
+
+* Analyze a sales dataset
+
+### Week 3: Visualization & SQL
+
+* Learn SQL basics
+* Learn Power BI
+* Create dashboards
+
+Project:
+
+* Build a sales dashboard
+
+### Week 4: Portfolio Project
+
+* Combine Python + SQL + Power BI
+* Create final project
+* Upload to GitHub
+
+Final Outcome:
+Basic understanding of programming, data analysis, and dashboard creation.
+
+## Prompt B (With Context)
+
+### Prompt
+
+Create a 30-day learning roadmap.
+
+Context:
+
+* Current Situation: MCA Student
+* Current Skills: Python, SQL, HTML, CSS, JavaScript, Power BI
+* Goal: Become Job Ready Data Analyst
+* Available Time: 3 Hours Per Day
+* Experience Level: Intermediate
+* Preferred Learning Style: Projects + Videos
+
+Include:
+
+* Weekly milestones
+* Daily tasks
+* Resources
+* Projects
+* Final outcome
+
+Make it practical and beginner-friendly.
+
+### Output
+
+### Week 1: Advanced Data Analysis Foundations
+
+Goal:
+Strengthen Python, SQL, and Excel skills for Data Analytics interviews.
+
+Daily Tasks:
+
+* Day 1: Python Data Structures Revision
+* Day 2: Pandas Data Cleaning
+* Day 3: NumPy Practice
+* Day 4: SQL Joins & Aggregations
+* Day 5: SQL Window Functions
+* Day 6: Excel Advanced Formulas
+* Day 7: Practice Assessment
+
+Resources:
+
+* Alex The Analyst YouTube
+* Kaggle
+* SQLBolt
+
+### Week 2: Data Visualization
+
+Daily Tasks:
+
+* Learn Power BI Dashboard Design
+* Create KPI Cards
+* Build Interactive Reports
+* Learn DAX Basics
+
+Project:
+Mobile Sales Dashboard
+
+### Week 3: Real-world Analytics
+
+Daily Tasks:
+
+* Exploratory Data Analysis
+* Data Cleaning
+* Dashboard Storytelling
+* Business Insights Generation
+
+Project:
+Amazon Global Sales Dashboard
+
+### Week 4: Portfolio & Interview Preparation
+
+Daily Tasks:
+
+* Resume Optimization
+* GitHub Project Upload
+* LinkedIn Project Posts
+* SQL Interview Questions
+* Python Interview Questions
+* Mock Interviews
+
+Final Project:
+End-to-End Data Analytics Project
+
+Tools:
+Python, SQL, Power BI, Excel
+
+Final Outcome:
+Job-ready Data Analyst portfolio with GitHub projects, dashboards, interview preparation, and practical business analytics experience.
+
+# Comparison
+
+## 1. Which roadmap feels more personalized?
+
+Prompt B feels more personalized because it considers my current education, existing skills, available study time, career goal, and preferred learning style.
+
+## 2. Which roadmap would I actually follow?
+
+Prompt B because it directly matches my goal of becoming a Data Analyst and includes projects relevant to my career.
+
+## 3. What role did context play?
+
+Context gave the AI information about my background, skills, and goals. Because of this, the roadmap became more realistic, practical, and tailored to my needs instead of being generic.
+
+# Key Learnings
+
+1. Better context produces better AI outputs.
+2. AI makes fewer assumptions when given background information.
+3. Personalized prompts generate more actionable plans.
+4. Context Engineering is one of the most important skills in modern AI systems.
+5. The same prompt can produce very different results depending on the context provided.
