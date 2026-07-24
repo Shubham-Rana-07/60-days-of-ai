@@ -1,0 +1,83 @@
+# Day 6 – AI Resume Optimizer
+
+## Objective
+
+Optimize my resume using AI to improve ATS compatibility, recruiter readability, and professional presentation.
+
+## Original Resume
+
+* ATS Score: 67/100
+* Issues Identified:
+
+  * Weak professional summary
+  * Missing ATS keywords
+  * Inconsistent formatting
+  * Project descriptions lacked impact-oriented language
+  * Skills section needed better organization
+
+## ATS Optimization Results
+
+### Previous Score
+
+67/100
+
+### Optimized Score
+
+85/100
+
+### Improvements Made
+
+1. Added a targeted Professional Summary.
+2. Improved project descriptions using action verbs.
+3. Organized technical skills into clear categories.
+4. Enhanced ATS keyword coverage for Data Analytics and Python roles.
+5. Improved section hierarchy and readability.
+6. Removed redundant content.
+7. Standardized formatting for ATS parsing.
+8. Highlighted internship experience more effectively.
+
+## Optimized Resume Highlights
+
+### Professional Summary
+
+MCA student with experience in Python, SQL, Data Analytics, and Machine Learning projects. Skilled in developing data-driven solutions, automation scripts, and predictive models. Passionate about solving real-world problems using data and technology.
+
+### Key Skills
+
+* Python
+* SQL
+* Power BI
+* Excel
+* Pandas
+* NumPy
+* Scikit-learn
+* HTML
+* CSS
+* JavaScript
+* Flask
+* Git & GitHub
+
+### Featured Projects
+
+1. Credit Card Fraud Detection
+2. Heart Disease Risk Assessment
+3. File Organizer Automation Script
+4. Netflix Clone Website
+
+## Key Learnings
+
+* ATS-friendly formatting significantly improves resume visibility.
+* Strong action verbs make achievements more impactful.
+* Recruiters prefer concise and structured resumes.
+* Keywords should align with target job roles.
+* Professional summaries improve first impressions.
+
+## Tools Used
+
+* Claude AI
+* GitHub
+* Resume ATS Optimization Techniques
+
+## Outcome
+
+Created an ATS-optimized one-page resume with improved readability, structure, and keyword alignment for Data Analyst and Python Developer roles.
