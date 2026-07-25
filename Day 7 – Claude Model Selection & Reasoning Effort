@@ -1,0 +1,98 @@
+# Day 7 – Claude Model Selection & Reasoning Effort
+
+## Objective
+
+Learn how to choose the right Claude model and reasoning effort level for different tasks.
+
+## My Profile
+
+* Recent MCA Graduate
+* Daily AI User
+* Interested in Python Development, Data Analytics, AI Learning, Research, and Career Preparation
+
+## Recommended Primary Model
+
+**Sonnet 4.6**
+
+### Why This Model Fits Me
+
+Sonnet 4.6 provides the best balance between speed, intelligence, and cost. It is ideal for coding, learning new concepts, debugging, project explanations, and daily productivity tasks.
+
+## When to Use Haiku 4.5
+
+* Quick syntax checks
+* Definitions and concepts
+* Short summaries
+* Fast answers
+
+## When to Use Sonnet 4.6
+
+* Coding projects
+* Debugging
+* Learning frameworks
+* Writing reports and documentation
+* Resume optimization
+
+## When to Use Opus 4.6
+
+* Complex algorithms
+* System design
+* Project architecture
+* Deep research
+* Interview preparation
+
+## Recommended Effort Levels
+
+### Low
+
+Use for simple questions where speed matters.
+
+### Standard
+
+Default setting for coding, learning, debugging, and documentation.
+
+### High
+
+Use for difficult bugs, algorithms, and interview preparation.
+
+### Max
+
+Use for project architecture, capstone projects, and advanced reasoning tasks.
+
+## Task → Model → Effort Strategy
+
+| Task                  | Model      | Effort   |
+| --------------------- | ---------- | -------- |
+| Quick syntax lookup   | Haiku 4.5  | Low      |
+| Debugging             | Sonnet 4.6 | Standard |
+| Learning concepts     | Sonnet 4.6 | Standard |
+| Writing code          | Sonnet 4.6 | Standard |
+| Complex algorithms    | Opus 4.6   | High     |
+| Project Architecture  | Opus 4.6   | Max      |
+| Interview Preparation | Opus 4.6   | High     |
+| Documentation         | Sonnet 4.6 | Standard |
+
+## Key Learnings
+
+1. Sonnet handles most daily work effectively.
+2. Haiku is best for quick and simple tasks.
+3. Opus should be used only when deep reasoning is required.
+4. Choosing the correct effort level improves output quality.
+5. Understanding generated code is more important than simply copying it.
+
+## Biggest Mistakes to Avoid
+
+* Using Opus for every task.
+* Providing code without context.
+* Copy-pasting code without understanding it.
+* Avoiding High/Max effort for difficult problems.
+* Asking overly broad questions.
+
+## Final Recommendation
+
+If I could use only one model and one effort level:
+
+**Model:** Sonnet 4.6
+**Effort:** Standard
+
+This combination offers the best balance of speed, reasoning, learning support, and coding assistance for my daily workflow.
