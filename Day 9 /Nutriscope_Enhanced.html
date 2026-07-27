@@ -1,0 +1,292 @@
+<!-- ================= FOOD LOG SECTION ================= -->
+
+<section id="foodLog" class="page-section">
+
+<div class="container">
+
+<div class="step">STEP 02</div>
+
+<h1 class="title">Food Log</h1>
+
+<p class="subtitle">
+Track everything you eat throughout the day. Upload your own CSV file or add foods manually.
+</p>
+
+<div class="profile-grid">
+
+<div class="card">
+
+<h3>Add Food</h3>
+
+<div class="input-group">
+<label>Food Item</label>
+
+<select id="foodSelect">
+
+<option>Apple</option>
+<option>Banana</option>
+<option>Rice</option>
+<option>Chicken Breast</option>
+<option>Egg</option>
+<option>Milk</option>
+<option>Paneer</option>
+<option>Oats</option>
+<option>Broccoli</option>
+<option>Almonds</option>
+<option>Salmon</option>
+<option>Sweet Potato</option>
+
+</select>
+
+</div>
+
+<br>
+
+<div class="row">
+
+<div class="input-group">
+
+<label>Quantity (g)</label>
+
+<input id="qty" type="number" value="100">
+
+</div>
+
+<div class="input-group">
+
+<label>Meal</label>
+
+<select>
+
+<option>Breakfast</option>
+
+<option>Lunch</option>
+
+<option>Dinner</option>
+
+<option>Snack</option>
+
+</select>
+
+</div>
+
+</div>
+
+<button class="save-btn" onclick="addFood()">
+Add Food
+</button>
+
+</div>
+
+<div class="card">
+
+<h3>Upload CSV</h3>
+
+<p style="color:#999;margin-bottom:20px;">
+
+Upload your own nutrition database.
+
+Supported Format:
+
+Food,Calories,Protein,Carbs,Fat
+
+</p>
+
+<input
+type="file"
+accept=".csv"
+id="csvFile">
+
+<br><br>
+
+<button class="save-btn"
+onclick="uploadCSV()">
+
+Upload CSV
+
+</button>
+
+</div>
+
+</div>
+
+<br><br>
+
+<div class="card">
+
+<h3>Today's Food Log</h3>
+
+<table
+style="width:100%;
+border-collapse:collapse;
+margin-top:20px;">
+
+<thead>
+
+<tr>
+
+<th align="left">Food</th>
+
+<th>Calories</th>
+
+<th>Protein</th>
+
+<th>Carbs</th>
+
+<th>Fat</th>
+
+</tr>
+
+</thead>
+
+<tbody id="foodTable">
+
+<tr>
+
+<td>Banana</td>
+
+<td align="center">105</td>
+
+<td align="center">1.3g</td>
+
+<td align="center">27g</td>
+
+<td align="center">0.4g</td>
+
+</tr>
+
+<tr>
+
+<td>Oats</td>
+
+<td align="center">150</td>
+
+<td align="center">5g</td>
+
+<td align="center">27g</td>
+
+<td align="center">3g</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<br>
+
+<div class="targets">
+
+<div class="target-card">
+
+<h4>Calories</h4>
+
+<h2 id="calories">
+255
+</h2>
+
+</div>
+
+<div class="target-card">
+
+<h4>Protein</h4>
+
+<h2 id="protein">
+6.3 g
+</h2>
+
+</div>
+
+<div class="target-card">
+
+<h4>Carbs</h4>
+
+<h2 id="carbs">
+54 g
+</h2>
+
+</div>
+
+<div class="target-card">
+
+<h4>Fat</h4>
+
+<h2 id="fat">
+3.4 g
+</h2>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<script>
+
+const foods={
+
+Apple:{cal:95,p:0.5,c:25,f:0.3},
+
+Banana:{cal:105,p:1.3,c:27,f:0.4},
+
+Rice:{cal:130,p:2.7,c:28,f:0.3},
+
+"Chicken Breast":{cal:165,p:31,c:0,f:3.6},
+
+Egg:{cal:78,p:6,c:1,f:5},
+
+Milk:{cal:103,p:8,c:12,f:2.4},
+
+Paneer:{cal:265,p:18,c:2,f:20},
+
+Oats:{cal:150,p:5,c:27,f:3},
+
+Broccoli:{cal:35,p:3,c:6,f:.5},
+
+Almonds:{cal:170,p:6,c:6,f:15},
+
+Salmon:{cal:208,p:20,c:0,f:13},
+
+"Sweet Potato":{cal:90,p:2,c:21,f:.1}
+
+};
+
+function addFood(){
+
+let name=document.getElementById("foodSelect").value;
+
+let q=document.getElementById("qty").value/100;
+
+let d=foods[name];
+
+let tr=`
+
+<tr>
+
+<td>${name}</td>
+
+<td align="center">${(d.cal*q).toFixed(0)}</td>
+
+<td align="center">${(d.p*q).toFixed(1)}g</td>
+
+<td align="center">${(d.c*q).toFixed(1)}g</td>
+
+<td align="center">${(d.f*q).toFixed(1)}g</td>
+
+</tr>`;
+
+document.getElementById("foodTable").innerHTML+=tr;
+
+}
+
+function uploadCSV(){
+
+alert("CSV Upload Feature Ready! Parsing will be added in Part 5.");
+
+}
+
+</script>
