@@ -1,0 +1,638 @@
+
+
+Index · HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shubham Singh Rana — Data Analyst | Python, SQL & Power BI</title>
+<meta name="description" content="Portfolio of Shubham Singh Rana, a Data Analyst specializing in Python, SQL, Power BI and dashboard development. Explore projects, skills and certifications.">
+<meta name="keywords" content="Shubham Singh Rana, Data Analyst, Power BI, Python, SQL, Data Visualization, Dashboard Developer, Kanpur">
+<meta name="author" content="Shubham Singh Rana">
+<meta property="og:title" content="Shubham Singh Rana — Data Analyst">
+<meta property="og:description" content="Data Analyst specializing in Python, SQL, Power BI and dashboard development.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0B0F19">
+ 
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+ 
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          ink: '#0B0F19',
+          inksurface: '#121826',
+          inkline: '#232B3D',
+          paper: '#F7F7F3',
+          papersurface: '#FFFFFF',
+          paperline: '#E4E2D8',
+          teal: '#2DD4BF',
+          amber: '#F0B429',
+          coral: '#FB7185',
+          slate: '#64748B',
+        },
+        fontFamily: {
+          display: ['"Space Grotesk"', 'sans-serif'],
+          body: ['Inter', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'monospace'],
+        },
+      }
+    }
+  }
+</script>
+ 
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; }
+  ::selection { background: #2DD4BF; color: #0B0F19; }
+ 
+  .grid-bg {
+    background-image:
+      linear-gradient(to right, rgba(100,116,139,0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(100,116,139,0.08) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+ 
+  .blink-cursor { animation: blink 1s step-start infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+ 
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.in-view { opacity: 1; transform: translateY(0); }
+ 
+  .navdot { transition: all 0.25s ease; }
+  .navlink.active .navdot { background-color: #2DD4BF; box-shadow: 0 0 0 3px rgba(45,212,191,0.25); }
+  .navlink.active .navlabel { color: #2DD4BF; }
+ 
+  .skillbar-fill { width: 0%; transition: width 1.1s cubic-bezier(0.65,0,0.35,1); }
+ 
+  .card-hover { transition: transform 0.3s ease, border-color 0.3s ease; }
+  .card-hover:hover { transform: translateY(-4px); }
+ 
+  .sparkline rect { transition: height 0.6s ease, y 0.6s ease; }
+ 
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #64748B; border-radius: 4px; }
+ 
+  a:focus-visible, button:focus-visible { outline: 2px solid #2DD4BF; outline-offset: 2px; }
+ 
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { transition: none; opacity: 1; transform: none; }
+    .skillbar-fill { transition: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+ 
+<body class="bg-paper dark:bg-ink text-ink dark:text-paper font-body transition-colors duration-300">
+ 
+<!-- ============ NAV ============ -->
+<header class="fixed top-0 inset-x-0 z-50 border-b border-paperline dark:border-inkline bg-paper/90 dark:bg-ink/90 backdrop-blur-md">
+  <div class="max-w-6xl mx-auto px-5 sm:px-8 flex items-center justify-between h-16">
+    <a href="#top" class="font-display font-semibold text-lg tracking-tight">
+      SSR<span class="text-teal">.</span><span class="hidden sm:inline text-xs font-mono text-slate ml-2">// data analyst</span>
+    </a>
+ 
+    <nav class="hidden md:flex items-center gap-7 font-mono text-xs tracking-wide uppercase">
+      <a href="#about" class="navlink flex items-center gap-2" data-target="about"><span class="navdot w-1.5 h-1.5 rounded-full bg-slate/50"></span><span class="navlabel text-slate dark:text-paper/70 hover:text-teal transition-colors">About</span></a>
+      <a href="#skills" class="navlink flex items-center gap-2" data-target="skills"><span class="navdot w-1.5 h-1.5 rounded-full bg-slate/50"></span><span class="navlabel text-slate dark:text-paper/70 hover:text-teal transition-colors">Skills</span></a>
+      <a href="#projects" class="navlink flex items-center gap-2" data-target="projects"><span class="navdot w-1.5 h-1.5 rounded-full bg-slate/50"></span><span class="navlabel text-slate dark:text-paper/70 hover:text-teal transition-colors">Projects</span></a>
+      <a href="#achievements" class="navlink flex items-center gap-2" data-target="achievements"><span class="navdot w-1.5 h-1.5 rounded-full bg-slate/50"></span><span class="navlabel text-slate dark:text-paper/70 hover:text-teal transition-colors">Achievements</span></a>
+      <a href="#contact" class="navlink flex items-center gap-2" data-target="contact"><span class="navdot w-1.5 h-1.5 rounded-full bg-slate/50"></span><span class="navlabel text-slate dark:text-paper/70 hover:text-teal transition-colors">Contact</span></a>
+    </nav>
+ 
+    <div class="flex items-center gap-3">
+      <button id="themeToggle" aria-label="Toggle dark and light mode" class="w-9 h-9 rounded-full border border-paperline dark:border-inkline flex items-center justify-center hover:border-teal transition-colors">
+        <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        <svg id="iconSun" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.36 6.36l-.7-.7M6.34 6.34l-.7-.7m12.02 0l-.7.7M6.34 17.66l-.7.7M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+      </button>
+      <button id="mobileMenuBtn" aria-label="Open menu" class="md:hidden w-9 h-9 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+ 
+  <div id="mobileMenu" class="md:hidden hidden border-t border-paperline dark:border-inkline px-5 py-4 flex flex-col gap-4 font-mono text-xs uppercase tracking-wide bg-paper dark:bg-ink">
+    <a href="#about" class="mobile-link text-slate dark:text-paper/70">About</a>
+    <a href="#skills" class="mobile-link text-slate dark:text-paper/70">Skills</a>
+    <a href="#projects" class="mobile-link text-slate dark:text-paper/70">Projects</a>
+    <a href="#achievements" class="mobile-link text-slate dark:text-paper/70">Achievements</a>
+    <a href="#contact" class="mobile-link text-slate dark:text-paper/70">Contact</a>
+  </div>
+</header>
+ 
+<!-- ============ HERO ============ -->
+<section id="top" class="relative grid-bg pt-32 pb-20 px-5 sm:px-8 border-b border-paperline dark:border-inkline overflow-hidden">
+  <div class="max-w-6xl mx-auto grid lg:grid-cols-5 gap-10 items-start">
+ 
+    <div class="lg:col-span-3 reveal">
+      <p class="font-mono text-xs text-teal uppercase tracking-widest mb-4">Data Analyst // Kanpur, India</p>
+      <h1 class="font-display font-semibold text-4xl sm:text-5xl md:text-6xl leading-[1.05] mb-6">
+        Shubham Singh<br>Rana
+      </h1>
+      <p class="text-slate dark:text-paper/70 text-base sm:text-lg max-w-lg mb-8">
+        Motivated, detail-oriented data analyst who turns messy datasets into dashboards people actually act on. Hands-on with Python, SQL and Power BI — currently interning and building real analytics projects.
+      </p>
+ 
+      <div class="bg-inksurface text-paper/90 font-mono text-sm rounded-lg border border-inkline p-4 max-w-lg mb-8 shadow-sm">
+        <div class="flex items-center gap-1.5 mb-3">
+          <span class="w-2.5 h-2.5 rounded-full bg-coral/80"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-amber/80"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-teal/80"></span>
+          <span class="ml-2 text-[10px] text-paper/40 uppercase tracking-wider">query.sql</span>
+        </div>
+        <p><span class="text-coral">SELECT</span> insight <span class="text-coral">FROM</span> raw_data</p>
+        <p><span class="text-coral">WHERE</span> curiosity <span class="text-teal">=</span> true</p>
+        <p><span class="text-coral">ORDER BY</span> impact <span class="text-coral">DESC</span>;</p>
+        <p class="text-paper/50 mt-2">-- <span id="typedOutput"></span><span class="blink-cursor">▌</span></p>
+      </div>
+ 
+      <div class="flex flex-wrap items-center gap-3">
+        <a href="#projects" class="px-5 py-2.5 bg-teal text-ink font-medium text-sm rounded-md hover:bg-teal/85 transition-colors">View projects</a>
+        <a href="#contact" class="px-5 py-2.5 border border-paperline dark:border-inkline font-medium text-sm rounded-md hover:border-teal transition-colors">Get in touch</a>
+        <div class="flex items-center gap-3 ml-1">
+          <a href="#" aria-label="LinkedIn" class="w-9 h-9 rounded-full border border-paperline dark:border-inkline flex items-center justify-center hover:border-teal hover:text-teal transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zM7.11 20.45H3.56V9h3.55v11.45z"/></svg>
+          </a>
+          <a href="#" aria-label="GitHub" class="w-9 h-9 rounded-full border border-paperline dark:border-inkline flex items-center justify-center hover:border-teal hover:text-teal transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .3a12 12 0 00-3.79 23.4c.6.11.82-.26.82-.58v-2.02c-3.34.73-4.04-1.6-4.04-1.6-.55-1.4-1.34-1.77-1.34-1.77-1.1-.75.08-.74.08-.74 1.2.09 1.84 1.24 1.84 1.24 1.08 1.84 2.83 1.31 3.52 1 .11-.79.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 016 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.8 5.63-5.48 5.93.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0012 .3z"/></svg>
+          </a>
+          <a href="#" aria-label="Portfolio site" class="w-9 h-9 rounded-full border border-paperline dark:border-inkline flex items-center justify-center hover:border-teal hover:text-teal transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+ 
+    <div class="lg:col-span-2 reveal grid grid-cols-2 gap-3 content-start" style="transition-delay:0.15s">
+      <div class="bg-papersurface dark:bg-inksurface border border-paperline dark:border-inkline rounded-lg p-4 col-span-2">
+        <div class="flex items-center justify-between mb-2">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-slate">Currently</p>
+          <span class="w-2 h-2 rounded-full bg-teal animate-pulse"></span>
+        </div>
+        <p class="font-display font-medium text-base">Data Analytics Intern @ Qspider</p>
+        <p class="text-xs text-slate mt-1">Mar 2026 – Jun 2026 · Python, EDA, SQL</p>
+      </div>
+ 
+      <div class="bg-papersurface dark:bg-inksurface border border-paperline dark:border-inkline rounded-lg p-4">
+        <p class="font-display font-semibold text-3xl text-teal" data-count="3">0</p>
+        <p class="font-mono text-[11px] uppercase tracking-wider text-slate mt-1">Dashboard projects</p>
+      </div>
+      <div class="bg-papersurface dark:bg-inksurface border border-paperline dark:border-inkline rounded-lg p-4">
+        <p class="font-display font-semibold text-3xl text-amber" data-count="6">0</p>
+        <p class="font-mono text-[11px] uppercase tracking-wider text-slate mt-1">Certifications</p>
+      </div>
+      <div class="bg-papersurface dark:bg-inksurface border border-paperline dark:border-inkline rounded-lg p-4 col-span-2">
+        <div class="flex items-center justify-between mb-2">
+          <p class="font-mono text-[11px] uppercase tracking-wider text-slate">Core toolkit</p>
+          <p class="font-display font-semibold text-lg text-coral" data-count="12">0<span class="text-sm">+</span></p>
+        </div>
+        <div class="sparkline flex items-end gap-1 h-10">
+          <rect></rect>
+        </div>
+        <div class="flex items-end gap-1.5 h-10" id="sparkbars">
+          <div class="w-full bg-teal/70 rounded-sm" style="height:0%"></div>
+          <div class="w-full bg-teal/70 rounded-sm" style="height:0%"></div>
+          <div class="w-full bg-amber/70 rounded-sm" style="height:0%"></div>
+          <div class="w-full bg-teal/70 rounded-sm" style="height:0%"></div>
+          <div class="w-full bg-coral/70 rounded-sm" style="height:0%"></div>
+          <div class="w-full bg-teal/70 rounded-sm" style="height:0%"></div>
+          <div class="w-full bg-amber/70 rounded-sm" style="height:0%"></div>
+          <div class="w-full bg-teal/70 rounded-sm" style="height:0%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- ============ ABOUT ============ -->
+<section id="about" class="py-20 px-5 sm:px-8 border-b border-paperline dark:border-inkline">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-12 gap-10">
+    <div class="md:col-span-4 reveal">
+      <p class="font-mono text-xs text-teal uppercase tracking-widest mb-3">About</p>
+      <h2 class="font-display font-semibold text-3xl">Turning raw data into decisions</h2>
+    </div>
+    <div class="md:col-span-8 reveal">
+      <p class="text-slate dark:text-paper/70 text-base sm:text-lg leading-relaxed mb-6">
+        I'm a data analyst pursuing my MCA at Kanpur Institute of Technology, passionate about extracting actionable insights from complex datasets to support real business decisions. My work spans the full analytics pipeline — cleaning messy data, exploring it for patterns, and packaging findings into dashboards that non-technical stakeholders can actually use.
+      </p>
+      <p class="text-slate dark:text-paper/70 text-base sm:text-lg leading-relaxed mb-8">
+        Recently I've been applying this hands-on through an internship at Qspider and a NASA Space Apps hackathon, working across Python, Power BI and SQL. I care about the last mile of analysis: a chart nobody reads is worthless — a KPI a manager checks every Monday morning is the goal.
+      </p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-slate mb-1">Based in</p>
+          <p class="font-medium text-sm">Kanpur, India</p>
+        </div>
+        <div>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-slate mb-1">Education</p>
+          <p class="font-medium text-sm">MCA, KIT '26</p>
+        </div>
+        <div>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-slate mb-1">Focus</p>
+          <p class="font-medium text-sm">Dashboards & EDA</p>
+        </div>
+        <div>
+          <p class="font-mono text-[11px] uppercase tracking-wider text-slate mb-1">Soft skills</p>
+          <p class="font-medium text-sm">Collaboration, adaptability</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- ============ SKILLS ============ -->
+<section id="skills" class="py-20 px-5 sm:px-8 border-b border-paperline dark:border-inkline grid-bg">
+  <div class="max-w-6xl mx-auto">
+    <p class="font-mono text-xs text-teal uppercase tracking-widest mb-3 reveal">Skills</p>
+    <h2 class="font-display font-semibold text-3xl mb-12 reveal">What I work with</h2>
+ 
+    <div class="grid lg:grid-cols-2 gap-12">
+      <div class="reveal">
+        <p class="font-mono text-[11px] uppercase tracking-wider text-slate mb-5">Proficiency</p>
+        <div class="space-y-5" id="skillBars">
+          <div>
+            <div class="flex justify-between text-sm mb-1.5"><span class="font-medium">Python (Pandas / NumPy)</span><span class="font-mono text-xs text-slate">Advanced</span></div>
+            <div class="h-2 rounded-full bg-paperline dark:bg-inkline overflow-hidden"><div class="skillbar-fill h-full bg-teal rounded-full" data-width="88"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-sm mb-1.5"><span class="font-medium">SQL / MySQL</span><span class="font-mono text-xs text-slate">Advanced</span></div>
+            <div class="h-2 rounded-full bg-paperline dark:bg-inkline overflow-hidden"><div class="skillbar-fill h-full bg-teal rounded-full" data-width="85"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-sm mb-1.5"><span class="font-medium">Power BI</span><span class="font-mono text-xs text-slate">Advanced</span></div>
+            <div class="h-2 rounded-full bg-paperline dark:bg-inkline overflow-hidden"><div class="skillbar-fill h-full bg-amber rounded-full" data-width="90"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-sm mb-1.5"><span class="font-medium">Data Visualization (Matplotlib / Seaborn)</span><span class="font-mono text-xs text-slate">Proficient</span></div>
+            <div class="h-2 rounded-full bg-paperline dark:bg-inkline overflow-hidden"><div class="skillbar-fill h-full bg-amber rounded-full" data-width="80"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-sm mb-1.5"><span class="font-medium">Tableau</span><span class="font-mono text-xs text-slate">Proficient</span></div>
+            <div class="h-2 rounded-full bg-paperline dark:bg-inkline overflow-hidden"><div class="skillbar-fill h-full bg-coral rounded-full" data-width="70"></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-sm mb-1.5"><span class="font-medium">EDA & Data Cleaning</span><span class="font-mono text-xs text-slate">Advanced</span></div>
+            <div class="h-2 rounded-full bg-paperline dark:bg-inkline overflow-hidden"><div class="skillbar-fill h-full bg-teal rounded-full" data-width="88"></div></div>
+          </div>
+        </div>
+      </div>
+ 
+      <div class="reveal" style="transition-delay:0.1s">
+        <p class="font-mono text-[11px] uppercase tracking-wider text-slate mb-5">Languages</p>
+        <div class="flex flex-wrap gap-2 mb-8">
+          <span class="px-3 py-1.5 rounded-md border border-paperline dark:border-inkline font-mono text-xs bg-papersurface dark:bg-inksurface">Python</span>
+          <span class="px-3 py-1.5 rounded-md border border-paperline dark:border-inkline font-mono text-xs bg-papersurface dark:bg-inksurface">SQL</span>
+          <span class="px-3 py-1.5 rounded-md border border-paperline dark:border-inkline font-mono text-xs bg-papersurface dark:bg-inksurface">C</span>
+        </div>
+ 
+        <p class="font-mono text-[11px] uppercase tracking-wider text-slate mb-5">Tools & platforms</p>
+        <div class="flex flex-wrap gap-2 mb-8">
+          <span class="px-3 py-1.5 rounded-md border border-paperline dark:border-inkline font-mono text-xs bg-papersurface dark:bg-inksurface">Power BI</span>
+          <span class="px-3 py-1.5 rounded-md border border-paperline dark:border-inkline font-mono text-xs bg-papersurface dark:bg-inksurface">Tableau</span>
+          <span class="px-3 py-1.5 rounded-md border border-paperline dark:border-inkline font-mono text-xs bg-papersurface dark:bg-inksurface">MySQL</span>
+          <span class="px-3 py-1.5 rounded-md border border-paperline dark:border-inkline font-mono text-xs bg-papersurface dark:bg-inksurface">Excel</span>
+          <span class="px-3 py-1.5 rounded-md border border-paperline dark:border-inkline font-mono text-xs bg-papersurface dark:bg-inksurface">Google Sheets</span>
+          <span class="px-3 py-1.5 rounded-md border border-paperline dark:border-inkline font-mono text-xs bg-papersurface dark:bg-inksurface">Pandas</span>
+          <span class="px-3 py-1.5 rounded-md border border-paperline dark:border-inkline font-mono text-xs bg-papersurface dark:bg-inksurface">NumPy</span>
+          <span class="px-3 py-1.5 rounded-md border border-paperline dark:border-inkline font-mono text-xs bg-papersurface dark:bg-inksurface">Matplotlib</span>
+          <span class="px-3 py-1.5 rounded-md border border-paperline dark:border-inkline font-mono text-xs bg-papersurface dark:bg-inksurface">Seaborn</span>
+          <span class="px-3 py-1.5 rounded-md border border-paperline dark:border-inkline font-mono text-xs bg-papersurface dark:bg-inksurface">Streamlit</span>
+        </div>
+ 
+        <p class="font-mono text-[11px] uppercase tracking-wider text-slate mb-5">Soft skills</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="px-3 py-1.5 rounded-md bg-teal/10 text-teal font-mono text-xs">Collaboration</span>
+          <span class="px-3 py-1.5 rounded-md bg-amber/10 text-amber font-mono text-xs">Adaptability</span>
+          <span class="px-3 py-1.5 rounded-md bg-coral/10 text-coral font-mono text-xs">User-centric thinking</span>
+          <span class="px-3 py-1.5 rounded-md bg-teal/10 text-teal font-mono text-xs">Creative problem solving</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- ============ PROJECTS ============ -->
+<section id="projects" class="py-20 px-5 sm:px-8 border-b border-paperline dark:border-inkline">
+  <div class="max-w-6xl mx-auto">
+    <p class="font-mono text-xs text-teal uppercase tracking-widest mb-3 reveal">Projects</p>
+    <h2 class="font-display font-semibold text-3xl mb-12 reveal">Dashboards I've shipped</h2>
+ 
+    <div class="grid md:grid-cols-3 gap-6">
+ 
+      <div class="card-hover reveal bg-papersurface dark:bg-inksurface border border-paperline dark:border-inkline rounded-lg p-6 flex flex-col">
+        <div class="w-10 h-10 rounded-md bg-teal/10 flex items-center justify-center mb-5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18M9 17V9m4 8V5m4 12v-6"/></svg>
+        </div>
+        <h3 class="font-display font-semibold text-lg mb-2">Amazon Data Analytics Dashboard</h3>
+        <p class="text-sm text-slate dark:text-paper/70 mb-5 flex-1">Interactive Power BI dashboard analyzing Amazon sales, profit and customer trends from cleaned, transformed data — with KPIs and filters to surface top-selling categories and regional performance.</p>
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="px-2.5 py-1 rounded bg-paperline/60 dark:bg-inkline font-mono text-[11px]">Power BI</span>
+          <span class="px-2.5 py-1 rounded bg-paperline/60 dark:bg-inkline font-mono text-[11px]">Data Cleaning</span>
+        </div>
+        <a href="#" class="text-sm font-medium text-teal inline-flex items-center gap-1.5 hover:gap-2.5 transition-all">View project <span>→</span></a>
+      </div>
+ 
+      <div class="card-hover reveal bg-papersurface dark:bg-inksurface border border-paperline dark:border-inkline rounded-lg p-6 flex flex-col" style="transition-delay:0.08s">
+        <div class="w-10 h-10 rounded-md bg-amber/10 flex items-center justify-center mb-5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-amber" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h3 class="font-display font-semibold text-lg mb-2">NASA Data Analytics Dashboard App</h3>
+        <p class="text-sm text-slate dark:text-paper/70 mb-5 flex-1">Built with Python and Streamlit for the NASA Space Apps Challenge 2025, visualizing urban health and sustainability indicators to help teams reason about city planning and human settlements.</p>
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="px-2.5 py-1 rounded bg-paperline/60 dark:bg-inkline font-mono text-[11px]">Python</span>
+          <span class="px-2.5 py-1 rounded bg-paperline/60 dark:bg-inkline font-mono text-[11px]">Streamlit</span>
+        </div>
+        <a href="#" class="text-sm font-medium text-amber inline-flex items-center gap-1.5 hover:gap-2.5 transition-all">View project <span>→</span></a>
+      </div>
+ 
+      <div class="card-hover reveal bg-papersurface dark:bg-inksurface border border-paperline dark:border-inkline rounded-lg p-6 flex flex-col" style="transition-delay:0.16s">
+        <div class="w-10 h-10 rounded-md bg-coral/10 flex items-center justify-center mb-5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-coral" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        </div>
+        <h3 class="font-display font-semibold text-lg mb-2">Sales Dashboard (2020–2022)</h3>
+        <p class="text-sm text-slate dark:text-paper/70 mb-5 flex-1">An interactive dashboard built with Python, Pandas and Power BI to visualize sales performance, tracking key metrics by product, brand and region to support data-driven business strategy.</p>
+        <div class="flex flex-wrap gap-2 mb-5">
+          <span class="px-2.5 py-1 rounded bg-paperline/60 dark:bg-inkline font-mono text-[11px]">Python</span>
+          <span class="px-2.5 py-1 rounded bg-paperline/60 dark:bg-inkline font-mono text-[11px]">Pandas</span>
+          <span class="px-2.5 py-1 rounded bg-paperline/60 dark:bg-inkline font-mono text-[11px]">Power BI</span>
+        </div>
+        <a href="#" class="text-sm font-medium text-coral inline-flex items-center gap-1.5 hover:gap-2.5 transition-all">View project <span>→</span></a>
+      </div>
+ 
+    </div>
+  </div>
+</section>
+ 
+<!-- ============ ACHIEVEMENTS & CERTS ============ -->
+<section id="achievements" class="py-20 px-5 sm:px-8 border-b border-paperline dark:border-inkline grid-bg">
+  <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-14">
+ 
+    <div class="reveal">
+      <p class="font-mono text-xs text-teal uppercase tracking-widest mb-3">Experience</p>
+      <h2 class="font-display font-semibold text-3xl mb-8">Where I've applied it</h2>
+ 
+      <div class="space-y-6 border-l border-paperline dark:border-inkline pl-6">
+        <div class="relative">
+          <span class="absolute -left-[29px] top-1 w-3 h-3 rounded-full bg-teal"></span>
+          <p class="font-mono text-[11px] text-slate uppercase tracking-wider mb-1">Mar 2026 – Jun 2026 · In office</p>
+          <p class="font-display font-medium text-base mb-1">Data Analytics Intern — Qspider</p>
+          <p class="text-sm text-slate dark:text-paper/70">Cleaned and processed datasets with Python/Pandas, ran EDA to surface patterns and trends, and built Matplotlib/Seaborn visualizations. Used Excel and SQL for reporting and queries.</p>
+        </div>
+        <div class="relative">
+          <span class="absolute -left-[29px] top-1 w-3 h-3 rounded-full bg-amber"></span>
+          <p class="font-mono text-[11px] text-slate uppercase tracking-wider mb-1">Oct 2025 · Remote</p>
+          <p class="font-display font-medium text-base mb-1">Hackathon Participant — NASA Space Apps Challenge</p>
+          <p class="text-sm text-slate dark:text-paper/70">Built a data analytics dashboard for sustainable cities with Python and Streamlit, collaborating with a multidisciplinary team on data-driven urban sustainability solutions.</p>
+        </div>
+        <div class="relative">
+          <span class="absolute -left-[29px] top-1 w-3 h-3 rounded-full bg-coral"></span>
+          <p class="font-mono text-[11px] text-slate uppercase tracking-wider mb-1">College annual function</p>
+          <p class="font-display font-medium text-base mb-1">Team Leader, Discipline Committee</p>
+          <p class="text-sm text-slate dark:text-paper/70">Appointed to lead event coordination and team responsibilities during the annual college function.</p>
+        </div>
+      </div>
+    </div>
+ 
+    <div class="reveal" style="transition-delay:0.1s">
+      <p class="font-mono text-xs text-teal uppercase tracking-widest mb-3">Certifications</p>
+      <h2 class="font-display font-semibold text-3xl mb-8">Credentials</h2>
+ 
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-papersurface dark:bg-inksurface border border-paperline dark:border-inkline rounded-lg p-4">
+          <p class="font-display font-medium text-sm">SQL</p>
+        </div>
+        <div class="bg-papersurface dark:bg-inksurface border border-paperline dark:border-inkline rounded-lg p-4">
+          <p class="font-display font-medium text-sm">Power BI</p>
+        </div>
+        <div class="bg-papersurface dark:bg-inksurface border border-paperline dark:border-inkline rounded-lg p-4">
+          <p class="font-display font-medium text-sm">Excel</p>
+        </div>
+        <div class="bg-papersurface dark:bg-inksurface border border-paperline dark:border-inkline rounded-lg p-4">
+          <p class="font-display font-medium text-sm">Django</p>
+        </div>
+        <div class="bg-papersurface dark:bg-inksurface border border-paperline dark:border-inkline rounded-lg p-4 col-span-2">
+          <p class="font-display font-medium text-sm">Data Analytics Job Simulation</p>
+        </div>
+        <div class="bg-papersurface dark:bg-inksurface border border-paperline dark:border-inkline rounded-lg p-4 col-span-2">
+          <p class="font-display font-medium text-sm">Employability Enhancement Program</p>
+        </div>
+      </div>
+ 
+      <p class="font-mono text-xs text-teal uppercase tracking-widest mb-3 mt-10">Education</p>
+      <div class="space-y-3">
+        <div class="flex justify-between items-baseline border-b border-paperline dark:border-inkline pb-2">
+          <div>
+            <p class="font-medium text-sm">Master of Computer Applications</p>
+            <p class="text-xs text-slate">Kanpur Institute of Technology</p>
+          </div>
+          <p class="font-mono text-xs text-slate whitespace-nowrap ml-3">2024–26</p>
+        </div>
+        <div class="flex justify-between items-baseline border-b border-paperline dark:border-inkline pb-2">
+          <div>
+            <p class="font-medium text-sm">Bachelor of Arts</p>
+            <p class="text-xs text-slate">D.A.V College, Kanpur</p>
+          </div>
+          <p class="font-mono text-xs text-slate whitespace-nowrap ml-3">2019–22</p>
+        </div>
+        <div class="flex justify-between items-baseline">
+          <div>
+            <p class="font-medium text-sm">Senior Secondary (PCM)</p>
+            <p class="text-xs text-slate">Vidya Niketan Inter College</p>
+          </div>
+          <p class="font-mono text-xs text-slate whitespace-nowrap ml-3">2018</p>
+        </div>
+      </div>
+    </div>
+ 
+  </div>
+</section>
+ 
+<!-- ============ CONTACT ============ -->
+<section id="contact" class="py-20 px-5 sm:px-8">
+  <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-14">
+ 
+    <div class="reveal">
+      <p class="font-mono text-xs text-teal uppercase tracking-widest mb-3">Contact</p>
+      <h2 class="font-display font-semibold text-3xl mb-5">Let's talk data</h2>
+      <p class="text-slate dark:text-paper/70 mb-8 max-w-md">Open to data analyst roles, freelance dashboard work, or just a conversation about a dataset you're stuck on. Reach out directly or drop a message.</p>
+ 
+      <div class="space-y-4">
+        <a href="mailto:shubhamsinghrana17@gmail.com" class="flex items-center gap-3 group">
+          <span class="w-9 h-9 rounded-full border border-paperline dark:border-inkline flex items-center justify-center group-hover:border-teal group-hover:text-teal transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          </span>
+          <span class="text-sm font-medium group-hover:text-teal transition-colors">shubhamsinghrana17@gmail.com</span>
+        </a>
+        <a href="tel:+917525963766" class="flex items-center gap-3 group">
+          <span class="w-9 h-9 rounded-full border border-paperline dark:border-inkline flex items-center justify-center group-hover:border-teal group-hover:text-teal transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+          </span>
+          <span class="text-sm font-medium group-hover:text-teal transition-colors">+91 7525963766</span>
+        </a>
+        <div class="flex items-center gap-3">
+          <span class="w-9 h-9 rounded-full border border-paperline dark:border-inkline flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </span>
+          <span class="text-sm font-medium">Kanpur, Uttar Pradesh, India</span>
+        </div>
+      </div>
+    </div>
+ 
+    <form class="reveal bg-papersurface dark:bg-inksurface border border-paperline dark:border-inkline rounded-lg p-6" style="transition-delay:0.1s" id="contactForm">
+      <div class="mb-4">
+        <label for="name" class="font-mono text-[11px] uppercase tracking-wider text-slate mb-1.5 block">Name</label>
+        <input id="name" name="name" type="text" required placeholder="Your name" class="w-full bg-transparent border border-paperline dark:border-inkline rounded-md px-3 py-2.5 text-sm focus:border-teal outline-none transition-colors">
+      </div>
+      <div class="mb-4">
+        <label for="email" class="font-mono text-[11px] uppercase tracking-wider text-slate mb-1.5 block">Email</label>
+        <input id="email" name="email" type="email" required placeholder="you@company.com" class="w-full bg-transparent border border-paperline dark:border-inkline rounded-md px-3 py-2.5 text-sm focus:border-teal outline-none transition-colors">
+      </div>
+      <div class="mb-5">
+        <label for="message" class="font-mono text-[11px] uppercase tracking-wider text-slate mb-1.5 block">Message</label>
+        <textarea id="message" name="message" required rows="4" placeholder="What's the project or role?" class="w-full bg-transparent border border-paperline dark:border-inkline rounded-md px-3 py-2.5 text-sm focus:border-teal outline-none transition-colors resize-none"></textarea>
+      </div>
+      <button type="submit" class="w-full py-2.5 bg-teal text-ink font-medium text-sm rounded-md hover:bg-teal/85 transition-colors">Send message</button>
+      <p id="formNote" class="text-xs text-slate mt-3 hidden">Message ready — this opens your email client to send it.</p>
+    </form>
+ 
+  </div>
+</section>
+ 
+<footer class="border-t border-paperline dark:border-inkline py-8 px-5 sm:px-8">
+  <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3">
+    <p class="font-mono text-xs text-slate">© 2026 Shubham Singh Rana. Built with intent.</p>
+    <a href="#top" class="font-mono text-xs text-slate hover:text-teal transition-colors">Back to top ↑</a>
+  </div>
+</footer>
+ 
+<script>
+  // Theme toggle
+  const themeToggle = document.getElementById('themeToggle');
+  const htmlEl = document.documentElement;
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    htmlEl.classList.add('dark');
+  }
+  themeToggle.addEventListener('click', () => {
+    htmlEl.classList.toggle('dark');
+    localStorage.setItem('theme', htmlEl.classList.contains('dark') ? 'dark' : 'light');
+  });
+ 
+  // Mobile menu
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+  document.querySelectorAll('.mobile-link').forEach(link => {
+    link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+  });
+ 
+  // Typing animation
+  const phrases = ['cleaning data with pandas', 'building Power BI dashboards', 'running EDA on new datasets', 'shipping insights that get used'];
+  let phraseIdx = 0, charIdx = 0, deleting = false;
+  const typedEl = document.getElementById('typedOutput');
+  function typeLoop() {
+    const current = phrases[phraseIdx];
+    if (!deleting) {
+      typedEl.textContent = current.slice(0, ++charIdx);
+      if (charIdx === current.length) { deleting = true; setTimeout(typeLoop, 1400); return; }
+    } else {
+      typedEl.textContent = current.slice(0, --charIdx);
+      if (charIdx === 0) { deleting = false; phraseIdx = (phraseIdx + 1) % phrases.length; }
+    }
+    setTimeout(typeLoop, deleting ? 35 : 55);
+  }
+  typeLoop();
+ 
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('in-view'); });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => revealObserver.observe(el));
+ 
+  // Skill bar fill on view
+  const skillBarsSection = document.getElementById('skills');
+  let barsFilled = false;
+  const barObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !barsFilled) {
+        barsFilled = true;
+        document.querySelectorAll('.skillbar-fill').forEach(bar => {
+          bar.style.width = bar.dataset.width + '%';
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+  barObserver.observe(skillBarsSection);
+ 
+  // Sparkline bars + count-up on hero view
+  let heroAnimated = false;
+  const heroObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !heroAnimated) {
+        heroAnimated = true;
+        const heights = [40, 65, 50, 80, 45, 90, 60, 75];
+        document.querySelectorAll('#sparkbars > div').forEach((bar, i) => {
+          setTimeout(() => { bar.style.height = heights[i] + '%'; }, i * 60);
+        });
+        document.querySelectorAll('[data-count]').forEach(counter => {
+          const target = parseInt(counter.dataset.count, 10);
+          let cur = 0;
+          const step = Math.max(1, Math.ceil(target / 30));
+          const suffix = counter.querySelector('span') ? counter.querySelector('span').outerHTML : '';
+          const iv = setInterval(() => {
+            cur += step;
+            if (cur >= target) { cur = target; clearInterval(iv); }
+            counter.innerHTML = cur + suffix;
+          }, 40);
+        });
+      }
+    });
+  }, { threshold: 0.2 });
+  heroObserver.observe(document.getElementById('top'));
+ 
+  // Active nav highlighting
+  const sections = ['about', 'skills', 'projects', 'achievements', 'contact'];
+  const navLinks = document.querySelectorAll('.navlink');
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const id = entry.target.id;
+      const link = document.querySelector(`.navlink[data-target="${id}"]`);
+      if (!link) return;
+      if (entry.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) navObserver.observe(el);
+  });
+ 
+  // Contact form (mailto fallback, no backend)
+  const contactForm = document.getElementById('contactForm');
+  const formNote = document.getElementById('formNote');
+  contactForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+    const subject = encodeURIComponent(`Portfolio inquiry from ${name}`);
+    const body = encodeURIComponent(`${message}\n\n— ${name} (${email})`);
+    window.location.href = `mailto:shubhamsinghrana17@gmail.com?subject=${subject}&body=${body}`;
+    formNote.classList.remove('hidden');
+  });
+</script>
+ 
+</body>
+</html>
+ 
+
