@@ -1,0 +1,840 @@
+
+
+Task compass · HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task Compass</title>
+<style>
+  :root{
+    --bg1:#0b0f1a; --bg2:#161225; --glass:rgba(255,255,255,0.06); --glassBorder:rgba(255,255,255,0.12);
+    --text:#eef0f7; --sub:#9aa3b8; --accent:#8b5cf6; --accent2:#22d3ee; --good:#34d399; --warn:#fbbf24;
+    --fe:#60a5fa; --be:#34d399; --qa:#fbbf24; --pm:#f472b6; --ux:#a78bfa; --cs:#38bdf8; --em:#fb923c; --sales:#4ade80;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif; color:var(--text);
+    background:linear-gradient(135deg,#0b0f1a,#1b1330,#0b1a2a,#160f26);
+    background-size:400% 400%; animation:bgshift 18s ease infinite;
+    min-height:100vh; overflow-x:hidden;
+  }
+  @keyframes bgshift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+  #app{max-width:980px; margin:0 auto; padding:24px 16px 60px;}
+  .glass{
+    background:var(--glass); border:1px solid var(--glassBorder); border-radius:20px;
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    box-shadow:0 8px 32px rgba(0,0,0,0.35);
+  }
+  header.top{text-align:center; padding:18px 10px 8px; animation:fadeDown .6s ease;}
+  header.top h1{
+    font-size:2.4rem; font-weight:800; letter-spacing:.5px;
+    background:linear-gradient(90deg,var(--accent2),var(--accent),#f472b6);
+    background-size:200% auto; -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:shine 5s linear infinite;
+  }
+  @keyframes shine{to{background-position:200% center;}}
+  header.top p{color:var(--sub); margin-top:6px; font-size:.95rem;}
+  @keyframes fadeDown{from{opacity:0; transform:translateY(-14px);} to{opacity:1; transform:translateY(0);}}
+ 
+  .progress-wrap{margin:20px 0 26px; padding:14px 18px;}
+  .progress-top{display:flex; justify-content:space-between; align-items:center; font-size:.82rem; color:var(--sub); margin-bottom:8px;}
+  .progress-bar{height:8px; border-radius:8px; background:rgba(255,255,255,0.08); overflow:hidden;}
+  .progress-fill{height:100%; border-radius:8px; background:linear-gradient(90deg,var(--accent2),var(--accent)); transition:width .5s ease;}
+  .stage-dots{display:flex; gap:8px; margin-top:10px; justify-content:center;}
+  .stage-dot{width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,.15); transition:.3s;}
+  .stage-dot.active{background:var(--accent2); box-shadow:0 0 10px var(--accent2);}
+  .stage-dot.done{background:var(--good);}
+ 
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; cursor:pointer; border:none; border-radius:14px;
+    padding:12px 26px; font-size:.95rem; font-weight:600; color:#fff;
+    background:linear-gradient(135deg,var(--accent),#6d28d9); transition:transform .15s ease, box-shadow .15s ease;
+    box-shadow:0 4px 18px rgba(139,92,246,0.35);
+  }
+  .btn:hover{transform:translateY(-2px) scale(1.02); box-shadow:0 8px 24px rgba(139,92,246,0.5);}
+  .btn:active{transform:translateY(0) scale(.98);}
+  .btn.secondary{background:rgba(255,255,255,0.08); box-shadow:none;}
+  .btn:disabled{opacity:.4; cursor:not-allowed; transform:none; box-shadow:none;}
+  .center{text-align:center;}
+ 
+  /* Intro */
+  .intro{padding:36px 28px; text-align:center; animation:fadeUp .6s ease;}
+  @keyframes fadeUp{from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:translateY(0);}}
+  .intro .badge{
+    display:inline-block; padding:6px 16px; border-radius:999px; background:rgba(139,92,246,.18);
+    border:1px solid rgba(139,92,246,.4); color:var(--accent2); font-size:.8rem; margin-bottom:18px;
+  }
+  .intro h2{font-size:1.5rem; margin-bottom:10px;}
+  .intro p{color:var(--sub); max-width:560px; margin:0 auto 22px; line-height:1.6;}
+  .intro-stages{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:26px 0;}
+  .intro-stage{padding:16px 10px; border-radius:14px; background:rgba(255,255,255,.04); border:1px solid var(--glassBorder);}
+  .intro-stage .n{font-size:1.6rem;}
+  .intro-stage h4{margin:6px 0 4px; font-size:.95rem;}
+  .intro-stage p{font-size:.78rem; color:var(--sub); margin:0;}
+ 
+  /* Ticket card */
+  .ticket{
+    padding:22px 24px; margin-bottom:22px; border-left:4px solid var(--accent2); position:relative; overflow:hidden;
+    animation:popIn .45s cubic-bezier(.2,1.4,.4,1);
+  }
+  @keyframes popIn{from{opacity:0; transform:scale(.94) translateY(10px);} to{opacity:1; transform:scale(1) translateY(0);}}
+  .ticket::before{content:'TICKET'; position:absolute; top:10px; right:16px; font-size:.65rem; letter-spacing:2px; color:var(--sub); opacity:.6;}
+  .ticket .tid{font-size:.75rem; color:var(--accent2); font-weight:700; letter-spacing:1px; margin-bottom:6px;}
+  .ticket h3{font-size:1.15rem; line-height:1.5; font-weight:600;}
+  .ticket .desc{color:var(--sub); font-size:.88rem; margin-top:6px;}
+ 
+  .section-label{font-size:.78rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--sub); margin:18px 0 10px;}
+ 
+  /* Role cards */
+  .role-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:12px;}
+  .role-card{
+    padding:14px 10px; border-radius:16px; text-align:center; cursor:grab; user-select:none;
+    background:rgba(255,255,255,.05); border:1px solid var(--glassBorder); transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    position:relative;
+  }
+  .role-card:hover{transform:translateY(-4px); box-shadow:0 10px 22px rgba(0,0,0,.4);}
+  .role-card.dragging{opacity:.35;}
+  .role-card .icon{font-size:1.6rem; display:block; margin-bottom:6px;}
+  .role-card .name{font-size:.78rem; font-weight:600;}
+  .role-card.selected{border-color:var(--accent2); box-shadow:0 0 0 2px var(--accent2) inset;}
+  .role-card .star{
+    position:absolute; top:6px; right:6px; font-size:.9rem; opacity:.35; cursor:pointer;
+  }
+  .role-card .star.on{opacity:1; filter:drop-shadow(0 0 4px var(--warn));}
+ 
+  /* Drop slot stage1 */
+  .drop-slot{
+    margin-top:16px; min-height:88px; border-radius:16px; border:2px dashed var(--glassBorder);
+    display:flex; align-items:center; justify-content:center; color:var(--sub); font-size:.85rem;
+    transition:.2s; background:rgba(255,255,255,.02);
+  }
+  .drop-slot.over{border-color:var(--accent2); background:rgba(34,211,238,.08);}
+  .drop-slot.filled{border-style:solid; border-color:var(--accent2);}
+  .filled-chip{display:flex; align-items:center; gap:10px; padding:8px 16px; border-radius:12px; background:rgba(255,255,255,.06); animation:snap .35s cubic-bezier(.2,1.6,.4,1);}
+  @keyframes snap{from{transform:scale(.7); opacity:0;} to{transform:scale(1); opacity:1;}}
+ 
+  /* Stage2 order slots */
+  .order-slots{display:flex; flex-wrap:wrap; gap:10px; margin-top:14px;}
+  .order-slot{
+    flex:1 1 130px; min-height:80px; border-radius:14px; border:2px dashed var(--glassBorder);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+    background:rgba(255,255,255,.02); transition:.2s; position:relative; padding:8px;
+  }
+  .order-slot .stepnum{position:absolute; top:6px; left:8px; font-size:.7rem; color:var(--sub);}
+  .order-slot.over{border-color:var(--accent2); background:rgba(34,211,238,.08);}
+  .order-slot.filled{border-style:solid; border-color:var(--accent2);}
+  .arrow{align-self:center; color:var(--sub); font-size:1.2rem;}
+ 
+  .reveal{
+    margin-top:20px; padding:20px 22px; border-radius:16px; background:rgba(52,211,153,.07);
+    border:1px solid rgba(52,211,153,.35); animation:popIn .4s ease;
+  }
+  .reveal .row{margin-bottom:10px; font-size:.92rem; line-height:1.6;}
+  .reveal .row b{color:var(--good);}
+  .chip{display:inline-block; padding:4px 12px; border-radius:999px; background:rgba(255,255,255,.08); font-size:.78rem; margin:2px 4px 2px 0;}
+ 
+  .anim-track{display:flex; align-items:center; gap:6px; margin-top:16px; flex-wrap:wrap;}
+  .anim-node{padding:8px 12px; border-radius:10px; background:rgba(255,255,255,.05); font-size:.8rem; border:1px solid var(--glassBorder); transition:.4s;}
+  .anim-node.active{background:linear-gradient(135deg,var(--accent2),var(--accent)); color:#fff; transform:scale(1.08); box-shadow:0 0 16px rgba(34,211,238,.6);}
+  .anim-arrow{color:var(--sub);}
+ 
+  .team-zone{min-height:70px; border-radius:16px; border:2px dashed var(--glassBorder); margin-top:14px; padding:10px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+  .team-zone .hint{color:var(--sub); font-size:.8rem;}
+ 
+  .footer-actions{display:flex; justify-content:flex-end; gap:12px; margin-top:22px;}
+ 
+  /* Radar */
+  .results-grid{display:grid; grid-template-columns:1.1fr 1fr; gap:24px; align-items:center;}
+  @media (max-width:720px){.results-grid{grid-template-columns:1fr;}}
+  .score-bars{display:flex; flex-direction:column; gap:14px;}
+  .score-row .lbl{display:flex; justify-content:space-between; font-size:.85rem; margin-bottom:6px;}
+  .score-track{height:10px; border-radius:8px; background:rgba(255,255,255,.08); overflow:hidden;}
+  .score-fill{height:100%; border-radius:8px; transition:width 1s cubic-bezier(.2,1,.3,1);}
+ 
+  .reflection-list{margin-top:6px; display:flex; flex-direction:column; gap:12px;}
+  .reflection-item{padding:14px 16px; border-radius:14px; background:rgba(255,255,255,.04); border-left:3px solid var(--accent2); font-size:.88rem; line-height:1.55;}
+  .reflection-item b{color:var(--accent2);}
+ 
+  .confetti{position:fixed; top:-20px; width:8px; height:14px; opacity:.9; z-index:50; animation:fall linear forwards;}
+  @keyframes fall{to{transform:translateY(110vh) rotate(360deg); opacity:0;}}
+ 
+  .role-fe{--rc:var(--fe)} .role-be{--rc:var(--be)} .role-qa{--rc:var(--qa)} .role-pm{--rc:var(--pm)}
+  .role-ux{--rc:var(--ux)} .role-cs{--rc:var(--cs)} .role-em{--rc:var(--em)} .role-sales{--rc:var(--sales)}
+  .role-card{border-top:3px solid var(--rc, var(--accent2));}
+  .role-card .icon{color:var(--rc, var(--accent2));}
+ 
+  @media(max-width:600px){
+    header.top h1{font-size:1.8rem;}
+    .intro-stages{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+ 
+<script>
+(function(){
+"use strict";
+ 
+var ROLES = [
+  {id:'fe', name:'Frontend Developer', icon:'💻', cls:'role-fe'},
+  {id:'be', name:'Backend Developer', icon:'🖥️', cls:'role-be'},
+  {id:'qa', name:'QA Engineer', icon:'🔍', cls:'role-qa'},
+  {id:'pm', name:'Product Manager', icon:'📋', cls:'role-pm'},
+  {id:'ux', name:'UX Designer', icon:'🎨', cls:'role-ux'},
+  {id:'cs', name:'Customer Support', icon:'🎧', cls:'role-cs'},
+  {id:'em', name:'Engineering Manager', icon:'🧭', cls:'role-em'},
+  {id:'sales', name:'Sales Team', icon:'📈', cls:'role-sales'}
+];
+function roleById(id){ for(var i=0;i<ROLES.length;i++){ if(ROLES[i].id===id) return ROLES[i]; } return null; }
+ 
+var STAGE1 = [
+  {
+    id:'t1', ticket:'TCK-1042',
+    title:'A customer reports that payments fail only on iPhones.',
+    desc:'The issue does not occur on Android or desktop.',
+    owner:'fe', assist:['be','qa'],
+    why:"Because the failure only happens on one platform, the root cause most likely lives in the client-side, iOS-specific code rather than the shared payment API. That makes the Frontend Developer the primary owner. QA helps reproduce the bug across devices, and the Backend Developer checks whether the server is sending anything unusual to iOS clients."
+  },
+  {
+    id:'t2', ticket:'TCK-1058',
+    title:'Users are confused by the checkout screen and keep abandoning their carts.',
+    desc:'Support tickets mention "I couldn\'t figure out how to pay."',
+    owner:'ux', assist:['pm','fe'],
+    why:"This is fundamentally a usability problem — the flow itself is unclear, not broken. That places ownership with the UX Designer, who owns interface clarity and user flow. The Product Manager helps prioritize the redesign, and the Frontend Developer implements the fix once it's designed."
+  },
+  {
+    id:'t3', ticket:'TCK-1075',
+    title:'The production server crashed at 3 AM and users were briefly locked out.',
+    desc:'Monitoring shows a memory spike right before the crash.',
+    owner:'be', assist:['em','qa'],
+    why:"A server crash tied to memory usage points to backend infrastructure and code, so the Backend Developer owns diagnosing and fixing the root cause. The Engineering Manager coordinates the incident response, and QA verifies the fix under load before it ships again."
+  }
+];
+ 
+var STAGE2 = [
+  {
+    id:'r1', ticket:'TCK-2031',
+    title:'A customer reports a bug in the mobile app.',
+    desc:'Build the path this ticket should travel through the organization.',
+    order:['cs','qa','be','pm'],
+    why:"Support is the first point of contact and documents exactly what the customer experienced. QA reproduces the bug to confirm it's real (not user error). The Backend Developer fixes the underlying cause. Finally, the Product Manager decides how and when the fix ships and how it's communicated."
+  },
+  {
+    id:'r2', ticket:'TCK-2044',
+    title:'A promising new feature idea comes out of a sales team meeting.',
+    desc:'Route the idea from its origin to something engineers can build.',
+    order:['sales','pm','ux','fe'],
+    why:"Sales is closest to customer demand, so the idea starts there. The Product Manager evaluates it against strategy and scopes what's feasible. UX designs how it should look and feel. Only then does the Frontend Developer build it — building too early wastes effort on the wrong design."
+  },
+  {
+    id:'r3', ticket:'TCK-2059',
+    title:'A critical security vulnerability is discovered in the login system.',
+    desc:'This needs a careful, five-step response.',
+    order:['qa','be','em','pm','cs'],
+    why:"QA (security testing) discovers and confirms the vulnerability first. The Backend Developer patches it immediately. The Engineering Manager oversees the incident to make sure it's handled correctly and fully. The Product Manager decides what needs to be disclosed. Support then relays clear information to any affected customers."
+  }
+];
+ 
+var STAGE3 = [
+  {
+    id:'c1', ticket:'TCK-3011',
+    title:'Customer satisfaction suddenly drops.',
+    desc:'Ratings and complaint volume both shift within the same week.',
+    primary:'cs', supporting:['pm','ux','qa'],
+    reasoning:"Support sees the complaints first-hand, but understanding *why* satisfaction dropped requires investigating the product itself. PM looks at what changed recently, UX checks whether a workflow got harder to use, and QA checks for any bug that shipped around the same time.",
+    flow:"Customer Support → Product Manager (spot the pattern) → UX & QA (investigate root cause) → Product Manager (decide on a fix) → Customer Support (respond to customers)"
+  },
+  {
+    id:'c2', ticket:'TCK-3027',
+    title:'Sales increase dramatically after a marketing push.',
+    desc:'Traffic and signups are far above what was planned for.',
+    primary:'em', supporting:['be','qa','pm'],
+    reasoning:"A sudden spike stresses infrastructure before anything else, so the Engineering Manager leads the response. The Backend Developer scales systems to handle load, QA verifies stability under stress, and the PM tracks how this shift affects near-term priorities.",
+    flow:"Sales → Engineering Manager (capacity planning) → Backend Developer (scale systems) → QA Engineer (load testing) → Product Manager (adjust roadmap)"
+  },
+  {
+    id:'c3', ticket:'TCK-3038',
+    title:'Negative reviews start appearing online about the product.',
+    desc:'Several reviews mention the same recurring frustration.',
+    primary:'pm', supporting:['cs','ux','sales'],
+    reasoning:"The Product Manager owns understanding whether this reflects a real, recurring product problem. Support gathers direct customer context and specific complaints. UX checks whether a usability issue is the true root cause. Sales helps manage how the situation is perceived publicly.",
+    flow:"Customer Support (collects details) → Product Manager (analyzes the pattern) → UX Designer (assess product issues) → Sales Team (manage public response)"
+  }
+];
+ 
+var state = {
+  screen:'intro',
+  stage:1,
+  idx:0,
+  s1answer:null,
+  s2order:[],
+  s2submitted:false,
+  s3selected:[],
+  s3primary:null,
+  scores:{ownership:0, delegation:0, collaboration:0, workflow:0},
+  max:{ownership:0, delegation:0, collaboration:0, workflow:0},
+  overAssign:0,
+  underCollab:0,
+  strongOwnership:0,
+  weakOwnership:0
+};
+ 
+var dragRoleId = null;
+ 
+function el(html){ var d=document.createElement('div'); d.innerHTML=html.trim(); return d.firstChild; }
+function app(){ return document.getElementById('app'); }
+ 
+function totalQuestions(){ return STAGE1.length + STAGE2.length + STAGE3.length; }
+function questionsDoneBefore(stage){
+  if(stage===1) return 0;
+  if(stage===2) return STAGE1.length;
+  return STAGE1.length + STAGE2.length;
+}
+ 
+function progressHTML(){
+  var doneBefore = questionsDoneBefore(state.stage);
+  var current = doneBefore + state.idx + (state.screen==='play'?0:1);
+  var pct = Math.min(100, Math.round((doneBefore + state.idx) / totalQuestions() * 100));
+  var stageName = state.stage===1?'Who Owns This?':(state.stage===2?'Task Routing':'Collaboration Challenge');
+  var dots = '';
+  for(var i=1;i<=3;i++){
+    var cls = 'stage-dot';
+    if(i<state.stage) cls+=' done';
+    else if(i===state.stage) cls+=' active';
+    dots += '<div class="'+cls+'"></div>';
+  }
+  return '' +
+  '<div class="glass progress-wrap">' +
+    '<div class="progress-top"><span>Stage '+state.stage+' of 3 · '+stageName+'</span><span>Question '+(state.idx+1)+' of 3</span></div>' +
+    '<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div>' +
+    '<div class="stage-dots">'+dots+'</div>' +
+  '</div>';
+}
+ 
+/* ---------- INTRO ---------- */
+function renderIntro(){
+  app().innerHTML =
+  '<header class="top"><h1>🧭 Task Compass</h1><p>Learn how work flows through real organizations.</p></header>' +
+  '<div class="glass intro">' +
+    '<div class="badge">Workplace: Tech Company</div>' +
+    '<h2>You\'re about to run a workday.</h2>' +
+    '<p>Tickets, incidents and big messy problems will land on your desk. Your job isn\'t to memorize job titles — it\'s to figure out <b>who owns what</b>, <b>how work should move</b>, and <b>when teams need to collaborate</b>.</p>' +
+    '<div class="intro-stages">' +
+      '<div class="intro-stage"><div class="n">🎯</div><h4>1. Who Owns This?</h4><p>Assign the right owner to a task and see why.</p></div>' +
+      '<div class="intro-stage"><div class="n">🔀</div><h4>2. Task Routing</h4><p>Build the path a task travels through the team.</p></div>' +
+      '<div class="intro-stage"><div class="n">🤝</div><h4>3. Collaboration</h4><p>Assemble a team for messier, bigger problems.</p></div>' +
+    '</div>' +
+    '<button class="btn" id="startBtn">Start the Workday →</button>' +
+  '</div>';
+  document.getElementById('startBtn').onclick = function(){
+    state.screen='play'; state.stage=1; state.idx=0; render();
+  };
+}
+ 
+/* ---------- ROLE CARD BUILDER ---------- */
+function roleCardHTML(role, opts){
+  opts = opts || {};
+  var star = opts.showStar ? '<span class="star '+(opts.isPrimary?'on':'')+'" data-star="'+role.id+'" title="Mark as primary owner">★</span>' : '';
+  return '<div class="role-card '+role.cls+(opts.selected?' selected':'')+'" draggable="true" data-role="'+role.id+'">' +
+    star +
+    '<span class="icon">'+role.icon+'</span>' +
+    '<span class="name">'+role.name+'</span>' +
+  '</div>';
+}
+ 
+/* ---------- STAGE 1 ---------- */
+function renderStage1(){
+  var task = STAGE1[state.idx];
+  var submitted = state.s1answer !== null;
+  var rolesHTML = ROLES.map(function(r){ return roleCardHTML(r, {}); }).join('');
+ 
+  var slotContent = state.s1answer ?
+    '<div class="filled-chip">'+roleById(state.s1answer).icon+' <b>'+roleById(state.s1answer).name+'</b></div>' :
+    'Drag a role here — or tap a card to assign it';
+ 
+  var revealHTML = '';
+  if(submitted){
+    var correct = state.s1answer === task.owner;
+    var assisted = task.assist.indexOf(state.s1answer) !== -1;
+    var headline = correct ? '✓ Great instinct — here\'s the full picture' : (assisted ? '↳ Close — that role usually assists, not owns' : '↳ Here\'s who actually owns this, and why');
+    revealHTML =
+    '<div class="reveal">' +
+      '<div class="row">'+headline+'</div>' +
+      '<div class="row"><b>Primary Owner:</b> '+roleById(task.owner).icon+' '+roleById(task.owner).name+'</div>' +
+      '<div class="row"><b>Why they own it:</b> '+task.why+'</div>' +
+      '<div class="row"><b>May assist:</b> ' + task.assist.map(function(id){ return '<span class="chip">'+roleById(id).icon+' '+roleById(id).name+'</span>'; }).join('') + '</div>' +
+    '</div>';
+  }
+ 
+  app().innerHTML =
+  '<header class="top"><h1>🧭 Task Compass</h1><p>Learn how work flows through real organizations.</p></header>' +
+  progressHTML() +
+  '<div class="glass" style="padding:26px;">' +
+    '<div class="ticket glass"><div class="tid">'+task.ticket+' · WHO OWNS THIS?</div><h3>'+task.title+'</h3><div class="desc">'+task.desc+'</div></div>' +
+    '<div class="section-label">Ownership Slot</div>' +
+    '<div class="drop-slot '+(state.s1answer?'filled':'')+'" id="ownerSlot">'+slotContent+'</div>' +
+    '<div class="section-label">Roles</div>' +
+    '<div class="role-grid" id="roleGrid">'+rolesHTML+'</div>' +
+    revealHTML +
+    '<div class="footer-actions">' +
+      (submitted ? '<button class="btn" id="nextBtn">Next →</button>' : '<span style="color:var(--sub); font-size:.82rem; align-self:center;">Assign a role to continue</span>') +
+    '</div>' +
+  '</div>';
+ 
+  wireStage1Interactions(task);
+ 
+  if(submitted){
+    document.getElementById('nextBtn').onclick = function(){
+      state.s1answer = null;
+      if(state.idx < STAGE1.length-1){ state.idx++; }
+      else { state.stage=2; state.idx=0; state.s2order=[]; state.s2submitted=false; }
+      render();
+    };
+  }
+}
+ 
+function wireStage1Interactions(task){
+  var slot = document.getElementById('ownerSlot');
+  var cards = document.querySelectorAll('#roleGrid .role-card');
+ 
+  cards.forEach(function(c){
+    c.addEventListener('dragstart', function(e){
+      dragRoleId = c.getAttribute('data-role'); c.classList.add('dragging');
+    });
+    c.addEventListener('dragend', function(){ c.classList.remove('dragging'); });
+    c.addEventListener('click', function(){
+      if(state.s1answer!==null) return;
+      assignStage1(c.getAttribute('data-role'), task);
+    });
+  });
+ 
+  slot.addEventListener('dragover', function(e){ e.preventDefault(); slot.classList.add('over'); });
+  slot.addEventListener('dragleave', function(){ slot.classList.remove('over'); });
+  slot.addEventListener('drop', function(e){
+    e.preventDefault(); slot.classList.remove('over');
+    if(dragRoleId && state.s1answer===null){ assignStage1(dragRoleId, task); }
+  });
+}
+ 
+function assignStage1(roleId, task){
+  state.s1answer = roleId;
+  state.max.ownership += 10; state.max.delegation += 5;
+  if(roleId === task.owner){
+    state.scores.ownership += 10; state.scores.delegation += 5; state.strongOwnership++;
+  } else if(task.assist.indexOf(roleId) !== -1){
+    state.scores.ownership += 5; state.scores.delegation += 3;
+  } else {
+    state.scores.ownership += 1; state.scores.delegation += 1; state.weakOwnership++;
+  }
+  render();
+}
+ 
+/* ---------- STAGE 2 ---------- */
+function renderStage2(){
+  var task = STAGE2[state.idx];
+  var n = task.order.length;
+  var poolIds = ROLES.filter(function(r){ return task.order.indexOf(r.id) !== -1; }).map(function(r){return r.id;});
+  var available = poolIds.filter(function(id){ return state.s2order.indexOf(id) === -1; });
+ 
+  var slotsHTML = '';
+  for(var i=0;i<n;i++){
+    var filled = state.s2order[i];
+    slotsHTML += '<div class="order-slot '+(filled?'filled':'')+'" data-pos="'+i+'"><span class="stepnum">Step '+(i+1)+'</span>';
+    if(filled){
+      var r = roleById(filled);
+      slotsHTML += '<span style="font-size:1.3rem;">'+r.icon+'</span><span style="font-size:.75rem; font-weight:600;">'+r.name+'</span>';
+    } else {
+      slotsHTML += '<span style="color:var(--sub); font-size:.75rem;">Drop role</span>';
+    }
+    slotsHTML += '</div>';
+    if(i<n-1) slotsHTML += '<div class="arrow">→</div>';
+  }
+ 
+  var poolHTML = available.map(function(id){ return roleCardHTML(roleById(id), {}); }).join('');
+  var allFilled = state.s2order.length === n && state.s2order.every(function(x){return x;});
+ 
+  var revealHTML = '';
+  if(state.s2submitted){
+    var correctCount = 0;
+    for(var k=0;k<n;k++){ if(state.s2order[k]===task.order[k]) correctCount++; }
+    var headline = correctCount===n ? '✓ Exactly right — here\'s why this order works' : '↳ Here\'s the order this usually follows, and why';
+    var trackHTML = task.order.map(function(id,i2){
+      return (i2>0?'<span class="anim-arrow">→</span>':'') + '<div class="anim-node" data-step="'+i2+'">'+roleById(id).icon+' '+roleById(id).name+'</div>';
+    }).join('');
+    revealHTML =
+    '<div class="reveal">' +
+      '<div class="row">'+headline+' ('+correctCount+'/'+n+' correct positions)</div>' +
+      '<div class="row"><b>Why this order:</b> '+task.why+'</div>' +
+      '<div class="anim-track" id="animTrack">'+trackHTML+'</div>' +
+    '</div>';
+  }
+ 
+  app().innerHTML =
+  '<header class="top"><h1>🧭 Task Compass</h1><p>Learn how work flows through real organizations.</p></header>' +
+  progressHTML() +
+  '<div class="glass" style="padding:26px;">' +
+    '<div class="ticket glass"><div class="tid">'+task.ticket+' · TASK ROUTING</div><h3>'+task.title+'</h3><div class="desc">'+task.desc+'</div></div>' +
+    '<div class="section-label">Build the Workflow ('+n+' steps)</div>' +
+    '<div class="order-slots" id="orderSlots">'+slotsHTML+'</div>' +
+    '<div class="section-label">Available Roles</div>' +
+    '<div class="role-grid" id="roleGrid">'+poolHTML+'</div>' +
+    revealHTML +
+    '<div class="footer-actions">' +
+      (state.s2submitted ?
+        '<button class="btn" id="nextBtn">Next →</button>' :
+        '<button class="btn" id="submitBtn" '+(allFilled?'':'disabled')+'>Submit Workflow</button>') +
+    '</div>' +
+  '</div>';
+ 
+  wireStage2Interactions(task, n);
+ 
+  if(state.s2submitted){
+    setTimeout(animateStage2Track, 150);
+    document.getElementById('nextBtn').onclick = function(){
+      state.s2order=[]; state.s2submitted=false;
+      if(state.idx < STAGE2.length-1){ state.idx++; }
+      else { state.stage=3; state.idx=0; state.s3selected=[]; state.s3primary=null; }
+      render();
+    };
+  }
+}
+ 
+function animateStage2Track(){
+  var nodes = document.querySelectorAll('#animTrack .anim-node');
+  var i=0;
+  function step(){
+    nodes.forEach(function(nd){ nd.classList.remove('active'); });
+    if(i<nodes.length){ nodes[i].classList.add('active'); i++; setTimeout(step, 500); }
+  }
+  step();
+}
+ 
+function wireStage2Interactions(task, n){
+  var slots = document.querySelectorAll('#orderSlots .order-slot');
+  var cards = document.querySelectorAll('#roleGrid .role-card');
+ 
+  cards.forEach(function(c){
+    c.addEventListener('dragstart', function(){ dragRoleId = c.getAttribute('data-role'); c.classList.add('dragging'); });
+    c.addEventListener('dragend', function(){ c.classList.remove('dragging'); });
+    c.addEventListener('click', function(){
+      if(state.s2submitted) return;
+      var firstEmpty = -1;
+      for(var i=0;i<n;i++){ if(!state.s2order[i]){ firstEmpty=i; break; } }
+      if(firstEmpty!==-1){ state.s2order[firstEmpty] = c.getAttribute('data-role'); render(); }
+    });
+  });
+ 
+  slots.forEach(function(s){
+    s.addEventListener('dragover', function(e){ e.preventDefault(); s.classList.add('over'); });
+    s.addEventListener('dragleave', function(){ s.classList.remove('over'); });
+    s.addEventListener('drop', function(e){
+      e.preventDefault(); s.classList.remove('over');
+      if(state.s2submitted) return;
+      var pos = parseInt(s.getAttribute('data-pos'),10);
+      if(dragRoleId && !state.s2order[pos]){ state.s2order[pos] = dragRoleId; render(); }
+    });
+    s.addEventListener('click', function(){
+      if(state.s2submitted) return;
+      var pos = parseInt(s.getAttribute('data-pos'),10);
+      if(state.s2order[pos]){ state.s2order[pos] = null; render(); }
+    });
+  });
+ 
+  var submitBtn = document.getElementById('submitBtn');
+  if(submitBtn){
+    submitBtn.onclick = function(){
+      var correctCount = 0;
+      for(var i=0;i<n;i++){ if(state.s2order[i]===task.order[i]) correctCount++; }
+      state.max.workflow += 10; state.max.delegation += 5;
+      state.scores.workflow += Math.round(10*correctCount/n);
+      if(correctCount===n) state.scores.delegation += 5;
+      else if(correctCount >= Math.ceil(n/2)) state.scores.delegation += 3;
+      else state.scores.delegation += 1;
+      state.s2submitted = true;
+      render();
+    };
+  }
+}
+ 
+/* ---------- STAGE 3 ---------- */
+function renderStage3(){
+  var task = STAGE3[state.idx];
+  var submitted = state.__s3submitted;
+  var teamHTML = state.s3selected.length ?
+    state.s3selected.map(function(id){ return roleCardHTML(roleById(id), {showStar:true, isPrimary:state.s3primary===id, selected:true}); }).join('') :
+    '<span class="hint">Selected team members will appear here (max 4). Tap the ★ to mark the primary owner.</span>';
+ 
+  var poolHTML = ROLES.map(function(r){
+    var isSel = state.s3selected.indexOf(r.id) !== -1;
+    return roleCardHTML(r, {selected:isSel});
+  }).join('');
+ 
+  var revealHTML = '';
+  if(submitted){
+    var expected = [task.primary].concat(task.supporting);
+    revealHTML =
+    '<div class="reveal">' +
+      '<div class="row">✓ Here\'s how this situation typically plays out</div>' +
+      '<div class="row"><b>Primary Owner:</b> '+roleById(task.primary).icon+' '+roleById(task.primary).name+'</div>' +
+      '<div class="row"><b>Supporting Teams:</b> '+task.supporting.map(function(id){return '<span class="chip">'+roleById(id).icon+' '+roleById(id).name+'</span>';}).join('')+'</div>' +
+      '<div class="row"><b>Reasoning:</b> '+task.reasoning+'</div>' +
+      '<div class="row"><b>Possible Communication Flow:</b> '+task.flow+'</div>' +
+    '</div>';
+  }
+ 
+  var canSubmit = state.s3selected.length >= 1 && state.s3primary;
+ 
+  app().innerHTML =
+  '<header class="top"><h1>🧭 Task Compass</h1><p>Learn how work flows through real organizations.</p></header>' +
+  progressHTML() +
+  '<div class="glass" style="padding:26px;">' +
+    '<div class="ticket glass"><div class="tid">'+task.ticket+' · COLLABORATION CHALLENGE</div><h3>'+task.title+'</h3><div class="desc">'+task.desc+'</div></div>' +
+    '<div class="section-label">Your Team (choose up to 4, then mark ★ primary owner)</div>' +
+    '<div class="team-zone role-grid" id="teamZone">'+teamHTML+'</div>' +
+    '<div class="section-label">All Roles — tap to add or remove</div>' +
+    '<div class="role-grid" id="roleGrid">'+poolHTML+'</div>' +
+    revealHTML +
+    '<div class="footer-actions">' +
+      (submitted ? '<button class="btn" id="nextBtn">'+(isLast()?'See Results →':'Next →')+'</button>' :
+        '<button class="btn" id="submitBtn" '+(canSubmit?'':'disabled')+'>Submit Team</button>') +
+    '</div>' +
+  '</div>';
+ 
+  wireStage3Interactions(task);
+ 
+  if(submitted){
+    document.getElementById('nextBtn').onclick = function(){
+      state.__s3submitted = false; state.s3selected=[]; state.s3primary=null;
+      if(state.idx < STAGE3.length-1){ state.idx++; render(); }
+      else { state.screen='results'; render(); }
+    };
+  }
+}
+ 
+function isLast(){ return state.idx === STAGE3.length-1; }
+ 
+function wireStage3Interactions(task){
+  var poolCards = document.querySelectorAll('#roleGrid .role-card');
+  poolCards.forEach(function(c){
+    c.addEventListener('click', function(){
+      if(state.__s3submitted) return;
+      var id = c.getAttribute('data-role');
+      var pos = state.s3selected.indexOf(id);
+      if(pos!==-1){
+        state.s3selected.splice(pos,1);
+        if(state.s3primary===id) state.s3primary=null;
+      } else {
+        if(state.s3selected.length>=4) return;
+        state.s3selected.push(id);
+        if(!state.s3primary) state.s3primary = id;
+      }
+      render();
+    });
+  });
+  var stars = document.querySelectorAll('#teamZone .star');
+  stars.forEach(function(s){
+    s.addEventListener('click', function(e){
+      e.stopPropagation();
+      state.s3primary = s.getAttribute('data-star');
+      render();
+    });
+  });
+  var submitBtn = document.getElementById('submitBtn');
+  if(submitBtn){
+    submitBtn.onclick = function(){
+      var expected = [task.primary].concat(task.supporting);
+      var correctCount = state.s3selected.filter(function(id){ return expected.indexOf(id)!==-1; }).length;
+      var extra = state.s3selected.length - correctCount;
+      state.max.collaboration += 10; state.max.delegation += 5;
+      state.scores.collaboration += Math.round(10*correctCount/expected.length);
+      state.scores.delegation += (state.s3primary===task.primary) ? 5 : 2;
+      if(extra>0) state.overAssign += extra;
+      if(state.s3selected.length<2) state.underCollab += 1;
+      state.__s3submitted = true;
+      render();
+    };
+  }
+}
+ 
+/* ---------- RESULTS ---------- */
+function pct(cat){
+  var m = state.max[cat] || 1;
+  return Math.round(100 * state.scores[cat] / m);
+}
+ 
+function drawRadar(){
+  var canvas = document.getElementById('radarCanvas');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var w = canvas.width, h = canvas.height;
+  var cx = w/2, cy = h/2, R = Math.min(w,h)/2 - 34;
+  var cats = [
+    {k:'ownership', label:'Ownership'},
+    {k:'delegation', label:'Delegation'},
+    {k:'collaboration', label:'Collaboration'},
+    {k:'workflow', label:'Workflow Thinking'}
+  ];
+  ctx.clearRect(0,0,w,h);
+  ctx.font = '12px Segoe UI';
+ 
+  for(var ring=1; ring<=4; ring++){
+    var rr = R*ring/4;
+    ctx.beginPath();
+    for(var i=0;i<cats.length;i++){
+      var ang = (Math.PI*2*i/cats.length) - Math.PI/2;
+      var x = cx + rr*Math.cos(ang), y = cy + rr*Math.sin(ang);
+      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+    ctx.stroke();
+  }
+  for(i=0;i<cats.length;i++){
+    ang = (Math.PI*2*i/cats.length) - Math.PI/2;
+    x = cx + R*Math.cos(ang); y = cy + R*Math.sin(ang);
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y);
+    ctx.strokeStyle = 'rgba(255,255,255,0.10)'; ctx.stroke();
+    var lx = cx + (R+22)*Math.cos(ang), ly = cy + (R+22)*Math.sin(ang);
+    ctx.fillStyle = '#9aa3b8';
+    ctx.textAlign = 'center'; ctx.textBaseline='middle';
+    ctx.fillText(cats[i].label, lx, ly);
+  }
+ 
+  ctx.beginPath();
+  for(i=0;i<cats.length;i++){
+    var val = pct(cats[i].k)/100;
+    ang = (Math.PI*2*i/cats.length) - Math.PI/2;
+    x = cx + R*val*Math.cos(ang); y = cy + R*val*Math.sin(ang);
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  }
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(139,92,246,0.35)';
+  ctx.strokeStyle = '#22d3ee';
+  ctx.lineWidth = 2;
+  ctx.fill(); ctx.stroke();
+ 
+  for(i=0;i<cats.length;i++){
+    val = pct(cats[i].k)/100;
+    ang = (Math.PI*2*i/cats.length) - Math.PI/2;
+    x = cx + R*val*Math.cos(ang); y = cy + R*val*Math.sin(ang);
+    ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2);
+    ctx.fillStyle = '#22d3ee'; ctx.fill();
+  }
+}
+ 
+function buildReflection(){
+  var items = [];
+  var pOwn = pct('ownership'), pDel = pct('delegation'), pCol = pct('collaboration'), pWork = pct('workflow');
+ 
+  var best = 'ownership', bestVal = pOwn;
+  [['delegation',pDel],['collaboration',pCol],['workflow',pWork]].forEach(function(p){
+    if(p[1] > bestVal){ best = p[0]; bestVal = p[1]; }
+  });
+  var bestLabel = {ownership:'identifying who truly owns a task', delegation:'balancing ownership with the right support', collaboration:'building well-rounded teams', workflow:'sequencing how work should move'}[best];
+  items.push('<b>What you understood well:</b> You were consistently strong at '+bestLabel+', scoring '+bestVal+'% in that area.');
+ 
+  if(state.overAssign >= 2){
+    items.push('<b>Where you tended to over-assign responsibility:</b> In a few collaboration challenges, you pulled in more roles than the situation likely needed. Adding people can slow decisions down as often as it helps them — try asking "does this role change the outcome?" before adding them.');
+  } else {
+    items.push('<b>Where you tended to over-assign responsibility:</b> You generally kept teams focused rather than crowding tasks with unnecessary roles — a sign of clear-headed delegation.');
+  }
+ 
+  if(state.underCollab >= 1 || pCol < 60){
+    items.push('<b>Where you underestimated collaboration:</b> On at least one complex situation, a single role was chosen when the problem likely needed input from several teams. Big, ambiguous problems rarely have one clean owner.');
+  } else {
+    items.push('<b>Where you underestimated collaboration:</b> You generally recognized when a situation was too broad for one person to own alone — a useful instinct for messy, real-world problems.');
+  }
+ 
+  items.push('<b>One insight about how organizations actually work:</b> Many real workplace problems are solved by teams rather than individuals — ownership tells you who is accountable, but rarely who does all the work.');
+ 
+  return items;
+}
+ 
+function renderResults(){
+  var cats = [
+    {k:'ownership', label:'Ownership', color:'#60a5fa'},
+    {k:'delegation', label:'Delegation', color:'#34d399'},
+    {k:'collaboration', label:'Collaboration', color:'#f472b6'},
+    {k:'workflow', label:'Workflow Thinking', color:'#fbbf24'}
+  ];
+  var barsHTML = cats.map(function(c){
+    var v = pct(c.k);
+    return '<div class="score-row"><div class="lbl"><span>'+c.label+'</span><span>'+v+'%</span></div>' +
+      '<div class="score-track"><div class="score-fill" style="width:0%; background:'+c.color+'" data-w="'+v+'"></div></div></div>';
+  }).join('');
+ 
+  var reflectionHTML = buildReflection().map(function(t){ return '<div class="reflection-item">'+t+'</div>'; }).join('');
+ 
+  app().innerHTML =
+  '<header class="top"><h1>🧭 Task Compass</h1><p>Learn how work flows through real organizations.</p></header>' +
+  '<div class="glass center" style="padding:26px 20px;">' +
+    '<div style="font-size:2.2rem;">🎉</div>' +
+    '<h2>Workday Complete</h2>' +
+    '<p style="color:var(--sub); margin-top:6px;">Here\'s how you understood ownership, delegation, collaboration and workflow.</p>' +
+  '</div>' +
+  '<div class="glass" style="padding:26px; margin-top:20px;">' +
+    '<div class="results-grid">' +
+      '<div class="center"><canvas id="radarCanvas" width="340" height="340" style="max-width:100%;"></canvas></div>' +
+      '<div class="score-bars">'+barsHTML+'</div>' +
+    '</div>' +
+  '</div>' +
+  '<div class="glass" style="padding:26px; margin-top:20px;">' +
+    '<div class="section-label" style="margin-top:0;">Final Reflection</div>' +
+    '<div class="reflection-list">'+reflectionHTML+'</div>' +
+    '<div class="footer-actions"><button class="btn secondary" id="restartBtn">↺ Play Again</button></div>' +
+  '</div>';
+ 
+  setTimeout(function(){
+    drawRadar();
+    document.querySelectorAll('.score-fill').forEach(function(f){ f.style.width = f.getAttribute('data-w')+'%'; });
+    launchConfetti();
+  }, 100);
+ 
+  document.getElementById('restartBtn').onclick = function(){
+    state = {
+      screen:'intro', stage:1, idx:0, s1answer:null, s2order:[], s2submitted:false,
+      s3selected:[], s3primary:null,
+      scores:{ownership:0,delegation:0,collaboration:0,workflow:0},
+      max:{ownership:0,delegation:0,collaboration:0,workflow:0},
+      overAssign:0, underCollab:0, strongOwnership:0, weakOwnership:0
+    };
+    render();
+  };
+}
+ 
+function launchConfetti(){
+  var colors = ['#8b5cf6','#22d3ee','#34d399','#f472b6','#fbbf24'];
+  for(var i=0;i<36;i++){
+    (function(){
+      var c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = (Math.random()*100)+'vw';
+      c.style.background = colors[Math.floor(Math.random()*colors.length)];
+      c.style.animationDuration = (2.2 + Math.random()*1.6)+'s';
+      c.style.borderRadius = Math.random()>0.5 ? '50%' : '2px';
+      document.body.appendChild(c);
+      setTimeout(function(){ c.remove(); }, 4200);
+    })();
+  }
+}
+ 
+/* ---------- ROUTER ---------- */
+function render(){
+  window.scrollTo(0,0);
+  if(state.screen==='intro') return renderIntro();
+  if(state.screen==='results') return renderResults();
+  if(state.stage===1) return renderStage1();
+  if(state.stage===2) return renderStage2();
+  if(state.stage===3) return renderStage3();
+}
+ 
+render();
+})();
+</script>
+</body>
+</html>
+ 
