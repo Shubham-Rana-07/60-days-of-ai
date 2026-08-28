@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Interactive Learning Studio — Data Cleaning &amp; Wrangling with Pandas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B0E14;
+    --bg-alt: #0F131C;
+    --panel: #161B24;
+    --panel-2: #1C2330;
+    --border: #2A3142;
+    --text: #E8EDF4;
+    --text-muted: #8B96A8;
+    --amber: #F0A428;
+    --amber-dim: rgba(240,164,40,0.15);
+    --teal: #2FD9C4;
+    --teal-dim: rgba(47,217,196,0.14);
+    --danger: #F0555A;
+    --danger-dim: rgba(240,85,90,0.14);
+    --radius: 12px;
+    --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    --font-display: 'Fraunces', serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  html[data-theme="light"]{
+    --bg: #F6F4EE;
+    --bg-alt: #EEEBE2;
+    --panel: #FFFFFF;
+    --panel-2: #F4F1E9;
+    --border: #DEDACC;
+    --text: #1C1F26;
+    --text-muted: #5C6473;
+    --amber: #B4700C;
+    --amber-dim: rgba(180,112,12,0.10);
+    --teal: #0E8C7C;
+    --teal-dim: rgba(14,140,124,0.10);
+    --danger: #C23C41;
+    --danger-dim: rgba(194,60,65,0.10);
+    --shadow: 0 10px 24px rgba(30,20,10,0.10);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    transition:background .3s ease, color .3s ease;
+  }
+  ::selection{ background:var(--teal-dim); color:var(--text); }
+  a{ color:var(--teal); }
+  h1,h2,h3,h4{ font-family:var(--font-display); font-weight:600; letter-spacing:-0.01em; margin:0 0 .4em 0; }
+  code, .mono{ font-family:var(--font-mono); }
+  .app{ display:flex; min-height:100vh; }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width:270px; flex-shrink:0; background:var(--bg-alt); border-right:1px solid var(--border);
+    position:sticky; top:0; height:100vh; overflow-y:auto; padding:22px 16px 16px;
+    display:flex; flex-direction:column; gap:16px;
+  }
+  .brand{ display:flex; align-items:flex-start; gap:10px; padding:0 4px 12px; border-bottom:1px dashed var(--border); }
+  .brand-mark{ width:36px;height:36px;border-radius:9px; background:linear-gradient(135deg,var(--amber),var(--teal)); flex-shrink:0; position:relative; }
+  .brand-mark::after{ content:"⌗"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:18px; color:#0B0E14; font-weight:700;}
+  .brand-title{ font-family:var(--font-display); font-size:15.5px; line-height:1.25; font-weight:600; }
+  .brand-sub{ font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.08em; margin-top:2px;}
+
+  .progress-wrap{ padding:0 4px; }
+  .progress-track{ height:8px; border-radius:99px; background:var(--panel-2); overflow:hidden; border:1px solid var(--border);}
+  .progress-fill{ height:100%; width:0%; background:linear-gradient(90deg,var(--amber),var(--teal)); transition:width .5s cubic-bezier(.4,0,.2,1); }
+  .progress-label{ font-size:11.5px; color:var(--text-muted); margin-top:6px; display:flex; justify-content:space-between; }
+  .points-badge{ font-size:11.5px; color:var(--amber); font-weight:600; }
+
+  .badges-row{ display:flex; flex-wrap:wrap; gap:6px; padding:0 4px; }
+  .badge-chip{ font-size:10.5px; padding:4px 8px; border-radius:99px; border:1px solid var(--border); color:var(--text-muted); background:var(--panel); opacity:.4; transition:all .3s ease; white-space:nowrap; }
+  .badge-chip.earned{ opacity:1; color:var(--bg); background:linear-gradient(120deg,var(--teal),var(--amber)); border-color:transparent; font-weight:600; }
+
+  .toc{ display:flex; flex-direction:column; gap:3px; padding:0 2px; flex:1; }
+  .toc-item{
+    text-align:left; background:transparent; border:none; color:var(--text-muted); font-family:var(--font-body);
+    font-size:13px; padding:9px 10px; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:8px;
+    transition:background .2s ease, color .2s ease;
+  }
+  .toc-item .tag{ font-size:10px; font-family:var(--font-mono); padding:1px 5px; border-radius:5px; border:1px solid var(--border); color:var(--text-muted); }
+  .toc-item:hover{ background:var(--panel); color:var(--text); }
+  .toc-item.active{ background:var(--panel-2); color:var(--text); font-weight:600; box-shadow:inset 3px 0 0 var(--teal); }
+  .toc-item.locked{ opacity:.45; cursor:not-allowed; }
+  .toc-item .lock-ic{ margin-left:auto; font-size:11px; }
+
+  .sidebar-footer{ display:flex; gap:8px; padding-top:10px; border-top:1px dashed var(--border); }
+  .icon-btn{
+    flex:1; background:var(--panel); border:1px solid var(--border); color:var(--text); font-family:var(--font-body);
+    font-size:12px; padding:9px 6px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;
+    transition:transform .15s ease, border-color .2s ease;
+  }
+  .icon-btn:hover{ border-color:var(--teal); transform:translateY(-1px); }
+
+  /* ---------- Content ---------- */
+  .content{ flex:1; min-width:0; }
+  section.page{ padding:52px 56px 70px; max-width:920px; margin:0 auto; scroll-margin-top:20px; }
+  section.page + section.page{ border-top:1px dashed var(--border); }
+  .eyebrow{ font-family:var(--font-mono); font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--teal); margin-bottom:10px; display:flex; align-items:center; gap:8px;}
+  .eyebrow::before{ content:""; width:18px;height:1px;background:var(--teal); }
+  h1.page-title{ font-size:clamp(28px,4vw,42px); }
+  .lede{ color:var(--text-muted); font-size:16.5px; max-width:66ch; }
+
+  .card{ background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:22px 24px; box-shadow:var(--shadow); }
+  .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .grid-3{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  @media (max-width:760px){ .grid-2,.grid-3{ grid-template-columns:1fr; } }
+
+  .stat-card{ background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; }
+  .stat-num{ font-family:var(--font-display); font-size:26px; color:var(--teal); }
+  .stat-lbl{ font-size:12px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; margin-top:2px;}
+
+  .obj-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+  .obj-list li{ display:flex; gap:10px; align-items:flex-start; font-size:14.5px; }
+  .obj-list li::before{ content:"✓"; color:var(--teal); font-weight:700; flex-shrink:0; margin-top:1px; }
+
+  .reward-strip{ display:flex; align-items:center; gap:14px; background:var(--amber-dim); border:1px solid var(--border); border-radius:var(--radius); padding:16px 20px; margin-top:18px; }
+  .reward-strip .ic{ font-size:26px; }
+
+  h2.mod-title{ font-size:clamp(22px,3vw,30px); }
+  .mod-meta{ display:flex; gap:14px; flex-wrap:wrap; font-size:12.5px; color:var(--text-muted); margin-bottom:22px; font-family:var(--font-mono);}
+  .mod-meta span{ display:flex; align-items:center; gap:6px; }
+
+  .subhead{ font-size:12px; text-transform:uppercase; letter-spacing:.1em; color:var(--amber); margin:34px 0 12px; font-family:var(--font-mono); display:flex; align-items:center; gap:8px;}
+  .subhead::after{ content:""; flex:1; height:1px; background:var(--border); }
+
+  p{ margin:0 0 14px; }
+  .analogy{ border-left:3px solid var(--amber); background:var(--amber-dim); padding:14px 18px; border-radius:0 8px 8px 0; font-size:14.5px; }
+  .analogy b{ color:var(--amber); }
+
+  pre.code-block{ background:#080A0F; border:1px solid var(--border); border-radius:10px; padding:16px 18px; overflow-x:auto; font-family:var(--font-mono); font-size:13px; color:#D7E2EE; }
+  html[data-theme="light"] pre.code-block{ background:#1B1E26; color:#E7ECF3; }
+  pre.code-block .c{ color:#6D9E86; }
+  pre.code-block .k{ color:#F0A428; }
+  pre.code-block .s{ color:#9CD1FF; }
+
+  table.cmp{ width:100%; border-collapse:collapse; font-size:13.5px; margin:10px 0 4px; }
+  table.cmp th, table.cmp td{ border:1px solid var(--border); padding:9px 12px; text-align:left; }
+  table.cmp th{ background:var(--panel-2); font-family:var(--font-mono); font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--text-muted); }
+  table.cmp td.bad{ color:var(--danger); }
+  table.cmp td.good{ color:var(--teal); }
+
+  .exercise-box{ border:1px solid var(--border); background:var(--panel-2); border-radius:var(--radius); padding:18px 20px; }
+  .exercise-box .lbl{ font-family:var(--font-mono); font-size:11px; text-transform:uppercase; color:var(--teal); letter-spacing:.08em; margin-bottom:8px; display:block;}
+  .toggle-solution{ margin-top:10px; background:transparent; border:1px solid var(--teal); color:var(--teal); font-size:12.5px; padding:7px 12px; border-radius:7px; cursor:pointer; font-family:var(--font-body); }
+  .solution{ display:none; margin-top:12px; padding-top:12px; border-top:1px dashed var(--border); }
+  .solution.show{ display:block; }
+
+  .misconceptions{ display:flex; flex-direction:column; gap:10px; }
+  .misc-item{ display:flex; gap:10px; background:var(--danger-dim); border:1px solid var(--border); border-radius:8px; padding:12px 14px; font-size:13.5px; }
+  .misc-item .x{ color:var(--danger); font-weight:700; flex-shrink:0; }
+
+  .takeaways{ background:var(--teal-dim); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; }
+  .takeaways ul{ margin:0; padding-left:20px; }
+  .takeaways li{ margin-bottom:6px; font-size:14px; }
+
+  svg.diagram{ width:100%; height:auto; display:block; }
+  .diagram-wrap{ background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin:14px 0 20px; }
+  .diagram-caption{ text-align:center; font-size:12px; color:var(--text-muted); margin-top:8px; font-family:var(--font-mono); }
+
+  /* ---------- Quiz ---------- */
+  .quiz-wrap{ margin-top:30px; border:1px solid var(--border); border-radius:var(--radius); background:var(--panel); padding:24px 26px; }
+  .quiz-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:16px; flex-wrap:wrap; gap:8px;}
+  .quiz-score{ font-family:var(--font-mono); font-size:13px; color:var(--text-muted); }
+  .quiz-q{ margin-bottom:22px; padding-bottom:20px; border-bottom:1px dashed var(--border); }
+  .quiz-q:last-of-type{ border-bottom:none; }
+  .quiz-q-title{ font-weight:600; font-size:14.5px; margin-bottom:12px; }
+  .quiz-options{ display:flex; flex-direction:column; gap:8px; }
+  .quiz-opt{
+    text-align:left; padding:11px 14px; border-radius:9px; border:1px solid var(--border); background:var(--panel-2);
+    color:var(--text); font-family:var(--font-body); font-size:13.5px; cursor:pointer; transition:all .15s ease;
+  }
+  .quiz-opt:hover{ border-color:var(--teal); }
+  .quiz-opt.selected{ border-color:var(--teal); background:var(--teal-dim); }
+  .quiz-opt.correct{ border-color:var(--teal); background:var(--teal-dim); font-weight:600; }
+  .quiz-opt.incorrect{ border-color:var(--danger); background:var(--danger-dim); }
+  .quiz-opt:disabled{ cursor:default; }
+  .quiz-explain{ margin-top:10px; font-size:13px; color:var(--text-muted); background:var(--bg-alt); border-left:3px solid var(--teal); padding:10px 14px; border-radius:0 8px 8px 0; display:none; }
+  .quiz-explain.show{ display:block; }
+
+  .quiz-footer{ display:flex; align-items:center; justify-content:space-between; margin-top:6px; flex-wrap:wrap; gap:12px; }
+  .btn{
+    font-family:var(--font-body); font-weight:600; font-size:13.5px; padding:11px 20px; border-radius:9px; border:1px solid transparent;
+    cursor:pointer; transition:transform .15s ease, opacity .15s ease;
+  }
+  .btn:hover{ transform:translateY(-1px); }
+  .btn:disabled{ opacity:.4; cursor:not-allowed; transform:none; }
+  .btn-primary{ background:linear-gradient(120deg,var(--teal),var(--amber)); color:#0B0E14; }
+  .btn-ghost{ background:transparent; border:1px solid var(--border); color:var(--text); }
+  .quiz-result{ font-family:var(--font-mono); font-size:13px; }
+  .quiz-result.pass{ color:var(--teal); }
+  .quiz-result.fail{ color:var(--danger); }
+
+  /* Locked overlay */
+  .locked-panel{ position:relative; }
+  .locked-panel .lock-overlay{
+    position:absolute; inset:0; background:linear-gradient(180deg, transparent, var(--bg) 60%); backdrop-filter:blur(3px);
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding-bottom:60px; text-align:center; gap:10px;
+    border-radius:var(--radius);
+  }
+  .locked-panel .lock-overlay .ic{ font-size:30px; }
+  .locked-panel .mod-body{ filter:blur(2px); pointer-events:none; user-select:none; }
+  .locked-panel.unlocked .lock-overlay{ display:none; }
+  .locked-panel.unlocked .mod-body{ filter:none; pointer-events:auto; user-select:auto; }
+
+  /* Final challenge — drag/drop pipeline */
+  .pipeline-pool, .pipeline-slots{ display:flex; flex-direction:column; gap:8px; min-height:60px; }
+  .pipeline-slots{ border:1px dashed var(--border); border-radius:10px; padding:10px; background:var(--panel-2); }
+  .pipeline-item{
+    padding:11px 14px; border-radius:9px; border:1px solid var(--border); background:var(--panel); font-size:13.5px;
+    cursor:grab; display:flex; align-items:center; gap:10px; user-select:none;
+  }
+  .pipeline-item .n{ font-family:var(--font-mono); color:var(--teal); font-weight:700; }
+  .pipeline-item.dragging{ opacity:.4; }
+  .pipeline-item.correct-pos{ border-color:var(--teal); background:var(--teal-dim); }
+  .pipeline-item.wrong-pos{ border-color:var(--danger); background:var(--danger-dim); }
+
+  /* Cheat sheet */
+  .cheat-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:760px){ .cheat-grid{ grid-template-columns:1fr; } }
+  .cheat-card{ background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:14px 16px; }
+  .cheat-card h4{ font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--amber); font-family:var(--font-mono); margin-bottom:8px; }
+  .cheat-card code{ display:block; font-size:12.5px; color:var(--text); background:var(--bg-alt); padding:7px 9px; border-radius:6px; margin-bottom:6px; overflow-x:auto; white-space:pre; }
+
+  .resource-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+  @media (max-width:760px){ .resource-grid{ grid-template-columns:1fr; } }
+  .resource-card{ background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; }
+  .resource-card h3{ font-size:15px; display:flex; align-items:center; gap:8px; }
+  .resource-card ul{ margin:8px 0 0; padding-left:18px; font-size:13.5px; color:var(--text-muted); }
+  .resource-card li{ margin-bottom:6px; }
+  .kw-pill-row{ display:flex; flex-wrap:wrap; gap:7px; }
+  .kw-pill{ font-family:var(--font-mono); font-size:12px; background:var(--panel-2); border:1px solid var(--border); padding:5px 10px; border-radius:99px; color:var(--text-muted); }
+
+  .completion-cert{ text-align:center; padding:40px 20px; border:1px solid var(--border); border-radius:var(--radius); background:radial-gradient(ellipse at top, var(--teal-dim), transparent 70%); }
+
+  @media print{
+    .sidebar, .quiz-wrap .btn, .icon-btn, .lock-overlay, .toggle-solution{ display:none !important; }
+    body{ background:#fff; color:#111; }
+    section.page{ padding:10px 0; max-width:100%; }
+    .locked-panel .mod-body{ filter:none !important; }
+  }
+
+  @media (max-width:900px){
+    .sidebar{ position:fixed; z-index:50; transform:translateX(-100%); transition:transform .3s ease; box-shadow:var(--shadow); }
+    .sidebar.open{ transform:translateX(0); }
+    section.page{ padding:70px 20px 50px; }
+    .mobile-topbar{ display:flex; }
+  }
+  .mobile-topbar{ display:none; position:sticky; top:0; z-index:40; background:var(--bg-alt); border-bottom:1px solid var(--border); padding:12px 16px; align-items:center; justify-content:space-between; }
+  .mobile-topbar button{ background:var(--panel); border:1px solid var(--border); color:var(--text); border-radius:8px; padding:8px 10px; font-size:16px; }
+
+  ::-webkit-scrollbar{ width:9px; height:9px; }
+  ::-webkit-scrollbar-thumb{ background:var(--border); border-radius:99px; }
+</style>
+</head>
+<body data-theme="dark">
+
+<div class="mobile-topbar">
+  <button id="hamburgerBtn">☰</button>
+  <strong style="font-family:var(--font-display);font-size:14px;">Learning Studio</strong>
+  <span class="points-badge" id="mobilePoints">0 pts</span>
+</div>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div>
+        <div class="brand-title">Interactive Learning Studio</div>
+        <div class="brand-sub">Data Cleaning &amp; Wrangling with Pandas</div>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-label"><span id="progressLabel">0% complete</span><span class="points-badge" id="pointsLabel">0 pts</span></div>
+    </div>
+
+    <div class="badges-row" id="badgesRow">
+      <span class="badge-chip" data-badge="b1">🧹 Data Janitor</span>
+      <span class="badge-chip" data-badge="b2">🧼 Data Scrubber</span>
+      <span class="badge-chip" data-badge="b3">🧪 Type Tamer</span>
+      <span class="badge-chip" data-badge="b4">🏗️ Pipeline Architect</span>
+    </div>
+
+    <nav class="toc" id="toc">
+      <button class="toc-item active" data-target="intro">👋 <span>Introduction</span></button>
+      <button class="toc-item" data-target="module1"><span class="tag">M1</span> <span>Reading the Mess</span></button>
+      <button class="toc-item locked" data-target="module2" data-locked="true"><span class="tag">M2</span> <span>Mending Missing Data</span><span class="lock-ic">🔒</span></button>
+      <button class="toc-item locked" data-target="module3" data-locked="true"><span class="tag">M3</span> <span>Types, Text &amp; Outliers</span><span class="lock-ic">🔒</span></button>
+      <button class="toc-item locked" data-target="module4" data-locked="true"><span class="tag">M4</span> <span>Building the Pipeline</span><span class="lock-ic">🔒</span></button>
+      <button class="toc-item locked" data-target="challenge" data-locked="true"><span class="tag">★</span> <span>Final Challenge</span><span class="lock-ic">🔒</span></button>
+      <button class="toc-item" data-target="cheatsheet">📋 <span>Cheat Sheet</span></button>
+      <button class="toc-item" data-target="continue">🧭 <span>Continue Learning</span></button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="icon-btn" id="themeToggle">🌙 <span id="themeLabel">Dark</span></button>
+      <button class="icon-btn" id="printBtn">🖨️ Print</button>
+    </div>
+  </aside>
+
+  <main class="content" id="content">
+
+    <!-- ============ INTRO ============ -->
+    <section class="page" id="intro">
+      <div class="eyebrow">Interactive Learning Studio</div>
+      <h1 class="page-title">Data Cleaning &amp; Wrangling with Pandas</h1>
+      <p class="lede">Real-world data is never ready to use — it arrives with missing values, duplicate rows, inconsistent text, wrong types, and outliers hiding in plain sight. This studio takes you from spotting the mess to shipping a reusable, defensible cleaning pipeline in pandas.</p>
+
+      <div class="grid-3" style="margin-top:24px;">
+        <div class="stat-card"><div class="stat-num">4</div><div class="stat-lbl">Modules</div></div>
+        <div class="stat-card"><div class="stat-num">~70 min</div><div class="stat-lbl">Estimated time</div></div>
+        <div class="stat-card"><div class="stat-num">16 + 1</div><div class="stat-lbl">Quiz + Final Challenge</div></div>
+      </div>
+
+      <div class="subhead">Prerequisites</div>
+      <ul class="obj-list">
+        <li>Basic Python syntax (variables, functions, loops)</li>
+        <li>A first look at pandas DataFrames — you've run <code class="mono">pd.read_csv()</code> at least once</li>
+        <li>No statistics background required — every stats idea used here is explained from scratch</li>
+      </ul>
+
+      <div class="subhead">Learning Objectives</div>
+      <ul class="obj-list">
+        <li>Diagnose messy data using inspection methods and know what "messy" actually means structurally</li>
+        <li>Handle missing values and duplicate records with a defensible, documented strategy</li>
+        <li>Fix inconsistent types, messy text, and outliers using vectorized pandas operations</li>
+        <li>Assemble everything into a reusable, testable cleaning pipeline you can run on new data</li>
+      </ul>
+
+      <div class="subhead">Expected Outcomes</div>
+      <p style="font-size:14.5px;">By the end, you'll be able to take an unfamiliar, messy CSV and — without hand-holding — produce a clean, typed, validated DataFrame ready for analysis, plus a short written log of every transformation you made and why.</p>
+
+      <div class="reward-strip">
+        <div class="ic">🏆</div>
+        <div style="font-size:13.5px;">
+          <strong>Reward System:</strong> earn points for every quiz question you get right (10 pts) and a badge for every module you clear. Finish the Final Challenge to unlock your completion certificate. Track your live score in the sidebar.
+        </div>
+      </div>
+
+      <div style="margin-top:30px;">
+        <button class="btn btn-primary" onclick="goTo('module1')">Start Module 1 →</button>
+      </div>
+    </section>
+
+    <!-- ============ MODULE 1 ============ -->
+    <section class="page" id="module1">
+      <div class="eyebrow">Module 1 · Beginner</div>
+      <h2 class="mod-title">Reading the Mess</h2>
+      <div class="mod-meta">
+        <span>⏱ 15 min</span>
+        <span>🎯 Diagnose messy data before touching it</span>
+      </div>
+
+      <p>Before you fix anything, you have to see it clearly. Most cleaning mistakes come from skipping inspection and jumping straight to <code class="mono">.dropna()</code> or <code class="mono">.fillna(0)</code> without understanding what's actually wrong. This module builds your diagnostic toolkit.</p>
+
+      <div class="analogy"><b>Analogy —</b> Think of a new dataset like a patient arriving in triage. You don't start treatment before checking vitals: temperature, pulse, symptoms. <code class="mono">df.info()</code>, <code class="mono">df.isnull().sum()</code>, and <code class="mono">df.duplicated().sum()</code> are your vitals check for data.</p>
+      </div>
+
+      <div class="subhead">Core Inspection Toolkit</div>
+      <pre class="code-block"><span class="c"># Shape and structure</span>
+df.shape                  <span class="c"># (rows, columns)</span>
+df.info()                 <span class="c"># dtypes + non-null counts per column</span>
+df.head(), df.tail()      <span class="c"># peek at real rows</span>
+
+<span class="c"># Where is the damage?</span>
+df.isnull().sum()         <span class="c"># missing values per column</span>
+df.duplicated().sum()     <span class="c"># exact duplicate rows</span>
+df.describe(include='all')<span class="c"># quick stats, catches weird min/max</span>
+df.dtypes                 <span class="c"># is "price" really a number, or text?</span></pre>
+
+      <div class="diagram-wrap">
+        <svg class="diagram" viewBox="0 0 760 240" xmlns="http://www.w3.org/2000/svg">
+          <text x="20" y="26" font-family="JetBrains Mono" font-size="12" fill="var(--text-muted)">raw_customers.csv — three problems flagged</text>
+          <g font-family="JetBrains Mono" font-size="12">
+            <rect x="20" y="42" width="720" height="30" fill="var(--panel-2)" stroke="var(--border)"/>
+            <text x="30" y="61" fill="var(--text-muted)">id</text>
+            <text x="90" y="61" fill="var(--text-muted)">name</text>
+            <text x="270" y="61" fill="var(--text-muted)">email</text>
+            <text x="470" y="61" fill="var(--text-muted)">signup_date</text>
+            <text x="630" y="61" fill="var(--text-muted)">age</text>
+
+            <rect x="20" y="72" width="720" height="30" fill="var(--panel)" stroke="var(--border)"/>
+            <text x="30" y="91" fill="var(--text)">1</text>
+            <text x="90" y="91" fill="var(--text)">Alice Ray</text>
+            <text x="270" y="91" fill="var(--text)">alice@mail.com</text>
+            <text x="470" y="91" fill="var(--text)">2023-01-04</text>
+            <text x="630" y="91" fill="var(--text)">29</text>
+
+            <rect x="20" y="102" width="720" height="30" fill="var(--danger-dim)" stroke="var(--danger)"/>
+            <text x="30" y="121" fill="var(--text)">2</text>
+            <text x="90" y="121" fill="var(--text)">alice ray</text>
+            <text x="270" y="121" fill="var(--text)">alice@mail.com</text>
+            <text x="470" y="121" fill="var(--text)">2023-01-04</text>
+            <text x="630" y="121" fill="var(--text)">29</text>
+            <text x="558" y="121" fill="var(--danger)">◀ duplicate (casing differs)</text>
+
+            <rect x="20" y="132" width="720" height="30" fill="var(--amber-dim)" stroke="var(--amber)"/>
+            <text x="30" y="151" fill="var(--text)">3</text>
+            <text x="90" y="151" fill="var(--text)">Jon Diaz</text>
+            <text x="270" y="151" fill="var(--amber)">NaN</text>
+            <text x="470" y="151" fill="var(--text)">01/05/2023</text>
+            <text x="630" y="151" fill="var(--text)">29</text>
+            <text x="300" y="151" fill="var(--amber)">◀ missing + inconsistent date format</text>
+
+            <rect x="20" y="162" width="720" height="30" fill="var(--teal-dim)" stroke="var(--teal)"/>
+            <text x="30" y="181" fill="var(--text)">4</text>
+            <text x="90" y="181" fill="var(--text)">Priya Nair</text>
+            <text x="270" y="181" fill="var(--text)">priya@mail.com</text>
+            <text x="470" y="181" fill="var(--text)">2023-01-06</text>
+            <text x="630" y="181" fill="var(--teal)">"twenty-nine"</text>
+            <text x="660" y="181" fill="var(--teal)">◀ wrong dtype (string not int)</text>
+          </g>
+        </svg>
+        <div class="diagram-caption">Three problems, one table: a near-duplicate row, missing + inconsistently formatted values, and a number stored as text.</div>
+      </div>
+
+      <div class="subhead">Comparisons</div>
+      <table class="cmp">
+        <tr><th>Symptom</th><th>What it looks like</th><th>Method that reveals it</th></tr>
+        <tr><td>Missing values</td><td class="bad">NaN, None, empty string, "N/A", "-"</td><td><code class="mono">isnull().sum()</code></td></tr>
+        <tr><td>Duplicate rows</td><td class="bad">Same row twice, or same entity with casing/whitespace differences</td><td><code class="mono">duplicated()</code></td></tr>
+        <tr><td>Wrong dtype</td><td class="bad">Numbers stored as text, dates stored as strings</td><td><code class="mono">dtypes</code>, <code class="mono">info()</code></td></tr>
+        <tr><td>Inconsistent categories</td><td class="bad">"NY", "ny", "New York" all meaning the same thing</td><td><code class="mono">value_counts()</code></td></tr>
+      </table>
+
+      <div class="subhead">Practical Exercise</div>
+      <div class="exercise-box">
+        <span class="lbl">Try it yourself</span>
+        <p style="margin-bottom:6px;">You load a CSV and run <code class="mono">df.dtypes</code>. The <code class="mono">order_total</code> column shows <code class="mono">object</code> instead of <code class="mono">float64</code>. What's the most likely explanation, and what's your first diagnostic step?</p>
+        <button class="toggle-solution" onclick="toggleSolution(this)">Show reasoning</button>
+        <div class="solution">
+          <p style="margin:0;">Most likely: at least one row contains a non-numeric value in that column — a stray currency symbol ("$19.99"), a thousands separator ("1,200"), or a text placeholder ("N/A"). First step: run <code class="mono">df['order_total'].str.extract(r'([^0-9.]+)')</code> or simply eyeball <code class="mono">df['order_total'].unique()</code> on a sample to find the offending characters before converting with <code class="mono">pd.to_numeric(..., errors='coerce')</code>.</p>
+        </div>
+      </div>
+
+      <div class="subhead">Common Misconceptions</div>
+      <div class="misconceptions">
+        <div class="misc-item"><span class="x">✕</span><span><b>"NaN and an empty string are the same thing."</b> They're not — <code class="mono">''</code> is a valid (if unhelpful) string value, while <code class="mono">NaN</code> is a float marking true absence. <code class="mono">isnull()</code> won't catch empty strings.</span></div>
+        <div class="misc-item"><span class="x">✕</span><span><b>"Duplicates means identical rows."</b> Real-world duplicates often differ by casing, whitespace, or formatting — you must normalize before comparing.</span></div>
+        <div class="misc-item"><span class="x">✕</span><span><b>"read_csv() always infers the right dtype."</b> It infers based on the whole column; one bad row silently downgrades an entire numeric column to <code class="mono">object</code>.</span></div>
+      </div>
+
+      <div class="subhead">Key Takeaways</div>
+      <div class="takeaways">
+        <ul>
+          <li>Always inspect before you clean: shape, dtypes, nulls, duplicates, and a sample of rows.</li>
+          <li><code class="mono">df.describe(include='all')</code> surfaces suspicious min/max values and category counts in one call.</li>
+          <li>A column's dtype is a diagnostic clue, not just metadata — "object" where you expect numbers is a red flag.</li>
+        </ul>
+      </div>
+
+      <div class="quiz-wrap" id="quiz1"></div>
+    </section>
+
+    <!-- ============ MODULE 2 ============ -->
+    <section class="page locked-panel" id="module2">
+      <div class="lock-overlay">
+        <div class="ic">🔒</div>
+        <div style="font-size:13.5px;color:var(--text-muted);max-width:340px;">Score at least 3/4 on the Module 1 quiz to unlock Mending Missing Data.</div>
+      </div>
+      <div class="mod-body">
+        <div class="eyebrow">Module 2 · Intermediate</div>
+        <h2 class="mod-title">Mending Missing &amp; Duplicate Data</h2>
+        <div class="mod-meta"><span>⏱ 18 min</span><span>🎯 Choose the right fix, not just any fix</span></div>
+
+        <p>Once you know where the damage is, the real skill is choosing how to repair it. Every strategy — dropping, filling, or interpolating — makes an assumption about why the data is missing. Get the assumption wrong and you quietly bias your analysis.</p>
+
+        <div class="analogy"><b>Analogy —</b> Filling missing values is like road repair. <code class="mono">dropna()</code> closes the lane entirely. <code class="mono">fillna(mean)</code> is a quick pothole patch — fine for minor damage, dangerous if the road is falling apart. <code class="mono">interpolate()</code> is repaving based on the road's own trend on either side.</div>
+
+        <div class="subhead">Missing Data Strategies</div>
+        <pre class="code-block"><span class="c"># Drop rows/columns</span>
+df.dropna(subset=['email'])          <span class="c"># drop rows missing a critical field</span>
+df.dropna(axis=1, thresh=len(df)*0.5)<span class="c"># drop columns that are mostly empty</span>
+
+<span class="c"># Fill with a value or statistic</span>
+df['age'].fillna(df['age'].median())   <span class="c"># robust to outliers</span>
+df['category'].fillna('unknown')       <span class="c"># explicit placeholder for text</span>
+df['reading'].fillna(method='ffill')   <span class="c"># carry the last known value forward</span>
+
+<span class="c"># Interpolate a trend</span>
+df['temperature'].interpolate(method='linear')
+
+<span class="c"># Duplicates — normalize first, then drop</span>
+df['email'] = df['email'].str.strip().str.lower()
+df.drop_duplicates(subset=['email'], keep='first')</pre>
+
+        <div class="diagram-wrap">
+          <svg class="diagram" viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg">
+            <g font-family="JetBrains Mono" font-size="12" fill="var(--text)">
+              <rect x="20" y="20" width="150" height="44" rx="8" fill="var(--panel)" stroke="var(--border)"/>
+              <text x="45" y="47" fill="var(--text)">Missing value</text>
+
+              <line x1="170" y1="42" x2="230" y2="42" stroke="var(--border)" stroke-width="2"/>
+              <polygon points="230,37 230,47 240,42" fill="var(--border)"/>
+
+              <rect x="240" y="0" width="220" height="42" rx="8" fill="var(--teal-dim)" stroke="var(--teal)"/>
+              <text x="255" y="26" fill="var(--teal)">Random noise? → fill (mean/median)</text>
+
+              <rect x="240" y="52" width="220" height="42" rx="8" fill="var(--amber-dim)" stroke="var(--amber)"/>
+              <text x="255" y="78" fill="var(--amber)">Sequential/time series? → ffill / interpolate</text>
+
+              <rect x="240" y="104" width="220" height="42" rx="8" fill="var(--danger-dim)" stroke="var(--danger)"/>
+              <text x="255" y="130" fill="var(--danger)">Critical field missing? → drop the row</text>
+
+              <rect x="240" y="156" width="220" height="42" rx="8" fill="var(--panel-2)" stroke="var(--border)"/>
+              <text x="255" y="182" fill="var(--text)">Whole column mostly empty? → drop column</text>
+
+              <line x1="460" y1="21" x2="530" y2="21" stroke="var(--teal)" stroke-width="2"/>
+              <line x1="460" y1="73" x2="530" y2="73" stroke="var(--amber)" stroke-width="2"/>
+              <line x1="460" y1="125" x2="530" y2="125" stroke="var(--danger)" stroke-width="2"/>
+              <line x1="460" y1="177" x2="530" y2="177" stroke="var(--border)" stroke-width="2"/>
+              <rect x="530" y="0" width="210" height="198" rx="8" fill="none" stroke="var(--border)" stroke-dasharray="4 4"/>
+              <text x="545" y="20" fill="var(--text-muted)">Ask: why is it missing?</text>
+              <text x="545" y="42" fill="var(--text-muted)">Document the choice you</text>
+              <text x="545" y="60" fill="var(--text-muted)">made — future you will</text>
+              <text x="545" y="78" fill="var(--text-muted)">need to know why.</text>
+            </g>
+          </svg>
+          <div class="diagram-caption">Decision flow: the right missing-data fix depends on *why* the value is missing, not a default habit.</div>
+        </div>
+
+        <div class="subhead">Comparisons</div>
+        <table class="cmp">
+          <tr><th>Strategy</th><th>Best for</th><th>Risk if misused</th></tr>
+          <tr><td><code class="mono">dropna()</code></td><td>Small % missing, critical fields</td><td class="bad">Loses rows silently, can shrink dataset a lot</td></tr>
+          <tr><td><code class="mono">fillna(mean/median)</code></td><td>Numeric columns, random missingness</td><td class="bad">Understates variance, distorts distributions</td></tr>
+          <tr><td><code class="mono">ffill</code>/<code class="mono">bfill</code></td><td>Time series, sensor logs</td><td class="bad">Wrong if the underlying value actually changed</td></tr>
+          <tr><td><code class="mono">interpolate()</code></td><td>Ordered numeric trends</td><td class="bad">Assumes smooth change between points</td></tr>
+        </table>
+
+        <div class="subhead">Practical Exercise</div>
+        <div class="exercise-box">
+          <span class="lbl">Try it yourself</span>
+          <p style="margin-bottom:6px;">A hospital dataset has a <code class="mono">blood_pressure</code> column with 2% missing values scattered randomly, and a <code class="mono">discharge_notes</code> column that's 85% empty. What would you do with each column, and why?</p>
+          <button class="toggle-solution" onclick="toggleSolution(this)">Show reasoning</button>
+          <div class="solution">
+            <p style="margin:0;"><code class="mono">blood_pressure</code>: 2% random missingness on a numeric vital is a good candidate for <code class="mono">fillna(median)</code> — small enough not to meaningfully distort the distribution. <code class="mono">discharge_notes</code> at 85% empty is not a filling problem — it's a column that likely isn't consistently collected; consider dropping it or treating its presence as a separate boolean flag rather than trying to fill the text.</p>
+          </div>
+        </div>
+
+        <div class="subhead">Common Misconceptions</div>
+        <div class="misconceptions">
+          <div class="misc-item"><span class="x">✕</span><span><b>"Always drop rows with any missing data."</b> On real datasets this can silently discard a third of your rows and introduce bias if missingness isn't random.</span></div>
+          <div class="misc-item"><span class="x">✕</span><span><b>"fillna(0) is always a safe default."</b> Zero has meaning in most numeric columns (temperature, balance, score) — filling with 0 can fabricate a false data point.</span></div>
+        </div>
+
+        <div class="subhead">Key Takeaways</div>
+        <div class="takeaways">
+          <ul>
+            <li>Match the fix to *why* the value is missing — random noise, a broken sensor, or a genuinely inapplicable field each need a different answer.</li>
+            <li>Normalize text (<code class="mono">strip().lower()</code>) before deduplicating — otherwise "NY " and "ny" won't match.</li>
+            <li>Document every fill/drop decision; it's part of the analysis, not an invisible preprocessing step.</li>
+          </ul>
+        </div>
+
+        <div class="quiz-wrap" id="quiz2"></div>
+      </div>
+    </section>
+
+    <!-- ============ MODULE 3 ============ -->
+    <section class="page locked-panel" id="module3">
+      <div class="lock-overlay">
+        <div class="ic">🔒</div>
+        <div style="font-size:13.5px;color:var(--text-muted);max-width:340px;">Score at least 3/4 on the Module 2 quiz to unlock Types, Text &amp; Outliers.</div>
+      </div>
+      <div class="mod-body">
+        <div class="eyebrow">Module 3 · Advanced</div>
+        <h2 class="mod-title">Taming Types, Text &amp; Outliers</h2>
+        <div class="mod-meta"><span>⏱ 20 min</span><span>🎯 Convert, extract, and judge extreme values</span></div>
+
+        <p>With missingness under control, the next layer is precision: making sure every column holds the type it claims to, text is normalized, and extreme values are understood rather than blindly removed.</p>
+
+        <div class="analogy"><b>Analogy —</b> Converting types is like converting units in a recipe — grams to cups only works with the right formula, and getting it wrong doesn't throw an error, it just quietly ruins the dish. <code class="mono">errors='coerce'</code> is your safety net: it turns "unconvertible" values into <code class="mono">NaN</code> instead of crashing or guessing.</div>
+
+        <div class="subhead">Type Conversion &amp; Text Cleaning</div>
+        <pre class="code-block"><span class="c"># Safe numeric conversion</span>
+df['price'] = df['price'].str.replace('$','', regex=False).str.replace(',','', regex=False)
+df['price'] = pd.to_numeric(df['price'], errors='coerce')
+
+<span class="c"># Safe date conversion (mixed formats)</span>
+df['signup_date'] = pd.to_datetime(df['signup_date'], errors='coerce', dayfirst=False)
+
+<span class="c"># Text normalization</span>
+df['state'] = df['state'].str.strip().str.upper()
+
+<span class="c"># Regex extraction into new columns</span>
+df['area_code'] = df['phone'].str.extract(r'\((\d{3})\)')</pre>
+
+        <div class="subhead">Outlier Detection: the IQR method</div>
+        <div class="diagram-wrap">
+          <svg class="diagram" viewBox="0 0 760 200" xmlns="http://www.w3.org/2000/svg">
+            <g font-family="JetBrains Mono" font-size="11.5" fill="var(--text)">
+              <line x1="40" y1="100" x2="720" y2="100" stroke="var(--border)" stroke-width="2"/>
+              <line x1="120" y1="70" x2="120" y2="130" stroke="var(--teal)" stroke-width="2"/>
+              <rect x="220" y="70" width="200" height="60" fill="var(--teal-dim)" stroke="var(--teal)"/>
+              <line x1="320" y1="70" x2="320" y2="130" stroke="var(--teal)" stroke-width="2"/>
+              <line x1="120" y1="100" x2="220" y2="100" stroke="var(--teal)" stroke-width="2"/>
+              <line x1="420" y1="70" x2="420" y2="130" stroke="var(--teal)" stroke-width="2"/>
+              <line x1="420" y1="100" x2="520" y2="100" stroke="var(--teal)" stroke-width="2"/>
+              <line x1="520" y1="70" x2="520" y2="130" stroke="var(--teal)" stroke-width="2"/>
+              <circle cx="650" cy="100" r="5" fill="var(--danger)"/>
+              <circle cx="690" cy="100" r="5" fill="var(--danger)"/>
+              <text x="605" y="90" fill="var(--danger)">outliers</text>
+              <text x="100" y="150" fill="var(--text-muted)">min (whisker)</text>
+              <text x="270" y="150" fill="var(--text-muted)">Q1 — Q3 (IQR box)</text>
+              <text x="480" y="150" fill="var(--text-muted)">max (whisker)</text>
+              <text x="220" y="55" fill="var(--teal)">median</text>
+              <line x1="270" y1="70" x2="270" y2="130" stroke="var(--bg)" stroke-width="1.5"/>
+            </g>
+          </svg>
+          <div class="diagram-caption">Values beyond Q1 − 1.5×IQR or Q3 + 1.5×IQR are flagged as statistical outliers — not automatically deleted.</div>
+        </div>
+        <pre class="code-block">Q1, Q3 = df['income'].quantile(0.25), df['income'].quantile(0.75)
+IQR = Q3 - Q1
+lower, upper = Q1 - 1.5*IQR, Q3 + 1.5*IQR
+outliers = df[(df['income'] &lt; lower) | (df['income'] &gt; upper)]</pre>
+
+        <div class="subhead">Comparisons</div>
+        <table class="cmp">
+          <tr><th>Situation</th><th>Likely a real value</th><th>Likely a data error</th></tr>
+          <tr><td>CEO salary in an employee dataset</td><td class="good">Yes — legitimate extreme</td><td></td></tr>
+          <tr><td>Age = 300</td><td></td><td class="bad">Yes — entry error</td></tr>
+          <tr><td>Temperature = -999</td><td></td><td class="bad">Yes — common "missing" sentinel value</td></tr>
+        </table>
+
+        <div class="subhead">Practical Exercise</div>
+        <div class="exercise-box">
+          <span class="lbl">Try it yourself</span>
+          <p style="margin-bottom:6px;">A <code class="mono">delivery_days</code> column has values like 3, 4, 5, 5, 6, and one row with 9999. Would you cap it, drop it, or investigate first — and what pandas call would you use to check?</p>
+          <button class="toggle-solution" onclick="toggleSolution(this)">Show reasoning</button>
+          <div class="solution">
+            <p style="margin:0;">Investigate first: <code class="mono">df[df.delivery_days &gt; 100]</code> to inspect the full row — 9999 is a classic sentinel for "unknown," not a real delivery time. If it's confirmed as a placeholder, convert it to <code class="mono">NaN</code> rather than capping it as if it were a genuinely slow delivery.</p>
+          </div>
+        </div>
+
+        <div class="subhead">Common Misconceptions</div>
+        <div class="misconceptions">
+          <div class="misc-item"><span class="x">✕</span><span><b>"Outliers are always errors and should be removed."</b> Some outliers are the most important rows in the dataset — fraud detection and top-performer analysis often *are* the outliers.</span></div>
+          <div class="misc-item"><span class="x">✕</span><span><b>"Regex is overkill for simple cleaning."</b> A single <code class="mono">str.extract()</code> call often replaces dozens of lines of manual string slicing and is far less error-prone.</span></div>
+        </div>
+
+        <div class="subhead">Key Takeaways</div>
+        <div class="takeaways">
+          <ul>
+            <li><code class="mono">errors='coerce'</code> turns bad conversions into visible <code class="mono">NaN</code>s instead of crashes or silent corruption.</li>
+            <li>IQR and z-score methods flag candidates — a human (or documented rule) still decides what to do with them.</li>
+            <li>Normalize text before comparing or grouping; casing and whitespace are the most common hidden category duplicates.</li>
+          </ul>
+        </div>
+
+        <div class="quiz-wrap" id="quiz3"></div>
+      </div>
+    </section>
+
+    <!-- ============ MODULE 4 ============ -->
+    <section class="page locked-panel" id="module4">
+      <div class="lock-overlay">
+        <div class="ic">🔒</div>
+        <div style="font-size:13.5px;color:var(--text-muted);max-width:340px;">Score at least 3/4 on the Module 3 quiz to unlock Building the Pipeline.</div>
+      </div>
+      <div class="mod-body">
+        <div class="eyebrow">Module 4 · Expert</div>
+        <h2 class="mod-title">Building a Reusable Cleaning Pipeline</h2>
+        <div class="mod-meta"><span>⏱ 17 min</span><span>🎯 Turn one-off fixes into a repeatable process</span></div>
+
+        <p>Cleaning a dataset once is a task. Cleaning every new batch of data the same way, reliably, is engineering. This module turns your module 1–3 techniques into a single, testable, reusable function.</p>
+
+        <div class="analogy"><b>Analogy —</b> A cleaning pipeline is an assembly line, not a single craftsman's workbench. Each station (missing values → duplicates → types → validation) does one job, in a fixed order, and passes the part to the next station — so anyone can run it and get the same result.</div>
+
+        <div class="subhead">Chaining with .pipe() and functions</div>
+        <pre class="code-block"><span class="c">def handle_missing(df):
+    df = df.copy()
+    df['age'] = df['age'].fillna(df['age'].median())
+    return df.dropna(subset=['email'])
+
+def remove_duplicates(df):
+    df['email'] = df['email'].str.strip().str.lower()
+    return df.drop_duplicates(subset=['email'])
+
+def fix_types(df):
+    df['signup_date'] = pd.to_datetime(df['signup_date'], errors='coerce')
+    return df
+
+def validate(df):
+    assert df['age'].between(0, 120).all(), "Impossible ages found"
+    assert df['email'].str.contains('@').all(), "Malformed emails found"
+    return df
+
+clean_df = (raw_df
+    .pipe(handle_missing)
+    .pipe(remove_duplicates)
+    .pipe(fix_types)
+    .pipe(validate))</span></pre>
+
+        <div class="diagram-wrap">
+          <svg class="diagram" viewBox="0 0 760 140" xmlns="http://www.w3.org/2000/svg">
+            <g font-family="JetBrains Mono" font-size="12" fill="var(--text)">
+              <rect x="10" y="45" width="150" height="50" rx="8" fill="var(--panel)" stroke="var(--border)"/>
+              <text x="30" y="75" fill="var(--text)">raw_df</text>
+              <line x1="160" y1="70" x2="200" y2="70" stroke="var(--border)" stroke-width="2"/>
+              <polygon points="200,65 200,75 210,70" fill="var(--border)"/>
+
+              <rect x="210" y="45" width="150" height="50" rx="8" fill="var(--amber-dim)" stroke="var(--amber)"/>
+              <text x="225" y="75" fill="var(--amber)">handle_missing</text>
+              <line x1="360" y1="70" x2="400" y2="70" stroke="var(--border)" stroke-width="2"/>
+              <polygon points="400,65 400,75 410,70" fill="var(--border)"/>
+
+              <rect x="410" y="45" width="150" height="50" rx="8" fill="var(--amber-dim)" stroke="var(--amber)"/>
+              <text x="422" y="75" fill="var(--amber)">remove_duplicates</text>
+              <line x1="560" y1="70" x2="600" y2="70" stroke="var(--border)" stroke-width="2"/>
+              <polygon points="600,65 600,75 610,70" fill="var(--border)"/>
+
+              <rect x="610" y="45" width="145" height="50" rx="8" fill="var(--teal-dim)" stroke="var(--teal)"/>
+              <text x="635" y="75" fill="var(--teal)">validate → ✓</text>
+            </g>
+          </svg>
+          <div class="diagram-caption">A pipeline is just functions chained through .pipe() — each stage does one job and hands off a clean copy.</div>
+        </div>
+
+        <div class="subhead">Comparisons: apply() vs vectorized operations</div>
+        <table class="cmp">
+          <tr><th>Approach</th><th>Speed</th><th>When to use</th></tr>
+          <tr><td><code class="mono">df['x'] * 2</code> (vectorized)</td><td class="good">Fast — runs in optimized C</td><td>Whenever a built-in operation exists</td></tr>
+          <tr><td><code class="mono">df['x'].apply(fn)</code></td><td class="bad">Slower — loops in Python</td><td>Only when logic can't be vectorized</td></tr>
+        </table>
+
+        <div class="subhead">Practical Exercise</div>
+        <div class="exercise-box">
+          <span class="lbl">Try it yourself</span>
+          <p style="margin-bottom:6px;">You merge <code class="mono">orders</code> with <code class="mono">customers</code> on <code class="mono">customer_id</code> and the row count of the result is larger than either input. What almost certainly happened, and how would you confirm it?</p>
+          <button class="toggle-solution" onclick="toggleSolution(this)">Show reasoning</button>
+          <div class="solution">
+            <p style="margin:0;">A many-to-many join: <code class="mono">customer_id</code> isn't unique in one or both tables, so matching rows multiply ("fan out"). Confirm with <code class="mono">customers['customer_id'].duplicated().sum()</code> and <code class="mono">orders['customer_id'].duplicated().sum()</code> before merging, or pass <code class="mono">validate='many_to_one'</code> to <code class="mono">pd.merge()</code> to raise an error if the assumption is violated.</p>
+          </div>
+        </div>
+
+        <div class="subhead">Common Misconceptions</div>
+        <div class="misconceptions">
+          <div class="misc-item"><span class="x">✕</span><span><b>"Once it's clean, it's done."</b> New data arrives with new mess — the value of a pipeline is that it runs the same checks every time, automatically.</span></div>
+          <div class="misc-item"><span class="x">✕</span><span><b>"Merges always preserve row count."</b> Duplicate keys on either side of a join silently multiply rows — always sanity-check the result's shape.</span></div>
+        </div>
+
+        <div class="subhead">Key Takeaways</div>
+        <div class="takeaways">
+          <ul>
+            <li>Wrap each cleaning concern in its own function and chain them with <code class="mono">.pipe()</code> for a readable, reusable pipeline.</li>
+            <li>Add <code class="mono">assert</code> checks at the end of the pipeline — cheap insurance against silent regressions.</li>
+            <li>Prefer vectorized operations over <code class="mono">apply()</code>; reach for <code class="mono">apply()</code> only when there's no vectorized equivalent.</li>
+          </ul>
+        </div>
+
+        <div class="quiz-wrap" id="quiz4"></div>
+      </div>
+    </section>
+
+    <!-- ============ FINAL CHALLENGE ============ -->
+    <section class="page locked-panel" id="challenge">
+      <div class="lock-overlay">
+        <div class="ic">🔒</div>
+        <div style="font-size:13.5px;color:var(--text-muted);max-width:340px;">Clear all four module quizzes to unlock the Final Challenge.</div>
+      </div>
+      <div class="mod-body">
+        <div class="eyebrow">Final Practical Challenge</div>
+        <h2 class="mod-title">Order the Cleaning Pipeline</h2>
+        <p>A messy <code class="mono">signups_raw.csv</code> just landed: missing emails, duplicate customers with mismatched casing, a price column with dollar signs, a delivery_days outlier of 9999, and two source files that need merging. Drag the steps below into the correct pipeline order, then check your work.</p>
+
+        <div class="grid-2" style="align-items:flex-start;">
+          <div>
+            <div class="subhead" style="margin-top:0;">Available Steps</div>
+            <div class="pipeline-pool" id="pipelinePool"></div>
+          </div>
+          <div>
+            <div class="subhead" style="margin-top:0;">Your Pipeline Order</div>
+            <div class="pipeline-slots" id="pipelineSlots"></div>
+          </div>
+        </div>
+
+        <div class="quiz-footer" style="margin-top:20px;">
+          <button class="btn btn-primary" id="checkPipelineBtn">Check My Pipeline</button>
+          <span class="quiz-result" id="pipelineResult"></span>
+        </div>
+
+        <div class="completion-cert" id="completionCert" style="display:none; margin-top:34px;">
+          <div style="font-size:38px;">🏆</div>
+          <h3 style="margin-top:10px;">Certificate of Completion</h3>
+          <p style="color:var(--text-muted);">You've completed <strong>Data Cleaning &amp; Wrangling with Pandas</strong> with a final score of <span id="certScore" class="mono">0</span> pts.</p>
+          <button class="btn btn-ghost" onclick="window.print()">🖨️ Print Certificate &amp; Notes</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CHEAT SHEET ============ -->
+    <section class="page" id="cheatsheet">
+      <div class="eyebrow">Reference</div>
+      <h2 class="mod-title">Cheat Sheet</h2>
+      <p class="lede">The whole tutorial condensed into copy-pasteable snippets.</p>
+
+      <div class="cheat-grid">
+        <div class="cheat-card">
+          <h4>Inspect</h4>
+          <code>df.info()</code>
+          <code>df.isnull().sum()</code>
+          <code>df.duplicated().sum()</code>
+          <code>df.describe(include='all')</code>
+        </div>
+        <div class="cheat-card">
+          <h4>Missing Values</h4>
+          <code>df.dropna(subset=[...])</code>
+          <code>df['x'].fillna(df['x'].median())</code>
+          <code>df['x'].fillna(method='ffill')</code>
+          <code>df['x'].interpolate()</code>
+        </div>
+        <div class="cheat-card">
+          <h4>Duplicates &amp; Text</h4>
+          <code>df['x'].str.strip().str.lower()</code>
+          <code>df.drop_duplicates(subset=[...])</code>
+          <code>df['x'].str.extract(r'regex')</code>
+        </div>
+        <div class="cheat-card">
+          <h4>Types &amp; Outliers</h4>
+          <code>pd.to_numeric(df['x'], errors='coerce')</code>
+          <code>pd.to_datetime(df['x'], errors='coerce')</code>
+          <code>Q1, Q3 = df['x'].quantile([.25,.75])</code>
+        </div>
+        <div class="cheat-card">
+          <h4>Pipeline</h4>
+          <code>df.pipe(fn1).pipe(fn2)</code>
+          <code>assert df['x'].between(0,120).all()</code>
+        </div>
+        <div class="cheat-card">
+          <h4>Merging Safely</h4>
+          <code>pd.merge(a, b, on='id', validate='many_to_one')</code>
+          <code>a['id'].duplicated().sum()</code>
+        </div>
+      </div>
+
+      <div class="subhead">Summary Notes</div>
+      <div class="card">
+        <p style="margin-bottom:0;">Cleaning data is a four-stage discipline: <strong>inspect</strong> before touching anything, <strong>repair missing and duplicate records</strong> with a documented, reasoned strategy, <strong>enforce correct types and normalize text</strong> so comparisons and math behave, and <strong>assemble everything into a pipeline</strong> with validation so the process is repeatable on the next messy file that lands on your desk. Outliers are signals to investigate, not defects to auto-delete.</p>
+      </div>
+    </section>
+
+    <!-- ============ CONTINUE LEARNING ============ -->
+    <section class="page" id="continue">
+      <div class="eyebrow">Keep Going</div>
+      <h2 class="mod-title">Continue Learning</h2>
+      <p class="lede">Where to go deeper once this tutorial is done.</p>
+
+      <div class="resource-grid">
+        <div class="resource-card">
+          <h3>📚 Books</h3>
+          <ul>
+            <li><em>Python for Data Analysis</em> — Wes McKinney (pandas' creator)</li>
+            <li><em>Effective Pandas</em> — Matt Harrison</li>
+            <li><em>Pandas Cookbook</em> — Matt Harrison &amp; Theodore Petrou</li>
+          </ul>
+        </div>
+        <div class="resource-card">
+          <h3>📖 Documentation</h3>
+          <ul>
+            <li>pandas User Guide — "Working with missing data"</li>
+            <li>pandas User Guide — "Merge, join, concatenate"</li>
+            <li>pandas API reference — <code class="mono">pandas.Series.str</code></li>
+          </ul>
+        </div>
+        <div class="resource-card">
+          <h3>🔬 Research Papers</h3>
+          <ul>
+            <li>McKinney, W. (2010) — "Data Structures for Statistical Computing in Python," SciPy Proceedings</li>
+            <li>Kandel et al. — "Wrangler: Interactive Visual Specification of Data Transformation Scripts"</li>
+          </ul>
+        </div>
+        <div class="resource-card">
+          <h3>👥 Communities</h3>
+          <ul>
+            <li>r/dataanalysis and r/datascience on Reddit</li>
+            <li>Stack Overflow — <code class="mono">[pandas]</code> tag</li>
+            <li>Kaggle discussion forums</li>
+          </ul>
+        </div>
+        <div class="resource-card">
+          <h3>🏋️ Practice Platforms</h3>
+          <ul>
+            <li>Kaggle Learn — "Pandas" micro-course</li>
+            <li>DataCamp — "Data Cleaning in Python"</li>
+            <li>StrataScratch — pandas interview questions</li>
+          </ul>
+        </div>
+        <div class="resource-card">
+          <h3>🔎 Search Keywords</h3>
+          <div class="kw-pill-row">
+            <span class="kw-pill">pandas fillna strategies</span>
+            <span class="kw-pill">pandas drop_duplicates subset</span>
+            <span class="kw-pill">pandas str.extract regex</span>
+            <span class="kw-pill">IQR outlier detection pandas</span>
+            <span class="kw-pill">pandas merge validate</span>
+            <span class="kw-pill">pandas pipe method chaining</span>
+          </div>
+        </div>
+        <div class="resource-card">
+          <h3>🤖 AI Prompts to Try Next</h3>
+          <ul>
+            <li>"Here's my messy dataset's <code class="mono">df.info()</code> output — write a pandas cleaning pipeline as chained functions with assertions."</li>
+            <li>"Explain why <code class="mono">pd.merge()</code> gave me more rows than expected, using my two DataFrames' shapes."</li>
+            <li>"Review my pandas cleaning script for silent data loss or type coercion mistakes."</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- State ---------------- */
+  var state = {
+    points: 0,
+    moduleUnlocked: { module2:false, module3:false, module4:false, challenge:false },
+    quizPassed: { quiz1:false, quiz2:false, quiz3:false, quiz4:false },
+    badgeEarned: { b1:false, b2:false, b3:false, b4:false },
+    pipelineDone: false
+  };
+
+  /* ---------------- Quiz data ---------------- */
+  var quizzes = {
+    quiz1: {
+      unlockTarget: 'module2',
+      badge: 'b1',
+      questions: [
+        {
+          q: "What does df.isnull().sum() return?",
+          options: ["The total number of rows in the DataFrame", "The count of missing values in each column", "A list of duplicate rows", "The data type of each column"],
+          correct: 1,
+          explain: "isnull() flags each cell as True/False for missingness, and .sum() adds those up per column, giving a per-column missing-value count."
+        },
+        {
+          q: "Which of these is the clearest sign of a 'messy data' problem?",
+          options: ["A column named 'customer_id'", "The value 'NY' and 'ny' both appearing in a state column", "A DataFrame with 10,000 rows", "A column sorted alphabetically"],
+          correct: 1,
+          explain: "'NY' and 'ny' represent the same category but won't be grouped together without normalization — a classic inconsistent-category problem."
+        },
+        {
+          q: "What is the key difference between NaN and an empty string ''?",
+          options: ["There is no difference, they're interchangeable", "NaN marks true absence of data; '' is a valid (if empty) string value", "Empty strings are always faster to process", "NaN only appears in text columns"],
+          correct: 1,
+          explain: "isnull() detects NaN, but not empty strings — treating them the same can hide missing data that looks 'present' but is functionally empty."
+        },
+        {
+          q: "Which method gives a quick structural overview including dtypes and non-null counts?",
+          options: ["df.describe()", "df.info()", "df.sample()", "df.columns"],
+          correct: 1,
+          explain: "df.info() summarizes column names, dtypes, and non-null counts in one call — the fastest way to spot type and missingness issues at once."
+        }
+      ]
+    },
+    quiz2: {
+      unlockTarget: 'module3',
+      badge: 'b2',
+      questions: [
+        {
+          q: "You have a sensor reading column with occasional gaps in a time series. What's usually the best fill strategy?",
+          options: ["fillna(0)", "Drop the entire column", "fillna(method='ffill') or interpolate()", "Replace all values with the column mean"],
+          correct: 2,
+          explain: "Time series data has continuity — carrying forward the last known reading or interpolating between neighbors respects the trend far better than a flat mean or zero."
+        },
+        {
+          q: "By default, drop_duplicates(subset=['email']) keeps which row when duplicates are found?",
+          options: ["The last occurrence", "A random occurrence", "The first occurrence", "It keeps all duplicates"],
+          correct: 2,
+          explain: "The default keep='first' retains the first occurrence of each duplicate group and drops the rest."
+        },
+        {
+          q: "When is fillna(0) most risky?",
+          options: ["When the column is text", "When zero is itself a meaningful, different value from 'missing' (e.g., temperature, balance)", "When the DataFrame has an index", "It's never risky"],
+          correct: 1,
+          explain: "If zero has real meaning (like a bank balance of $0 vs. unknown balance), filling with 0 fabricates a false data point rather than representing 'unknown'."
+        },
+        {
+          q: "Two rows have emails ' Alice@Mail.com' and 'alice@mail.com '. What must happen before drop_duplicates() will treat them as the same?",
+          options: ["Nothing, pandas normalizes text automatically", "The column must be normalized first, e.g. .str.strip().str.lower()", "The rows must be sorted first", "The column must be converted to a category dtype"],
+          correct: 1,
+          explain: "drop_duplicates() compares exact string values — whitespace and casing differences must be normalized first or the 'duplicates' will be missed entirely."
+        }
+      ]
+    },
+    quiz3: {
+      unlockTarget: 'module4',
+      badge: 'b3',
+      questions: [
+        {
+          q: "What does pd.to_numeric(col, errors='coerce') do with values it can't convert?",
+          options: ["Raises an error and stops execution", "Silently guesses the closest number", "Converts them to NaN", "Deletes the entire row"],
+          correct: 2,
+          explain: "errors='coerce' replaces unconvertible values with NaN instead of crashing — making failures visible and easy to inspect afterward."
+        },
+        {
+          q: "In the IQR method, a value is flagged as an outlier if it falls:",
+          options: ["Exactly at the median", "Within Q1 and Q3", "Below Q1 − 1.5×IQR or above Q3 + 1.5×IQR", "Above the mean"],
+          correct: 2,
+          explain: "The IQR rule defines a 'normal' range using the middle 50% of the data, scaled by 1.5×, and flags anything outside it as a candidate outlier."
+        },
+        {
+          q: "str.extract() with a regex pattern is primarily used to:",
+          options: ["Delete a column", "Pull structured substrings (like area codes) out into new columns", "Sort a DataFrame", "Merge two DataFrames"],
+          correct: 1,
+          explain: "str.extract() applies a regex with capture groups to pull out structured pieces of text — like an area code from a phone number — into new columns."
+        },
+        {
+          q: "Why shouldn't outliers always be deleted automatically?",
+          options: ["Deleting rows is computationally expensive", "Some outliers are legitimate extreme values that carry real signal (e.g., fraud, top performers)", "Pandas doesn't allow deleting rows", "Outliers only occur in text columns"],
+          correct: 1,
+          explain: "An outlier is a statistical flag, not proof of error — in fraud detection or performance analysis, the outliers are often exactly what you're looking for."
+        }
+      ]
+    },
+    quiz4: {
+      unlockTarget: 'challenge',
+      badge: 'b4',
+      questions: [
+        {
+          q: "What is the main benefit of chaining functions with .pipe()?",
+          options: ["It makes code run in parallel automatically", "It lets you build a readable, ordered pipeline out of custom cleaning functions", "It removes the need for pandas entirely", "It automatically fixes missing values"],
+          correct: 1,
+          explain: ".pipe() lets each cleaning step live in its own named function while still reading as a single fluent chain — readable and easy to reorder or test."
+        },
+        {
+          q: "After merging orders with customers on customer_id, the result has far more rows than either input. What's the most likely cause?",
+          options: ["pandas has a bug", "customer_id isn't unique in one or both tables, causing a many-to-many 'fan out'", "The merge type was inner instead of outer", "The DataFrames had different column names"],
+          correct: 1,
+          explain: "When the join key has duplicates on either side, every match multiplies rows — a classic and often unintentional many-to-many join."
+        },
+        {
+          q: "Compared to a vectorized operation, df['x'].apply(fn) is generally:",
+          options: ["Faster, because apply is optimized in C", "Slower, since it loops through values in Python", "Identical in speed always", "Only usable on numeric columns"],
+          correct: 1,
+          explain: "Vectorized pandas/NumPy operations run in compiled C; apply() falls back to a Python-level loop, which is markedly slower at scale."
+        },
+        {
+          q: "What's good practice to add at the end of a cleaning pipeline?",
+          options: ["Nothing — cleaning is done once types are fixed", "assert-based validation checks confirming your assumptions hold", "Re-running the raw CSV import", "Deleting the pipeline functions"],
+          correct: 1,
+          explain: "Assertions (like checking ages are within a plausible range) catch silent regressions early and document the assumptions your downstream analysis depends on."
+        }
+      ]
+    }
+  };
+
+  /* ---------------- Pipeline challenge data ---------------- */
+  var pipelineCorrectOrder = [
+    "Inspect: df.info(), isnull().sum(), duplicated().sum()",
+    "Handle missing values (fillna / dropna) based on why they're missing",
+    "Normalize text & remove duplicates (strip/lower, drop_duplicates)",
+    "Fix types & extract fields (to_numeric, to_datetime, str.extract)",
+    "Investigate & handle outliers (IQR / domain judgment)",
+    "Validate with assertions and merge safely"
+  ];
+
+  /* ---------------- Render quizzes ---------------- */
+  function renderQuiz(key){
+    var data = quizzes[key];
+    var container = document.getElementById(key);
+    if(!container) return;
+
+    var html = '<div class="quiz-head"><h3 style="margin:0;font-size:17px;">Knowledge Check</h3>' +
+      '<span class="quiz-score" id="'+key+'-score">0 / '+data.questions.length+' correct</span></div>';
+
+    data.questions.forEach(function(q, qi){
+      html += '<div class="quiz-q" data-qi="'+qi+'">' +
+        '<div class="quiz-q-title">Q'+(qi+1)+'. '+escapeHtml(q.q)+'</div>' +
+        '<div class="quiz-options">';
+      q.options.forEach(function(opt, oi){
+        html += '<button type="button" class="quiz-opt" data-oi="'+oi+'" onclick="handleQuizAnswer(\''+key+'\','+qi+','+oi+', this)">'+escapeHtml(opt)+'</button>';
+      });
+      html += '</div><div class="quiz-explain" id="'+key+'-explain-'+qi+'"></div></div>';
+    });
+
+    html += '<div class="quiz-footer">' +
+      '<span class="quiz-result" id="'+key+'-result"></span>' +
+      '<button class="btn btn-primary" id="'+key+'-unlock" disabled onclick="unlockNext(\''+key+'\')">Unlock Next Module →</button>' +
+      '</div>';
+
+    container.innerHTML = html;
+  }
+
+  function escapeHtml(str){
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  /* answered tracker per quiz */
+  var answered = { quiz1:{}, quiz2:{}, quiz3:{}, quiz4:{} };
+
+  window.handleQuizAnswer = function(key, qi, oi, btnEl){
+    if(answered[key][qi] !== undefined) return; // already answered
+    var q = quizzes[key].questions[qi];
+    var isCorrect = (oi === q.correct);
+    answered[key][qi] = isCorrect;
+
+    var qBlock = btnEl.closest('.quiz-q');
+    var opts = qBlock.querySelectorAll('.quiz-opt');
+    opts.forEach(function(o, idx){
+      o.disabled = true;
+      if(idx === q.correct){ o.classList.add('correct'); }
+      if(idx === oi && idx !== q.correct){ o.classList.add('incorrect'); }
+    });
+
+    var explainEl = document.getElementById(key+'-explain-'+qi);
+    explainEl.textContent = (isCorrect ? "✓ Correct. " : "✕ Not quite. ") + q.explain;
+    explainEl.classList.add('show');
+
+    if(isCorrect){ addPoints(10); }
+
+    updateQuizScore(key);
+  };
+
+  function updateQuizScore(key){
+    var total = quizzes[key].questions.length;
+    var answeredCount = Object.keys(answered[key]).length;
+    var correctCount = 0;
+    Object.keys(answered[key]).forEach(function(k){ if(answered[key][k]) correctCount++; });
+
+    var scoreEl = document.getElementById(key+'-score');
+    if(scoreEl) scoreEl.textContent = correctCount + ' / ' + total + ' correct';
+
+    if(answeredCount === total){
+      var resultEl = document.getElementById(key+'-result');
+      var unlockBtn = document.getElementById(key+'-unlock');
+      var passed = correctCount >= Math.ceil(total * 0.75) - (total===4?1:0); // require 3/4
+      passed = correctCount >= 3;
+      if(resultEl){
+        resultEl.textContent = passed ? ('Passed — ' + correctCount + '/' + total + ' ✓') : ('Score ' + correctCount + '/' + total + ' — need 3/4 to unlock next module');
+        resultEl.className = 'quiz-result ' + (passed ? 'pass' : 'fail');
+      }
+      if(passed){
+        unlockBtn.disabled = false;
+        state.quizPassed[key] = true;
+        earnBadge(quizzes[key].badge);
+      } else {
+        unlockBtn.disabled = true;
+      }
+      updateProgress();
+    }
+  }
+
+  window.unlockNext = function(key){
+    var target = quizzes[key].unlockTarget;
+    unlockModule(target);
+    goTo(target);
+  };
+
+  function unlockModule(id){
+    state.moduleUnlocked[id] = true;
+    var panel = document.getElementById(id);
+    if(panel){ panel.classList.add('unlocked'); }
+    var tocBtn = document.querySelector('.toc-item[data-target="'+id+'"]');
+    if(tocBtn){
+      tocBtn.classList.remove('locked');
+      tocBtn.removeAttribute('data-locked');
+      var lockIc = tocBtn.querySelector('.lock-ic');
+      if(lockIc) lockIc.remove();
+    }
+    updateProgress();
+  }
+
+  function earnBadge(badgeId){
+    if(state.badgeEarned[badgeId]) return;
+    state.badgeEarned[badgeId] = true;
+    var chip = document.querySelector('.badge-chip[data-badge="'+badgeId+'"]');
+    if(chip) chip.classList.add('earned');
+  }
+
+  function addPoints(n){
+    state.points += n;
+    var pl = document.getElementById('pointsLabel');
+    var mp = document.getElementById('mobilePoints');
+    if(pl) pl.textContent = state.points + ' pts';
+    if(mp) mp.textContent = state.points + ' pts';
+    var cert = document.getElementById('certScore');
+    if(cert) cert.textContent = state.points;
+  }
+
+  function updateProgress(){
+    var totalSteps = 4; // 4 quizzes
+    var done = 0;
+    Object.keys(state.quizPassed).forEach(function(k){ if(state.quizPassed[k]) done++; });
+    if(state.pipelineDone) totalSteps = 5, done += 1;
+    var pct = Math.round((done/totalSteps)*100);
+    var fill = document.getElementById('progressFill');
+    var label = document.getElementById('progressLabel');
+    if(fill) fill.style.width = pct + '%';
+    if(label) label.textContent = pct + '% complete';
+  }
+
+  /* ---------------- Navigation ---------------- */
+  window.goTo = function(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    el.scrollIntoView({behavior:'smooth', block:'start'});
+    document.querySelectorAll('.toc-item').forEach(function(b){ b.classList.remove('active'); });
+    var btn = document.querySelector('.toc-item[data-target="'+id+'"]');
+    if(btn) btn.classList.add('active');
+    if(window.innerWidth <= 900){ document.getElementById('sidebar').classList.remove('open'); }
+  };
+
+  document.querySelectorAll('.toc-item').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if(btn.getAttribute('data-locked') === 'true'){
+        var target = btn.getAttribute('data-target');
+        var panel = document.getElementById(target);
+        if(panel){ panel.scrollIntoView({behavior:'smooth'}); }
+        return;
+      }
+      goTo(btn.getAttribute('data-target'));
+    });
+  });
+
+  /* ---------------- Toggle solution ---------------- */
+  window.toggleSolution = function(btn){
+    var sol = btn.nextElementSibling;
+    sol.classList.toggle('show');
+    btn.textContent = sol.classList.contains('show') ? 'Hide reasoning' : 'Show reasoning';
+  };
+
+  /* ---------------- Theme toggle ---------------- */
+  var themeToggle = document.getElementById('themeToggle');
+  var themeLabel = document.getElementById('themeLabel');
+  themeToggle.addEventListener('click', function(){
+    var html = document.documentElement;
+    var isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    themeLabel.textContent = isDark ? 'Light' : 'Dark';
+    themeToggle.firstChild.textContent = isDark ? '☀️ ' : '🌙 ';
+  });
+
+  /* ---------------- Print ---------------- */
+  document.getElementById('printBtn').addEventListener('click', function(){ window.print(); });
+
+  /* ---------------- Mobile sidebar ---------------- */
+  var hamburger = document.getElementById('hamburgerBtn');
+  if(hamburger){
+    hamburger.addEventListener('click', function(){
+      document.getElementById('sidebar').classList.toggle('open');
+    });
+  }
+
+  /* ---------------- Final challenge: drag & drop pipeline ---------------- */
+  function shuffle(arr){
+    var a = arr.slice();
+    for(var i=a.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1));
+      var tmp=a[i]; a[i]=a[j]; a[j]=tmp;
+    }
+    return a;
+  }
+
+  function initPipeline(){
+    var pool = document.getElementById('pipelinePool');
+    var slots = document.getElementById('pipelineSlots');
+    if(!pool || !slots) return;
+    var shuffled = shuffle(pipelineCorrectOrder);
+
+    shuffled.forEach(function(text){
+      var item = document.createElement('div');
+      item.className = 'pipeline-item';
+      item.draggable = true;
+      item.textContent = text;
+      item.dataset.text = text;
+      attachDragEvents(item);
+      pool.appendChild(item);
+    });
+
+    [pool, slots].forEach(function(zone){
+      zone.addEventListener('dragover', function(e){ e.preventDefault(); });
+      zone.addEventListener('drop', function(e){
+        e.preventDefault();
+        var dragging = document.querySelector('.pipeline-item.dragging');
+        if(dragging){ zone.appendChild(dragging); }
+      });
+    });
+  }
+
+  function attachDragEvents(item){
+    item.addEventListener('dragstart', function(){ item.classList.add('dragging'); });
+    item.addEventListener('dragend', function(){ item.classList.remove('dragging'); });
+  }
+
+  var checkBtn = document.getElementById('checkPipelineBtn');
+  if(checkBtn){
+    checkBtn.addEventListener('click', function(){
+      var slotItems = Array.prototype.slice.call(document.querySelectorAll('#pipelineSlots .pipeline-item'));
+      var resultEl = document.getElementById('pipelineResult');
+      if(slotItems.length !== pipelineCorrectOrder.length){
+        resultEl.textContent = 'Place all ' + pipelineCorrectOrder.length + ' steps into the pipeline first.';
+        resultEl.className = 'quiz-result fail';
+        return;
+      }
+      var correctCount = 0;
+      slotItems.forEach(function(item, idx){
+        var isRight = item.dataset.text === pipelineCorrectOrder[idx];
+        item.classList.remove('correct-pos','wrong-pos');
+        item.classList.add(isRight ? 'correct-pos' : 'wrong-pos');
+        if(isRight) correctCount++;
+      });
+      var passed = correctCount === pipelineCorrectOrder.length;
+      resultEl.textContent = passed ? ('Perfect order! ' + correctCount + '/' + pipelineCorrectOrder.length + ' ✓') : (correctCount + '/' + pipelineCorrectOrder.length + ' in correct position — keep adjusting.');
+      resultEl.className = 'quiz-result ' + (passed ? 'pass' : 'fail');
+      if(passed){
+        addPoints(25);
+        state.pipelineDone = true;
+        updateProgress();
+        document.getElementById('completionCert').style.display = 'block';
+        document.getElementById('completionCert').scrollIntoView({behavior:'smooth'});
+      }
+    });
+  }
+
+  /* ---------------- Init ---------------- */
+  renderQuiz('quiz1');
+  renderQuiz('quiz2');
+  renderQuiz('quiz3');
+  renderQuiz('quiz4');
+  initPipeline();
+  updateProgress();
+
+})();
+</script>
+</body>
+</html>
