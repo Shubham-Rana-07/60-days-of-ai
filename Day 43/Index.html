@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Workflow Architect · React + Node E-commerce Build</title>
+<style>
+:root{
+  --bg:#0f1410;
+  --bg-elev:#161d17;
+  --bg-card:#1b241c;
+  --line:#2a352b;
+  --line-soft:#212b22;
+  --ink:#e9efe6;
+  --ink-dim:#9fb09a;
+  --ink-faint:#657562;
+  --signal:#ff8a3d;
+  --commit:#7bd88f;
+  --revert:#e5636b;
+  --info:#5fb0c7;
+  --mono: 'IBM Plex Mono','SFMono-Regular',Consolas,monospace;
+  --sans: 'Inter','Segoe UI',sans-serif;
+  --serif: 'Fraunces','Georgia',serif;
+  --radius: 3px;
+}
+[data-theme="light"]{
+  --bg:#f3f4ef;
+  --bg-elev:#ffffff;
+  --bg-card:#ffffff;
+  --line:#d8dccf;
+  --line-soft:#e7e9e0;
+  --ink:#141a12;
+  --ink-dim:#4c5847;
+  --ink-faint:#8b9584;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  line-height:1.5;
+  transition:background .3s ease,color .3s ease;
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+}
+a{color:inherit;}
+::selection{background:var(--signal);color:#0f1410;}
+ 
+/* ===== Scaffold ===== */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 28px;
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:13px;letter-spacing:.04em;}
+.brand .dot{width:8px;height:8px;border-radius:50%;background:var(--commit);box-shadow:0 0 8px var(--commit);}
+.brand b{font-family:var(--serif);font-size:17px;font-weight:600;letter-spacing:0;margin-left:2px;}
+.crumb{color:var(--ink-faint);font-size:12px;font-family:var(--mono);}
+.crumb span{color:var(--signal);}
+.top-actions{display:flex;gap:10px;align-items:center;}
+.btn{
+  font-family:var(--mono);font-size:12px;
+  background:transparent;color:var(--ink-dim);
+  border:1px solid var(--line);border-radius:var(--radius);
+  padding:7px 12px;cursor:pointer;transition:all .15s ease;
+  display:flex;align-items:center;gap:6px;
+}
+.btn:hover{border-color:var(--signal);color:var(--ink);}
+.btn.primary{background:var(--signal);color:#0f1410;border-color:var(--signal);font-weight:600;}
+.btn.primary:hover{filter:brightness(1.08);}
+ 
+/* ===== Layout ===== */
+.shell{display:grid;grid-template-columns:250px 1fr;min-height:100vh;}
+.sidenav{
+  border-right:1px solid var(--line);
+  padding:20px 14px;position:sticky;top:53px;height:calc(100vh - 53px);
+  overflow-y:auto;
+}
+.sidenav .group-label{
+  font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;
+  color:var(--ink-faint);margin:18px 8px 8px;
+}
+.navitem{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 10px;border-radius:var(--radius);
+  font-size:13px;color:var(--ink-dim);cursor:pointer;
+  border-left:2px solid transparent;
+  transition:all .15s ease;
+}
+.navitem:hover{color:var(--ink);background:var(--bg-elev);}
+.navitem.active{color:var(--ink);border-left-color:var(--signal);background:var(--bg-elev);}
+.navitem .num{font-family:var(--mono);font-size:11px;color:var(--ink-faint);width:16px;}
+.navitem.done .num{color:var(--commit);}
+.navitem.done .num::after{content:"✓";}
+.navprogress{
+  margin:14px 8px 6px;height:4px;background:var(--line-soft);border-radius:2px;overflow:hidden;
+}
+.navprogress-fill{height:100%;background:var(--commit);width:0%;transition:width .4s ease;}
+.progress-label{font-family:var(--mono);font-size:10px;color:var(--ink-faint);padding:0 8px;}
+ 
+main{padding:36px 44px 100px;max-width:980px;}
+.section{display:none;animation:fadeIn .35s ease;}
+.section.visible{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+ 
+/* ===== Hero ===== */
+.hero{
+  border:1px solid var(--line);border-radius:6px;
+  background:linear-gradient(160deg,var(--bg-card),var(--bg-elev));
+  padding:40px 40px 32px;margin-bottom:28px;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;inset:0;
+  background-image:repeating-linear-gradient(90deg,transparent,transparent 39px,var(--line-soft) 39px,var(--line-soft) 40px);
+  opacity:.5;pointer-events:none;
+}
+.hero .eyebrow{font-family:var(--mono);font-size:11px;color:var(--signal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;}
+.hero h1{font-family:var(--serif);font-size:38px;line-height:1.15;margin:0 0 14px;font-weight:600;max-width:680px;}
+.hero p.lede{color:var(--ink-dim);max-width:600px;font-size:15px;margin:0 0 20px;}
+.hero-stats{display:flex;gap:28px;flex-wrap:wrap;font-family:var(--mono);}
+.hero-stats div{border-left:2px solid var(--line);padding-left:12px;}
+.hero-stats b{display:block;font-size:20px;color:var(--ink);}
+.hero-stats span{font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.06em;}
+ 
+/* ===== Pipeline diagram (signature element) ===== */
+.pipeline{
+  display:flex;overflow-x:auto;gap:0;margin:28px 0 32px;padding-bottom:10px;
+  scrollbar-width:thin;
+}
+.pipe-node{
+  min-width:150px;flex-shrink:0;position:relative;padding:14px 16px;
+  border:1px solid var(--line);background:var(--bg-card);cursor:pointer;
+  transition:all .18s ease;
+}
+.pipe-node:not(:last-child){border-right:none;}
+.pipe-node:first-child{border-radius:5px 0 0 5px;}
+.pipe-node:last-child{border-radius:0 5px 5px 0;}
+.pipe-node:hover{background:var(--bg-elev);}
+.pipe-node.current{background:color-mix(in srgb, var(--signal) 12%, var(--bg-card));border-color:var(--signal);z-index:2;}
+.pipe-node .stage-tag{font-family:var(--mono);font-size:10px;color:var(--ink-faint);}
+.pipe-node.current .stage-tag{color:var(--signal);}
+.pipe-node .stage-name{font-size:13px;font-weight:600;margin-top:4px;}
+.pipe-node .stage-arrow{position:absolute;right:-9px;top:50%;transform:translateY(-50%);z-index:3;color:var(--ink-faint);font-family:var(--mono);font-size:12px;background:var(--bg);width:16px;text-align:center;}
+ 
+/* ===== Cards / Grid ===== */
+.stage-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:6px;flex-wrap:wrap;}
+.stage-head h2{font-family:var(--serif);font-size:28px;margin:0;font-weight:600;}
+.stage-meta{font-family:var(--mono);font-size:11px;color:var(--ink-faint);display:flex;gap:14px;}
+.stage-meta b{color:var(--info);}
+.stage-desc{color:var(--ink-dim);font-size:14px;max-width:680px;margin:10px 0 26px;}
+ 
+.card{
+  border:1px solid var(--line);border-radius:6px;background:var(--bg-card);
+  padding:20px 22px;margin-bottom:18px;
+}
+.card h3{
+  font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--ink-faint);margin:0 0 14px;display:flex;align-items:center;gap:8px;
+}
+.card h3::before{content:"//";color:var(--signal);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+@media(max-width:820px){.grid2{grid-template-columns:1fr;}}
+ 
+ul.tasklist{list-style:none;margin:0;padding:0;}
+ul.tasklist li{
+  display:flex;align-items:flex-start;gap:10px;padding:7px 0;
+  border-bottom:1px dashed var(--line-soft);font-size:13.5px;color:var(--ink);
+}
+ul.tasklist li:last-child{border-bottom:none;}
+ul.tasklist li input[type=checkbox]{
+  margin-top:3px;accent-color:var(--commit);cursor:pointer;width:14px;height:14px;flex-shrink:0;
+}
+ul.tasklist li.checked span{color:var(--ink-faint);text-decoration:line-through;}
+ 
+ul.plain{margin:0;padding-left:0;list-style:none;}
+ul.plain li{padding:6px 0 6px 18px;position:relative;font-size:13.5px;color:var(--ink-dim);}
+ul.plain li::before{content:"·";position:absolute;left:2px;color:var(--signal);font-weight:700;}
+ 
+.badge{
+  display:inline-block;font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:20px;
+  border:1px solid var(--line);color:var(--ink-faint);margin-left:6px;
+}
+.badge.free{color:var(--commit);border-color:var(--commit);}
+.badge.paid{color:var(--signal);border-color:var(--signal);}
+ 
+/* Tool table */
+.tool{
+  display:grid;grid-template-columns:120px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--line-soft);
+}
+.tool:last-child{border-bottom:none;}
+.tool .tname{font-weight:700;font-size:13.5px;}
+.tool .twhy{font-size:13px;color:var(--ink-dim);margin-top:4px;}
+.tool .talt{font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-top:6px;}
+.tool .talt b{color:var(--info);font-weight:500;}
+ 
+/* Prompt block */
+.prompt-block{
+  background:#0a0d0a;border:1px solid var(--line);border-radius:5px;
+  padding:14px 16px;font-family:var(--mono);font-size:12.5px;color:#c9e6c0;
+  position:relative;white-space:pre-wrap;margin:10px 0;
+}
+[data-theme="light"] .prompt-block{background:#101510;color:#bfe8b0;}
+.prompt-block .copy{
+  position:absolute;top:8px;right:8px;font-family:var(--mono);font-size:10px;
+  background:var(--bg-elev);border:1px solid var(--line);color:var(--ink-faint);
+  padding:3px 8px;border-radius:4px;cursor:pointer;
+}
+.prompt-block .copy:hover{color:var(--signal);border-color:var(--signal);}
+.prompt-tag{font-family:var(--mono);font-size:10px;color:var(--signal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;display:block;}
+ 
+.mistake-row{display:flex;gap:10px;padding:8px 0;font-size:13px;border-bottom:1px solid var(--line-soft);}
+.mistake-row:last-child{border-bottom:none;}
+.mistake-row .x{color:var(--revert);font-family:var(--mono);flex-shrink:0;}
+.practice-row{display:flex;gap:10px;padding:8px 0;font-size:13px;border-bottom:1px solid var(--line-soft);}
+.practice-row:last-child{border-bottom:none;}
+.practice-row .ok{color:var(--commit);font-family:var(--mono);flex-shrink:0;}
+ 
+.output-box{
+  border:1px solid var(--line);border-left:3px solid var(--info);background:var(--bg-elev);
+  padding:12px 16px;font-size:13px;color:var(--ink-dim);border-radius:0 5px 5px 0;
+}
+ 
+.efficiency{
+  border:1px solid var(--line);border-left:3px solid var(--signal);background:var(--bg-elev);
+  padding:12px 16px;font-size:13px;color:var(--ink-dim);border-radius:0 5px 5px 0;
+}
+ 
+/* Notes / bookmark */
+.notes-area{width:100%;min-height:80px;background:var(--bg-elev);border:1px solid var(--line);border-radius:5px;
+  color:var(--ink);font-family:var(--sans);font-size:13px;padding:12px;resize:vertical;}
+.notes-area:focus{outline:none;border-color:var(--signal);}
+.bookmark-btn{
+  display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;
+  background:none;border:1px solid var(--line);color:var(--ink-faint);padding:6px 10px;border-radius:4px;cursor:pointer;
+}
+.bookmark-btn.on{color:var(--signal);border-color:var(--signal);}
+ 
+/* Decision tree */
+.tree{font-family:var(--mono);font-size:13px;}
+.tree-q{background:var(--bg-elev);border:1px solid var(--line);border-radius:5px;padding:14px 16px;margin-bottom:8px;}
+.tree-q b{color:var(--info);}
+.tree-branch{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;}
+.tree-branch button{
+  font-family:var(--mono);font-size:12px;background:var(--bg-card);border:1px solid var(--line);
+  color:var(--ink);padding:8px 12px;border-radius:4px;cursor:pointer;
+}
+.tree-branch button:hover{border-color:var(--signal);color:var(--signal);}
+.tree-result{margin-top:12px;padding:12px 14px;border-left:3px solid var(--commit);background:var(--bg-elev);font-size:12.5px;color:var(--ink-dim);border-radius:0 4px 4px 0;display:none;}
+.tree-result.show{display:block;}
+ 
+/* comparison table */
+table.cmp{width:100%;border-collapse:collapse;font-size:13px;}
+table.cmp th{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);}
+table.cmp td{padding:9px 10px;border-bottom:1px solid var(--line-soft);color:var(--ink-dim);}
+table.cmp tr:last-child td{border-bottom:none;}
+table.cmp td.win{color:var(--commit);font-weight:600;}
+ 
+/* nav buttons bottom */
+.stage-nav{display:flex;justify-content:space-between;margin-top:36px;padding-top:20px;border-top:1px solid var(--line);}
+ 
+/* Stack list summary page */
+.stack-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line-soft);font-size:13.5px;}
+.stack-item:last-child{border-bottom:none;}
+.stack-item .role{color:var(--ink-faint);font-family:var(--mono);font-size:11px;}
+ 
+.pill{display:inline-flex;align-items:center;font-family:var(--mono);font-size:11px;background:var(--bg-elev);
+  border:1px solid var(--line);color:var(--ink-dim);padding:5px 10px;border-radius:20px;margin:3px 5px 3px 0;}
+ 
+@media print{
+  .topbar,.sidenav,.top-actions,.bookmark-btn,.tree-branch,.btn{display:none !important;}
+  .shell{display:block;}
+  .section{display:block !important;page-break-after:always;}
+  main{padding:0;max-width:100%;}
+  body{background:#fff;color:#000;}
+}
+ 
+@media(max-width:880px){
+  .shell{grid-template-columns:1fr;}
+  .sidenav{position:fixed;left:-260px;top:53px;width:250px;background:var(--bg);z-index:40;transition:left .2s ease;box-shadow:4px 0 20px rgba(0,0,0,.3);}
+  .sidenav.open{left:0;}
+  main{padding:24px 18px 90px;}
+  .hero h1{font-size:28px;}
+}
+.menu-toggle{display:none;}
+@media(max-width:880px){.menu-toggle{display:flex;}}
+</style>
+</head>
+<body>
+ 
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:14px;">
+    <button class="btn menu-toggle" id="menuToggle">☰</button>
+    <div class="brand"><span class="dot"></span>ai-workflow-architect <b>/ecommerce-stack</b></div>
+  </div>
+  <div class="crumb">Software Dev <span>›</span> Full-Stack <span>›</span> React+Node <span>›</span> E-commerce</div>
+  <div class="top-actions">
+    <button class="btn" id="themeToggle">☀ Light</button>
+    <button class="btn" id="printBtn">⎙ Print</button>
+    <button class="btn primary" id="resetBtn">↺ Reset Progress</button>
+  </div>
+</div>
+ 
+<div class="shell">
+  <nav class="sidenav" id="sidenav">
+    <div class="progress-label">OVERALL PROGRESS</div>
+    <div class="navprogress"><div class="navprogress-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressText">0 / 9 stages started</div>
+ 
+    <div class="group-label">Overview</div>
+    <div class="navitem" data-target="s-hero"><span class="num">·</span>Introduction</div>
+ 
+    <div class="group-label">Workflow Stages</div>
+    <div class="navitem" data-target="s-1"><span class="num">1</span>Planning &amp; Scoping</div>
+    <div class="navitem" data-target="s-2"><span class="num">2</span>Architecture &amp; Design</div>
+    <div class="navitem" data-target="s-3"><span class="num">3</span>UI/UX &amp; Prototyping</div>
+    <div class="navitem" data-target="s-4"><span class="num">4</span>Frontend Build (React)</div>
+    <div class="navitem" data-target="s-5"><span class="num">5</span>Backend Build (Node)</div>
+    <div class="navitem" data-target="s-6"><span class="num">6</span>Payments &amp; Integrations</div>
+    <div class="navitem" data-target="s-7"><span class="num">7</span>Testing &amp; QA</div>
+    <div class="navitem" data-target="s-8"><span class="num">8</span>Deployment &amp; DevOps</div>
+    <div class="navitem" data-target="s-9"><span class="num">9</span>Growth &amp; Maintenance</div>
+ 
+    <div class="group-label">Wrap-up</div>
+    <div class="navitem" data-target="s-summary"><span class="num">·</span>Summary &amp; Stack</div>
+    <div class="navitem" data-target="s-resources"><span class="num">·</span>Resources &amp; Future</div>
+  </nav>
+ 
+  <main>
+ 
+  <!-- ============ HERO / INTRO ============ -->
+  <section class="section visible" id="s-hero">
+    <div class="hero">
+      <div class="eyebrow">Full-Stack Workflow · React + Node.js</div>
+      <h1>Ship a real e-commerce app, end to end — with the right AI tool at every commit.</h1>
+      <p class="lede">This isn't a checklist. It's a 9-stage build pipeline — from first user story to post-launch monitoring — mapped for a React frontend and Node.js backend, with the AI tools, prompts, and pitfalls specific to each stage.</p>
+      <div class="hero-stats">
+        <div><b>9</b><span>Stages</span></div>
+        <div><b>~7–10 wks</b><span>Solo builder pace</span></div>
+        <div><b>24+</b><span>AI tools mapped</span></div>
+        <div><b>40+</b><span>Ready prompts</span></div>
+      </div>
+    </div>
+ 
+    <div class="card">
+      <h3>Pipeline overview — click any stage to jump in</h3>
+      <div class="pipeline" id="pipelineDiagram"></div>
+      <p style="font-size:12.5px;color:var(--ink-faint);margin:6px 0 0;">Each node tracks its own completion. Check off tasks inside a stage to fill its progress ring in the sidebar.</p>
+    </div>
+ 
+    <div class="card">
+      <h3>How to use this</h3>
+      <ul class="plain">
+        <li>Work top to bottom, or jump straight to the stage you're stuck on — the sidebar always shows where you are.</li>
+        <li>Every prompt block is copy-ready; paste it into ChatGPT, Claude, or Cursor and swap in your own product details.</li>
+        <li>Tasks you check off are saved locally in your browser — closing the tab won't lose your progress.</li>
+        <li>Notes fields are for your own reminders — API keys, decisions made, blockers — also saved locally, never sent anywhere.</li>
+      </ul>
+    </div>
+  </section>
+ 
+  <!-- ============ STAGE 1: PLANNING ============ -->
+  <section class="section" id="s-1" data-stage="1">
+    <div class="stage-head">
+      <h2>01 · Planning &amp; Scoping</h2>
+      <div class="stage-meta"><span>⏱ <b>2–4 days</b></span><span>Output: <b>PRD + backlog</b></span></div>
+    </div>
+    <p class="stage-desc">Before any code, define exactly what "v1" means. Most solo e-commerce builds fail from scope creep, not from technical difficulty — this stage exists to prevent that.</p>
+ 
+    <div class="card">
+      <h3>Objectives</h3>
+      <ul class="plain">
+        <li>Define the store's niche, catalog size, and core buyer journey (browse → cart → checkout → order status).</li>
+        <li>Decide v1 scope vs. "later" — e.g., no multi-vendor, no subscriptions, no marketplace features at launch.</li>
+        <li>Choose the data model at a conceptual level: products, variants, orders, users, inventory.</li>
+      </ul>
+    </div>
+ 
+    <div class="card">
+      <h3>Tasks</h3>
+      <ul class="tasklist" data-stage="1">
+        <li><input type="checkbox"><span>Write a one-paragraph product brief (who buys, what, why now)</span></li>
+        <li><input type="checkbox"><span>List core user stories (guest checkout, account, order history, admin product upload)</span></li>
+        <li><input type="checkbox"><span>Draw the data model: Product, Variant, Cart, Order, User, Payment</span></li>
+        <li><input type="checkbox"><span>Cut scope: mark features as v1 / v2 / won't-build</span></li>
+        <li><input type="checkbox"><span>Pick the stack specifics: React + Vite, Node + Express, DB choice, hosting target</span></li>
+      </ul>
+    </div>
+ 
+    <div class="grid2">
+      <div class="card">
+        <h3>Best AI tools</h3>
+        <div class="tool">
+          <div class="tname">ChatGPT (GPT-5 thinking)<span class="badge paid">Paid tier best</span></div>
+          <div class="twhy">Strongest for turning a vague idea into a structured PRD and user-story backlog through back-and-forth questioning.</div>
+          <div class="talt">Alt: <b>Claude</b> (better long-context reasoning for full PRDs), <b>Notion AI</b> (if planning lives in Notion)</div>
+        </div>
+        <div class="tool">
+          <div class="tname">Claude</div>
+          <div class="twhy">Best at holding the whole product brief in context while you iterate on scope cuts and data modeling in one thread.</div>
+          <div class="talt">Alt: <b>Gemini</b> (good if you're already in Google Workspace docs)</div>
+        </div>
+        <div class="tool">
+          <div class="tname">Whimsical AI<span class="badge free">Free tier</span></div>
+          <div class="twhy">Generates flowcharts and ER-style diagrams from a text description — fast way to visualize the data model.</div>
+          <div class="talt">Alt: <b>Excalidraw</b> (manual, but pairs well with AI-drafted structure)</div>
+        </div>
+      </div>
+ 
+      <div class="card">
+        <h3>Prompt examples</h3>
+        <span class="prompt-tag">Prompt 1 · PRD draft</span>
+        <div class="prompt-block">Act as a senior product manager. I'm building a [niche] e-commerce store as a solo developer using React + Node.js. Ask me 8 clarifying questions one at a time about target customer, catalog size, and must-have checkout features, then write a one-page PRD with a scoped v1 feature list and a "not in v1" list.<button class="copy">Copy</button></div>
+ 
+        <span class="prompt-tag">Prompt 2 · Data model</span>
+        <div class="prompt-block">Given this PRD: [paste PRD]. Propose a relational data model with tables for Product, ProductVariant, Cart, CartItem, Order, OrderItem, User, and Address. List each table's key fields and relationships, and flag any fields I'm likely missing for a real checkout flow.<button class="copy">Copy</button></div>
+      </div>
+    </div>
+ 
+    <div class="grid2">
+      <div class="card">
+        <h3>Best practices</h3>
+        <div class="practice-row"><span class="ok">✓</span>Write the "not in v1" list before the "in v1" list — it's the one that actually saves time.</div>
+        <div class="practice-row"><span class="ok">✓</span>Model orders and inventory before writing a single UI component.</div>
+        <div class="practice-row"><span class="ok">✓</span>Validate the idea against 3 real competitor stores before locking scope.</div>
+      </div>
+      <div class="card">
+        <h3>Common mistakes</h3>
+        <div class="mistake-row"><span class="x">✗</span>Starting with the UI before the data model is settled.</div>
+        <div class="mistake-row"><span class="x">✗</span>Including multi-currency, multi-vendor, or subscriptions "just in case."</div>
+        <div class="mistake-row"><span class="x">✗</span>Skipping a written PRD because "it's just me building this."</div>
+      </div>
+    </div>
+ 
+    <div class="card">
+      <h3>Expected output</h3>
+      <div class="output-box">A one-page PRD, a prioritized backlog (v1/v2/cut), and a data model diagram — all before opening a code editor.</div>
+    </div>
+    <div class="card">
+      <h3>Efficiency tip</h3>
+      <div class="efficiency">Keep the PRD conversation in one long-context thread (Claude or GPT-5 thinking) rather than starting fresh each time — it remembers earlier scope decisions and stops contradicting itself.</div>
+    </div>
+ 
+    <div class="card">
+      <h3>Notes &amp; bookmark</h3>
+      <textarea class="notes-area" data-notes="1" placeholder="Jot decisions, blockers, or links here..."></textarea>
+      <div style="margin-top:10px;"><button class="bookmark-btn" data-bookmark="1">☆ Bookmark this stage</button></div>
+    </div>
+ 
+    <div class="stage-nav">
+      <button class="btn" data-nav="s-hero">← Introduction</button>
+      <button class="btn primary" data-nav="s-2">Architecture & Design →</button>
+    </div>
+  </section>
+ 
+  <!-- ============ STAGE 2: ARCHITECTURE ============ -->
+  <section class="section" id="s-2" data-stage="2">
+    <div class="stage-head">
+      <h2>02 · Architecture &amp; Design</h2>
+      <div class="stage-meta"><span>⏱ <b>3–5 days</b></span><span>Output: <b>System diagram + repo scaffold</b></span></div>
+    </div>
+    <p class="stage-desc">Decide how the React client, Node API, database, and third-party services (payments, images, email) talk to each other — before writing business logic.</p>
+ 
+    <div class="card">
+      <h3>Objectives</h3>
+      <ul class="plain">
+        <li>Choose monorepo vs. separate frontend/backend repos.</li>
+        <li>Pick the database (Postgres for relational order/inventory data is the common default) and ORM.</li>
+        <li>Define API contract: REST vs. GraphQL, auth strategy (JWT / session), and folder structure.</li>
+      </ul>
+    </div>
+ 
+    <div class="card">
+      <h3>Tasks</h3>
+      <ul class="tasklist" data-stage="2">
+        <li><input type="checkbox"><span>Choose DB + ORM (e.g., PostgreSQL + Prisma)</span></li>
+        <li><input type="checkbox"><span>Decide REST vs GraphQL for the storefront API</span></li>
+        <li><input type="checkbox"><span>Sketch the system diagram: client, API, DB, payment provider, image CDN</span></li>
+        <li><input type="checkbox"><span>Scaffold repo structure (client/, server/, shared types if using TypeScript)</span></li>
+        <li><input type="checkbox"><span>Define auth strategy (JWT + refresh tokens, or session-based)</span></li>
+      </ul>
+    </div>
+ 
+    <div class="grid2">
+      <div class="card">
+        <h3>Best AI tools</h3>
+        <div class="tool">
+          <div class="tname">Claude (Sonnet/Opus)</div>
+          <div class="twhy">Reasons well about trade-offs (REST vs GraphQL, monorepo vs polyrepo) with your specific constraints, not generic advice.</div>
+          <div class="talt">Alt: <b>ChatGPT o-series</b> for deep reasoning on scaling trade-offs</div>
+        </div>
+        <div class="tool">
+          <div class="tname">v0 by Vercel / Claude Artifacts</div>
+          <div class="twhy">Can scaffold a working repo skeleton (folders, config files, base routes) directly from a description.</div>
+          <div class="talt">Alt: <b>Cursor</b> with a "generate project structure" prompt</div>
+        </div>
+        <div class="tool">
+          <div class="tname">Eraser.io AI</div>
+          <div class="twhy">Purpose-built for system/architecture diagrams from plain-text descriptions — cleaner than generic diagram tools for this use.</div>
+          <div class="talt">Alt: <b>Mermaid</b> (free, code-based, works in most AI chat tools)</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Prompt examples</h3>
+        <span class="prompt-tag">Prompt 1 · Architecture decision</span>
+        <div class="prompt-block">I'm building an e-commerce app: React (Vite) frontend, Node.js + Express backend, solo developer, expecting under 10k monthly users at launch. Recommend REST or GraphQL, PostgreSQL vs MongoDB, and JWT vs session auth — with a one-line reason for each, optimized for shipping speed over long-term scale.<button class="copy">Copy</button></div>
+        <span class="prompt-tag">Prompt 2 · Repo scaffold</span>
+        <div class="prompt-block">Generate a monorepo folder structure for a React + Express + PostgreSQL/Prisma e-commerce app. Include client/, server/, shared/ (types), and config for environment variables. List each folder's purpose in one line.<button class="copy">Copy</button></div>
+      </div>
+    </div>
+ 
+    <div class="card">
+      <h3>Decision tree — pick your data layer</h3>
+      <div class="tree" id="decisionTree">
+        <div class="tree-q">Do your products have complex, varying attributes (many variant types, custom fields per category)?</div>
+        <div class="tree-branch">
+          <button data-answer="yes">Yes, highly variable</button>
+          <button data-answer="no">No, fairly standard</button>
+        </div>
+        <div class="tree-result" id="treeResult"></div>
+      </div>
+    </div>
+ 
+    <div class="grid2">
+      <div class="card">
+        <h3>Best practices</h3>
+        <div class="practice-row"><span class="ok">✓</span>Version your API from day one (/api/v1/...) — cheap now, painful to retrofit.</div>
+        <div class="practice-row"><span class="ok">✓</span>Keep shared TypeScript types in one place if client and server both use TS.</div>
+        <div class="practice-row"><span class="ok">✓</span>Design the auth flow before building any protected route.</div>
+      </div>
+      <div class="card">
+        <h3>Common mistakes</h3>
+        <div class="mistake-row"><span class="x">✗</span>Choosing GraphQL for a simple catalog because it feels "more modern."</div>
+        <div class="mistake-row"><span class="x">✗</span>Storing prices as floats instead of integers (cents) — causes rounding bugs at checkout.</div>
+        <div class="mistake-row"><span class="x">✗</span>Hardcoding secrets instead of setting up .env from the start.</div>
+      </div>
+    </div>
+ 
+    <div class="card"><h3>Expected output</h3><div class="output-box">A system architecture diagram, a decided DB/ORM/auth stack, and an initialized repo with folder structure and env config.</div></div>
+    <div class="card"><h3>Efficiency tip</h3><div class="efficiency">Ask your AI tool to generate the Prisma schema directly from your Stage 1 data model — it's usually 80% correct and saves the tedious first draft.</div></div>
+ 
+    <div class="card">
+      <h3>Notes &amp; bookmark</h3>
+      <textarea class="notes-area" data-notes="2" placeholder="Jot decisions, blockers, or links here..."></textarea>
+      <div style="margin-top:10px;"><button class="bookmark-btn" data-bookmark="2">☆ Bookmark this stage</button></div>
+    </div>
+ 
+    <div class="stage-nav">
+      <button class="btn" data-nav="s-1">← Planning & Scoping</button>
+      <button class="btn primary" data-nav="s-3">UI/UX & Prototyping →</button>
+    </div>
+  </section>
+ 
+  <!-- ============ STAGE 3: UI/UX ============ -->
+  <section class="section" id="s-3" data-stage="3">
+    <div class="stage-head">
+      <h2>03 · UI/UX &amp; Prototyping</h2>
+      <div class="stage-meta"><span>⏱ <b>4–6 days</b></span><span>Output: <b>Wireframes + design system</b></span></div>
+    </div>
+    <p class="stage-desc">Design the storefront, cart, and checkout flow before writing React components — checkout UX mistakes are the single biggest cause of cart abandonment.</p>
+ 
+    <div class="card">
+      <h3>Objectives</h3>
+      <ul class="plain">
+        <li>Wireframe the core screens: home/catalog, product detail, cart, checkout, order confirmation, admin.</li>
+        <li>Establish a lightweight design system: colors, type scale, spacing, component variants.</li>
+        <li>Design the checkout flow to minimize steps and clearly show progress.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Tasks</h3>
+      <ul class="tasklist" data-stage="3">
+        <li><input type="checkbox"><span>Wireframe 6 core screens (home, PDP, cart, checkout, confirmation, admin)</span></li>
+        <li><input type="checkbox"><span>Define design tokens: color palette, type scale, spacing scale</span></li>
+        <li><input type="checkbox"><span>Design mobile-first responsive breakpoints</span></li>
+        <li><input type="checkbox"><span>Prototype the checkout flow specifically (steps, error states, empty states)</span></li>
+      </ul>
+    </div>
+ 
+    <div class="grid2">
+      <div class="card">
+        <h3>Best AI tools</h3>
+        <div class="tool">
+          <div class="tname">Figma (First Draft AI)</div>
+          <div class="twhy">Generates editable, real Figma frames from a text prompt — best starting point when you need actual design files, not just a picture.</div>
+          <div class="talt">Alt: <b>Uizard</b> (faster but less editable)</div>
+        </div>
+        <div class="tool">
+          <div class="tname">v0 by Vercel</div>
+          <div class="twhy">Generates working React + Tailwind UI directly from a prompt — skips the "design file → code" translation step entirely.</div>
+          <div class="talt">Alt: <b>Claude Artifacts</b> (good for quick interactive mockups)</div>
+        </div>
+        <div class="tool">
+          <div class="tname">Midjourney / DALL·E<span class="badge paid"></span></div>
+          <div class="twhy">Useful only for mood-boarding visual direction (not for UI itself) — generate lifestyle imagery references for your brand.</div>
+          <div class="talt">Alt: skip if you already have a clear visual direction</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Prompt examples</h3>
+        <span class="prompt-tag">Prompt 1 · Component-ready UI</span>
+        <div class="prompt-block">Design a product detail page for a [niche] e-commerce store using React and Tailwind CSS. Include an image gallery, variant selector (size/color), price, add-to-cart button, and a collapsible details/shipping section. Mobile-first, clean and minimal.<button class="copy">Copy</button></div>
+        <span class="prompt-tag">Prompt 2 · Checkout flow</span>
+        <div class="prompt-block">Design a 3-step checkout flow (shipping → payment → review) for an e-commerce site. Show a persistent order summary sidebar, inline validation errors, and a clear progress indicator. Optimize for minimizing abandonment.<button class="copy">Copy</button></div>
+      </div>
+    </div>
+ 
+    <div class="card">
+      <h3>Best practices vs. common mistakes</h3>
+      <table class="cmp">
+        <tr><th>Do</th><th>Don't</th></tr>
+        <tr><td class="win">Show real product photos/placeholder content while designing</td><td>Design with "Lorem Ipsum" — hides real layout problems</td></tr>
+        <tr><td class="win">Design empty-cart and error states explicitly</td><td>Only design the "happy path" screens</td></tr>
+        <tr><td class="win">Keep checkout to 3 steps or fewer</td><td>Split checkout across 5+ pages</td></tr>
+      </table>
+    </div>
+ 
+    <div class="card"><h3>Expected output</h3><div class="output-box">A Figma file or v0-generated component set covering all core screens, plus a documented design system (colors, type, spacing).</div></div>
+    <div class="card"><h3>Efficiency tip</h3><div class="efficiency">Generate UI directly in v0/Claude with Tailwind classes — you can paste the output almost directly into your React project in Stage 4, skipping a manual "translate design to code" pass.</div></div>
+ 
+    <div class="card">
+      <h3>Notes &amp; bookmark</h3>
+      <textarea class="notes-area" data-notes="3" placeholder="Jot decisions, blockers, or links here..."></textarea>
+      <div style="margin-top:10px;"><button class="bookmark-btn" data-bookmark="3">☆ Bookmark this stage</button></div>
+    </div>
+ 
+    <div class="stage-nav">
+      <button class="btn" data-nav="s-2">← Architecture & Design</button>
+      <button class="btn primary" data-nav="s-4">Frontend Build →</button>
+    </div>
+  </section>
+ 
+  <!-- ============ STAGE 4: FRONTEND ============ -->
+  <section class="section" id="s-4" data-stage="4">
+    <div class="stage-head">
+      <h2>04 · Frontend Build (React)</h2>
+      <div class="stage-meta"><span>⏱ <b>2–3 weeks</b></span><span>Output: <b>Working storefront UI</b></span></div>
+    </div>
+    <p class="stage-desc">Build the React app: routing, state management for cart/auth, and componentized screens wired to (initially mocked) API calls.</p>
+ 
+    <div class="card">
+      <h3>Objectives</h3>
+      <ul class="plain">
+        <li>Set up routing (product listing, PDP, cart, checkout, account, admin).</li>
+        <li>Implement cart state (Context API, Zustand, or Redux Toolkit) that persists across sessions.</li>
+        <li>Build reusable components: ProductCard, VariantSelector, CartDrawer, CheckoutForm.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Tasks</h3>
+      <ul class="tasklist" data-stage="4">
+        <li><input type="checkbox"><span>Set up Vite + React Router + Tailwind</span></li>
+        <li><input type="checkbox"><span>Build cart state management with localStorage persistence</span></li>
+        <li><input type="checkbox"><span>Build product listing + filtering/search UI</span></li>
+        <li><input type="checkbox"><span>Build product detail page with variant selection</span></li>
+        <li><input type="checkbox"><span>Build cart drawer/page and checkout form components</span></li>
+        <li><input type="checkbox"><span>Wire components to mock/placeholder API responses</span></li>
+      </ul>
+    </div>
+ 
+    <div class="grid2">
+      <div class="card">
+        <h3>Best AI tools</h3>
+        <div class="tool">
+          <div class="tname">Cursor</div>
+          <div class="twhy">Best for sustained React feature-building — understands your whole codebase, not just isolated snippets, so components stay consistent.</div>
+          <div class="talt">Alt: <b>GitHub Copilot</b> (great inline autocomplete, weaker at multi-file edits)</div>
+        </div>
+        <div class="tool">
+          <div class="tname">Claude Code</div>
+          <div class="twhy">Handles multi-file refactors well (e.g., "extract cart logic into a custom hook across 6 components") from a terminal workflow.</div>
+          <div class="talt">Alt: <b>Windsurf</b> (similar agentic coding experience)</div>
+        </div>
+        <div class="tool">
+          <div class="tname">v0 by Vercel<span class="badge free">Free tier</span></div>
+          <div class="twhy">Fastest way to generate a new component from scratch when starting a screen you haven't built yet.</div>
+          <div class="talt">Alt: build manually with Copilot autocomplete for full control</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Prompt examples</h3>
+        <span class="prompt-tag">Prompt 1 · Cart hook</span>
+        <div class="prompt-block">Write a React custom hook `useCart` using Context API that supports addItem, removeItem, updateQuantity, and clearCart, persists state to localStorage, and recalculates the subtotal on every change. Include TypeScript types.<button class="copy">Copy</button></div>
+        <span class="prompt-tag">Prompt 2 · Refactor request</span>
+        <div class="prompt-block">Here's my ProductCard, ProductGrid, and Cart components: [paste code]. Refactor to remove duplicated price-formatting logic into a shared utility function, without changing any visual behavior.<button class="copy">Copy</button></div>
+      </div>
+    </div>
+ 
+    <div class="grid2">
+      <div class="card">
+        <h3>Best practices</h3>
+        <div class="practice-row"><span class="ok">✓</span>Build against mock API responses first — don't block frontend work on the backend being done.</div>
+        <div class="practice-row"><span class="ok">✓</span>Keep cart/price math in one tested utility, never scattered across components.</div>
+        <div class="practice-row"><span class="ok">✓</span>Review every AI-generated component for accessibility (labels, focus states) before moving on.</div>
+      </div>
+      <div class="card">
+        <h3>Common mistakes</h3>
+        <div class="mistake-row"><span class="x">✗</span>Letting AI-generated components pile up without reading the code — debugging becomes guesswork later.</div>
+        <div class="mistake-row"><span class="x">✗</span>Prop-drilling cart state instead of using Context/Zustand.</div>
+        <div class="mistake-row"><span class="x">✗</span>Skipping loading and error states "for now" — they never get added later.</div>
+      </div>
+    </div>
+ 
+    <div class="card"><h3>Expected output</h3><div class="output-box">A functioning React storefront — browsing, filtering, cart, and checkout UI — running against mock data, fully responsive.</div></div>
+    <div class="card"><h3>Efficiency tip</h3><div class="efficiency">Use Cursor's "chat with codebase" to ask it to find every place a piece of state is used before refactoring — much faster than manually grepping across files.</div></div>
+ 
+    <div class="card">
+      <h3>Notes &amp; bookmark</h3>
+      <textarea class="notes-area" data-notes="4" placeholder="Jot decisions, blockers, or links here..."></textarea>
+      <div style="margin-top:10px;"><button class="bookmark-btn" data-bookmark="4">☆ Bookmark this stage</button></div>
+    </div>
+ 
+    <div class="stage-nav">
+      <button class="btn" data-nav="s-3">← UI/UX & Prototyping</button>
+      <button class="btn primary" data-nav="s-5">Backend Build →</button>
+    </div>
+  </section>
+ 
+  <!-- ============ STAGE 5: BACKEND ============ -->
+  <section class="section" id="s-5" data-stage="5">
+    <div class="stage-head">
+      <h2>05 · Backend Build (Node.js)</h2>
+      <div class="stage-meta"><span>⏱ <b>2–3 weeks</b></span><span>Output: <b>REST API + database</b></span></div>
+    </div>
+    <p class="stage-desc">Build the Express API, database models, and business logic — products, cart, orders, auth — that the React app will consume for real.</p>
+ 
+    <div class="card">
+      <h3>Objectives</h3>
+      <ul class="plain">
+        <li>Implement CRUD endpoints for products, categories, and inventory.</li>
+        <li>Build authentication (signup/login/refresh) and protected admin routes.</li>
+        <li>Implement order creation logic with inventory decrement and validation.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Tasks</h3>
+      <ul class="tasklist" data-stage="5">
+        <li><input type="checkbox"><span>Set up Express server, middleware, and error handling</span></li>
+        <li><input type="checkbox"><span>Implement Prisma/DB models from the Stage 2 schema</span></li>
+        <li><input type="checkbox"><span>Build product/category CRUD endpoints</span></li>
+        <li><input type="checkbox"><span>Build auth: register, login, JWT refresh, password reset</span></li>
+        <li><input type="checkbox"><span>Build cart-to-order conversion logic with inventory checks</span></li>
+        <li><input type="checkbox"><span>Add input validation and rate limiting</span></li>
+      </ul>
+    </div>
+ 
+    <div class="grid2">
+      <div class="card">
+        <h3>Best AI tools</h3>
+        <div class="tool">
+          <div class="tname">Claude Code</div>
+          <div class="twhy">Strong at reasoning through backend business logic (order validation, race conditions on inventory) rather than just generating boilerplate.</div>
+          <div class="talt">Alt: <b>Cursor</b> for inline editing within Express route files</div>
+        </div>
+        <div class="tool">
+          <div class="tname">GitHub Copilot</div>
+          <div class="twhy">Fast for repetitive CRUD endpoint boilerplate once the pattern is established for one resource.</div>
+          <div class="talt">Alt: <b>Cody</b> (Sourcegraph) for larger codebases</div>
+        </div>
+        <div class="tool">
+          <div class="tname">Postman AI</div>
+          <div class="twhy">Generates test requests and example payloads from your route definitions — speeds up manual API testing during dev.</div>
+          <div class="talt">Alt: <b>Insomnia</b> (manual, no AI, but lightweight)</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Prompt examples</h3>
+        <span class="prompt-tag">Prompt 1 · Order logic</span>
+        <div class="prompt-block">Write an Express route handler for POST /api/orders that: validates cart items against current inventory, uses a database transaction to decrement stock and create the order atomically, and returns a 409 if any item is out of stock. Use Prisma.<button class="copy">Copy</button></div>
+        <span class="prompt-tag">Prompt 2 · Auth middleware</span>
+        <div class="prompt-block">Write Express middleware that verifies a JWT from the Authorization header, attaches the decoded user to req.user, and returns 401 on invalid/expired tokens. Include a separate requireAdmin middleware that checks req.user.role.<button class="copy">Copy</button></div>
+      </div>
+    </div>
+ 
+    <div class="card">
+      <h3>Best practices vs. common mistakes</h3>
+      <table class="cmp">
+        <tr><th>Do</th><th>Don't</th></tr>
+        <tr><td class="win">Use DB transactions for order creation + inventory updates</td><td>Update inventory and create the order as separate, non-atomic writes</td></tr>
+        <tr><td class="win">Validate all inputs server-side, even if validated client-side too</td><td>Trust the frontend's validation alone</td></tr>
+        <tr><td class="win">Hash passwords with bcrypt/argon2, never store plaintext</td><td>Roll your own crypto or skip hashing "temporarily"</td></tr>
+      </table>
+    </div>
+ 
+    <div class="card"><h3>Expected output</h3><div class="output-box">A running Express API with authenticated routes, a real database, and order logic that correctly handles stock — testable via Postman independent of the frontend.</div></div>
+    <div class="card"><h3>Efficiency tip</h3><div class="efficiency">Ask Claude/Cursor to generate the first CRUD resource fully (routes, controller, validation), then reuse it as the pattern for every other resource — much faster than generating each one from scratch.</div></div>
+ 
+    <div class="card">
+      <h3>Notes &amp; bookmark</h3>
+      <textarea class="notes-area" data-notes="5" placeholder="Jot decisions, blockers, or links here..."></textarea>
+      <div style="margin-top:10px;"><button class="bookmark-btn" data-bookmark="5">☆ Bookmark this stage</button></div>
+    </div>
+ 
+    <div class="stage-nav">
+      <button class="btn" data-nav="s-4">← Frontend Build</button>
+      <button class="btn primary" data-nav="s-6">Payments & Integrations →</button>
+    </div>
+  </section>
+ 
+  <!-- ============ STAGE 6: PAYMENTS ============ -->
+  <section class="section" id="s-6" data-stage="6">
+    <div class="stage-head">
+      <h2>06 · Payments &amp; Integrations</h2>
+      <div class="stage-meta"><span>⏱ <b>1–2 weeks</b></span><span>Output: <b>Live checkout, email, media</b></span></div>
+    </div>
+    <p class="stage-desc">Connect the pieces that make it a real store: payment processing, transactional email, and image hosting/optimization.</p>
+ 
+    <div class="card">
+      <h3>Objectives</h3>
+      <ul class="plain">
+        <li>Integrate a payment provider with both client-side and server-side (webhook) handling.</li>
+        <li>Set up transactional email for order confirmation, shipping updates, password reset.</li>
+        <li>Set up image upload/optimization for product photos (CDN + resizing).</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Tasks</h3>
+      <ul class="tasklist" data-stage="6">
+        <li><input type="checkbox"><span>Integrate Stripe Checkout or Payment Intents on frontend + backend</span></li>
+        <li><input type="checkbox"><span>Implement Stripe webhook handler for payment confirmation</span></li>
+        <li><input type="checkbox"><span>Set up transactional email (order confirmation, shipping, password reset)</span></li>
+        <li><input type="checkbox"><span>Set up image upload pipeline (e.g., Cloudinary/S3) with resizing</span></li>
+        <li><input type="checkbox"><span>Test full purchase flow end-to-end in Stripe test mode</span></li>
+      </ul>
+    </div>
+ 
+    <div class="grid2">
+      <div class="card">
+        <h3>Best AI tools</h3>
+        <div class="tool">
+          <div class="tname">Claude / ChatGPT</div>
+          <div class="twhy">Best for reasoning through Stripe's webhook signature verification and idempotency correctly — an area with real security consequences if done wrong.</div>
+          <div class="talt">Alt: Stripe's own docs + AI chat combined (verify against official docs)</div>
+        </div>
+        <div class="tool">
+          <div class="tname">Cursor / Copilot</div>
+          <div class="twhy">Fast for wiring up SDK boilerplate (Stripe.js, SendGrid/Resend clients) once the integration pattern is decided.</div>
+          <div class="talt">Alt: manual SDK setup following official quickstarts</div>
+        </div>
+        <div class="tool">
+          <div class="tname">Resend / Postmark AI templates</div>
+          <div class="twhy">Generates clean transactional email templates (HTML+text) faster than hand-coding email-safe HTML.</div>
+          <div class="talt">Alt: <b>React Email</b> (component-based email templates)</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Prompt examples</h3>
+        <span class="prompt-tag">Prompt 1 · Webhook handler</span>
+        <div class="prompt-block">Write an Express webhook handler for Stripe's checkout.session.completed event. Verify the webhook signature using the raw request body, then mark the corresponding order as "paid" in the database. Include proper error handling for signature verification failure.<button class="copy">Copy</button></div>
+        <span class="prompt-tag">Prompt 2 · Email template</span>
+        <div class="prompt-block">Write a React Email template for an order confirmation email showing order number, itemized list with images, subtotal/shipping/total, and estimated delivery date. Keep it email-client-safe (no flexbox reliance).<button class="copy">Copy</button></div>
+      </div>
+    </div>
+ 
+    <div class="card">
+      <h3>Comparison — payment providers</h3>
+      <table class="cmp">
+        <tr><th>Provider</th><th>Best for</th><th>Fees</th><th>Note</th></tr>
+        <tr><td class="win">Stripe</td><td>Most flexibility, best docs</td><td>~2.9% + 30¢</td><td>Default recommendation for custom builds</td></tr>
+        <tr><td>Razorpay</td><td>India-focused stores, UPI support</td><td>~2%</td><td>Better local payment methods for Indian customers</td></tr>
+        <tr><td>PayPal</td><td>Buyer trust/familiarity</td><td>~2.9%+ fixed fee</td><td>Good as a secondary option, not primary</td></tr>
+      </table>
+    </div>
+ 
+    <div class="card"><h3>Expected output</h3><div class="output-box">A working end-to-end purchase: card payment processed, order marked paid via webhook, confirmation email sent, product images loading from CDN.</div></div>
+    <div class="card"><h3>Efficiency tip</h3><div class="efficiency">Always test webhooks locally with the Stripe CLI (`stripe listen --forward-to`) before deploying — catching signature/timing bugs in production is far more painful.</div></div>
+ 
+    <div class="card">
+      <h3>Notes &amp; bookmark</h3>
+      <textarea class="notes-area" data-notes="6" placeholder="Jot decisions, blockers, or links here..."></textarea>
+      <div style="margin-top:10px;"><button class="bookmark-btn" data-bookmark="6">☆ Bookmark this stage</button></div>
+    </div>
+ 
+    <div class="stage-nav">
+      <button class="btn" data-nav="s-5">← Backend Build</button>
+      <button class="btn primary" data-nav="s-7">Testing & QA →</button>
+    </div>
+  </section>
+ 
+  <!-- ============ STAGE 7: TESTING ============ -->
+  <section class="section" id="s-7" data-stage="7">
+    <div class="stage-head">
+      <h2>07 · Testing &amp; QA</h2>
+      <div class="stage-meta"><span>⏱ <b>1 week</b></span><span>Output: <b>Test suite + bug list</b></span></div>
+    </div>
+    <p class="stage-desc">Catch checkout and payment bugs before real customers do. Focus test effort where money moves: cart math, order creation, and payment webhooks.</p>
+ 
+    <div class="card">
+      <h3>Objectives</h3>
+      <ul class="plain">
+        <li>Unit test cart/pricing logic and order validation.</li>
+        <li>Integration test the checkout API flow, including failure cases (declined card, out of stock).</li>
+        <li>Manual/exploratory test across devices and browsers.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Tasks</h3>
+      <ul class="tasklist" data-stage="7">
+        <li><input type="checkbox"><span>Write unit tests for cart totals, discounts, and tax calculations</span></li>
+        <li><input type="checkbox"><span>Write integration tests for the order creation endpoint (success + failure paths)</span></li>
+        <li><input type="checkbox"><span>Test Stripe webhook handling with simulated events</span></li>
+        <li><input type="checkbox"><span>Cross-browser/device manual QA pass on checkout flow</span></li>
+        <li><input type="checkbox"><span>Run a basic accessibility audit (keyboard nav, screen reader labels)</span></li>
+      </ul>
+    </div>
+ 
+    <div class="grid2">
+      <div class="card">
+        <h3>Best AI tools</h3>
+        <div class="tool">
+          <div class="tname">Claude Code / Cursor</div>
+          <div class="twhy">Can generate a full Jest/Vitest test suite from existing function signatures, including edge cases you might not think of.</div>
+          <div class="talt">Alt: <b>Copilot</b> for individual test-case autocomplete</div>
+        </div>
+        <div class="tool">
+          <div class="tname">Playwright + AI codegen</div>
+          <div class="twhy">Generates end-to-end browser tests for the full checkout flow from a recorded session or plain description.</div>
+          <div class="talt">Alt: <b>Cypress</b> (similar, slightly different API)</div>
+        </div>
+        <div class="tool">
+          <div class="tname">axe DevTools / Stark AI</div>
+          <div class="twhy">Automated accessibility scanning with AI-suggested fixes for contrast, labeling, and focus order issues.</div>
+          <div class="talt">Alt: manual screen-reader pass with VoiceOver/NVDA</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Prompt examples</h3>
+        <span class="prompt-tag">Prompt 1 · Test generation</span>
+        <div class="prompt-block">Here is my calculateCartTotal function: [paste code]. Write a Vitest test suite covering: empty cart, single item, multiple items with quantities, applied discount code, and free-shipping threshold edge cases.<button class="copy">Copy</button></div>
+        <span class="prompt-tag">Prompt 2 · E2E scenario</span>
+        <div class="prompt-block">Write a Playwright test that: adds a product to cart, proceeds to checkout, fills in test shipping info, completes payment with Stripe's test card 4242 4242 4242 4242, and asserts the order confirmation page shows the correct order total.<button class="copy">Copy</button></div>
+      </div>
+    </div>
+ 
+    <div class="grid2">
+      <div class="card">
+        <h3>Best practices</h3>
+        <div class="practice-row"><span class="ok">✓</span>Prioritize testing anything involving money or inventory over UI polish tests.</div>
+        <div class="practice-row"><span class="ok">✓</span>Test the "out of stock at checkout" race condition explicitly.</div>
+        <div class="practice-row"><span class="ok">✓</span>Run the full flow on a real mobile device, not just devtools emulation.</div>
+      </div>
+      <div class="card">
+        <h3>Common mistakes</h3>
+        <div class="mistake-row"><span class="x">✗</span>Only testing the happy path (successful payment, item in stock).</div>
+        <div class="mistake-row"><span class="x">✗</span>Trusting AI-generated tests without reading what they actually assert.</div>
+        <div class="mistake-row"><span class="x">✗</span>Skipping accessibility checks because "it's just an MVP."</div>
+      </div>
+    </div>
+ 
+    <div class="card"><h3>Expected output</h3><div class="output-box">A test suite covering cart/order logic and the critical checkout path, plus a prioritized bug list from manual QA.</div></div>
+    <div class="card"><h3>Efficiency tip</h3><div class="efficiency">Have AI generate tests directly from your actual function code (not from a description) — it catches real edge cases in your logic rather than generic ones.</div></div>
+ 
+    <div class="card">
+      <h3>Notes &amp; bookmark</h3>
+      <textarea class="notes-area" data-notes="7" placeholder="Jot decisions, blockers, or links here..."></textarea>
+      <div style="margin-top:10px;"><button class="bookmark-btn" data-bookmark="7">☆ Bookmark this stage</button></div>
+    </div>
+ 
+    <div class="stage-nav">
+      <button class="btn" data-nav="s-6">← Payments & Integrations</button>
+      <button class="btn primary" data-nav="s-8">Deployment & DevOps →</button>
+    </div>
+  </section>
+ 
+  <!-- ============ STAGE 8: DEPLOYMENT ============ -->
+  <section class="section" id="s-8" data-stage="8">
+    <div class="stage-head">
+      <h2>08 · Deployment &amp; DevOps</h2>
+      <div class="stage-meta"><span>⏱ <b>2–4 days</b></span><span>Output: <b>Live production app</b></span></div>
+    </div>
+    <p class="stage-desc">Ship it. Set up hosting, environment secrets, a database in production, and basic monitoring before pointing a domain at it.</p>
+ 
+    <div class="card">
+      <h3>Objectives</h3>
+      <ul class="plain">
+        <li>Deploy the React frontend and Node backend to production hosting.</li>
+        <li>Move to a production database with backups configured.</li>
+        <li>Set up error monitoring and uptime checks.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Tasks</h3>
+      <ul class="tasklist" data-stage="8">
+        <li><input type="checkbox"><span>Deploy frontend (Vercel/Netlify) with production env vars</span></li>
+        <li><input type="checkbox"><span>Deploy backend (Render/Railway/Fly.io) with production env vars</span></li>
+        <li><input type="checkbox"><span>Provision production database with automated backups</span></li>
+        <li><input type="checkbox"><span>Point custom domain + SSL, switch Stripe to live mode</span></li>
+        <li><input type="checkbox"><span>Set up error monitoring (Sentry) and uptime alerts</span></li>
+      </ul>
+    </div>
+ 
+    <div class="grid2">
+      <div class="card">
+        <h3>Best AI tools</h3>
+        <div class="tool">
+          <div class="tname">Claude / ChatGPT</div>
+          <div class="twhy">Best for debugging deployment-specific errors (CORS, env var mismatches, build failures) by pasting logs directly.</div>
+          <div class="talt">Alt: search the exact error text first, then AI for synthesis</div>
+        </div>
+        <div class="tool">
+          <div class="tname">Cursor / Copilot</div>
+          <div class="twhy">Generates CI/CD config (GitHub Actions) and Dockerfiles from a description of your stack.</div>
+          <div class="talt">Alt: hosting platform's own AI setup wizard, if offered</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Prompt examples</h3>
+        <span class="prompt-tag">Prompt 1 · CI/CD</span>
+        <div class="prompt-block">Write a GitHub Actions workflow that runs on push to main: installs dependencies, runs the test suite, and if tests pass, deploys the client to Vercel and the server to Render. Fail the deploy if any test fails.<button class="copy">Copy</button></div>
+        <span class="prompt-tag">Prompt 2 · Debugging</span>
+        <div class="prompt-block">I'm getting this error when deploying my Express app to Render: [paste error log]. My app works locally. What's the likely cause and how do I fix it?<button class="copy">Copy</button></div>
+      </div>
+    </div>
+ 
+    <div class="card">
+      <h3>Comparison — hosting for the Node API</h3>
+      <table class="cmp">
+        <tr><th>Platform</th><th>Best for</th><th>Free tier</th></tr>
+        <tr><td class="win">Railway</td><td>Fastest setup, good DX for solo devs</td><td>Limited, usage-based</td></tr>
+        <tr><td>Render</td><td>Simple, predictable pricing</td><td>Yes, with cold starts</td></tr>
+        <tr><td>Fly.io</td><td>More control, global edge deploy</td><td>Yes, limited resources</td></tr>
+      </table>
+    </div>
+ 
+    <div class="card"><h3>Expected output</h3><div class="output-box">A live, publicly accessible store on a custom domain, processing real payments, with error monitoring in place.</div></div>
+    <div class="card"><h3>Efficiency tip</h3><div class="efficiency">Deploy early and often — even in Stage 4 — to a staging environment. Catching deployment issues incrementally is far faster than debugging them all at once at the end.</div></div>
+ 
+    <div class="card">
+      <h3>Notes &amp; bookmark</h3>
+      <textarea class="notes-area" data-notes="8" placeholder="Jot decisions, blockers, or links here..."></textarea>
+      <div style="margin-top:10px;"><button class="bookmark-btn" data-bookmark="8">☆ Bookmark this stage</button></div>
+    </div>
+ 
+    <div class="stage-nav">
+      <button class="btn" data-nav="s-7">← Testing & QA</button>
+      <button class="btn primary" data-nav="s-9">Growth & Maintenance →</button>
+    </div>
+  </section>
+ 
+  <!-- ============ STAGE 9: GROWTH ============ -->
+  <section class="section" id="s-9" data-stage="9">
+    <div class="stage-head">
+      <h2>09 · Growth &amp; Maintenance</h2>
+      <div class="stage-meta"><span>⏱ <b>Ongoing</b></span><span>Output: <b>Analytics + iteration loop</b></span></div>
+    </div>
+    <p class="stage-desc">Launch is the start, not the finish. Set up analytics, monitor real usage, and build a lightweight loop for iterating based on actual customer behavior.</p>
+ 
+    <div class="card">
+      <h3>Objectives</h3>
+      <ul class="plain">
+        <li>Track key funnel metrics: product views, add-to-cart rate, checkout completion rate.</li>
+        <li>Set up SEO basics for organic discovery.</li>
+        <li>Build a lightweight process for triaging bugs and feature requests post-launch.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Tasks</h3>
+      <ul class="tasklist" data-stage="9">
+        <li><input type="checkbox"><span>Set up analytics (GA4 or Plausible) with funnel event tracking</span></li>
+        <li><input type="checkbox"><span>Add basic SEO: meta tags, sitemap, structured data for products</span></li>
+        <li><input type="checkbox"><span>Set up a bug/feature backlog with a weekly triage cadence</span></li>
+        <li><input type="checkbox"><span>Review checkout drop-off data monthly and prioritize fixes</span></li>
+      </ul>
+    </div>
+ 
+    <div class="grid2">
+      <div class="card">
+        <h3>Best AI tools</h3>
+        <div class="tool">
+          <div class="tname">GA4 + Claude/ChatGPT</div>
+          <div class="twhy">Paste exported analytics data and ask for funnel drop-off analysis and prioritized hypotheses — faster than manually reading dashboards.</div>
+          <div class="talt">Alt: <b>Plausible</b> (privacy-friendly, simpler data export)</div>
+        </div>
+        <div class="tool">
+          <div class="tname">Claude / ChatGPT for SEO</div>
+          <div class="twhy">Generates product meta descriptions and structured data (schema.org Product markup) at scale from your product data.</div>
+          <div class="talt">Alt: <b>Surfer SEO</b> for deeper keyword-driven content work</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Prompt examples</h3>
+        <span class="prompt-tag">Prompt 1 · Funnel analysis</span>
+        <div class="prompt-block">Here's my funnel data for the last 30 days: [paste numbers — views, add-to-cart, checkout starts, purchases]. Identify the biggest drop-off point and suggest 3 specific, testable hypotheses for why it's happening.<button class="copy">Copy</button></div>
+        <span class="prompt-tag">Prompt 2 · Structured data</span>
+        <div class="prompt-block">Generate schema.org Product JSON-LD markup for this product: [name, price, description, image URL, availability]. Format it ready to paste into a React Helmet/Head component.<button class="copy">Copy</button></div>
+      </div>
+    </div>
+ 
+    <div class="card"><h3>Expected output</h3><div class="output-box">A live funnel dashboard, basic SEO in place, and a running backlog of prioritized post-launch improvements.</div></div>
+    <div class="card"><h3>Efficiency tip</h3><div class="efficiency">Review just one metric weekly — checkout completion rate — rather than trying to optimize everything at once post-launch.</div></div>
+ 
+    <div class="card">
+      <h3>Notes &amp; bookmark</h3>
+      <textarea class="notes-area" data-notes="9" placeholder="Jot decisions, blockers, or links here..."></textarea>
+      <div style="margin-top:10px;"><button class="bookmark-btn" data-bookmark="9">☆ Bookmark this stage</button></div>
+    </div>
+ 
+    <div class="stage-nav">
+      <button class="btn" data-nav="s-8">← Deployment & DevOps</button>
+      <button class="btn primary" data-nav="s-summary">Summary & Stack →</button>
+    </div>
+  </section>
+ 
+  <!-- ============ SUMMARY ============ -->
+  <section class="section" id="s-summary">
+    <div class="stage-head"><h2>Workflow Summary &amp; Recommended Stack</h2></div>
+    <div class="card">
+      <h3>Workflow summary</h3>
+      <p style="font-size:14px;color:var(--ink-dim);">Nine stages take you from a one-paragraph idea to a live, monitored e-commerce store: scope and data model first, then architecture, then design, then parallel-ish frontend/backend builds, then the integrations that make it a real store (payments, email, media), then testing focused on money-critical paths, then deployment, then an ongoing growth loop. The through-line: use AI to compress research and boilerplate, but keep human judgment on data modeling, checkout UX, and anything touching payments or auth.</p>
+    </div>
+    <div class="card">
+      <h3>Recommended AI stack</h3>
+      <div class="stack-item"><span>Claude (Sonnet/Opus)</span><span class="role">Planning, architecture reasoning, code review</span></div>
+      <div class="stack-item"><span>Cursor or Claude Code</span><span class="role">Day-to-day feature building, refactors</span></div>
+      <div class="stack-item"><span>v0 by Vercel</span><span class="role">UI scaffolding straight to React + Tailwind</span></div>
+      <div class="stack-item"><span>GitHub Copilot</span><span class="role">Inline autocomplete for repetitive code</span></div>
+      <div class="stack-item"><span>Playwright + AI codegen</span><span class="role">End-to-end checkout testing</span></div>
+      <div class="stack-item"><span>ChatGPT/Claude + GA4</span><span class="role">Post-launch funnel analysis</span></div>
+    </div>
+    <div class="stage-nav">
+      <button class="btn" data-nav="s-9">← Growth & Maintenance</button>
+      <button class="btn primary" data-nav="s-resources">Resources & Future →</button>
+    </div>
+  </section>
+ 
+  <!-- ============ RESOURCES ============ -->
+  <section class="section" id="s-resources">
+    <div class="stage-head"><h2>Resources, Communities &amp; What's Next</h2></div>
+ 
+    <div class="grid2">
+      <div class="card">
+        <h3>Learning resources</h3>
+        <ul class="plain">
+          <li>Official React docs (react.dev) — for hooks and patterns used throughout</li>
+          <li>Express.js guide + Prisma docs — for backend/ORM specifics</li>
+          <li>Stripe's official integration guides — always cross-check AI-generated payment code against these</li>
+          <li>web.dev — for performance and accessibility fundamentals</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Communities</h3>
+        <ul class="plain">
+          <li>r/reactjs and r/node — implementation-specific troubleshooting</li>
+          <li>Indie Hackers — for launch and growth discussion from solo builders</li>
+          <li>Stripe Discord — payments-specific integration help</li>
+          <li>Local/regional dev meetups — for accountability and code review</li>
+        </ul>
+      </div>
+    </div>
+ 
+    <div class="card">
+      <h3>Search keywords for further research</h3>
+      <div>
+        <span class="pill">"React Node e-commerce architecture"</span>
+        <span class="pill">"Stripe webhook idempotency"</span>
+        <span class="pill">"Prisma transaction inventory"</span>
+        <span class="pill">"checkout UX best practices 2026"</span>
+        <span class="pill">"React cart state management patterns"</span>
+        <span class="pill">"Express production security checklist"</span>
+      </div>
+    </div>
+ 
+    <div class="card">
+      <h3>Additional AI prompts to keep handy</h3>
+      <span class="prompt-tag">Code review pass</span>
+      <div class="prompt-block">Review this file for security issues, unhandled edge cases, and performance problems before I ship it: [paste code]. Be specific about line numbers and severity.<button class="copy">Copy</button></div>
+      <span class="prompt-tag">Pre-launch checklist</span>
+      <div class="prompt-block">Given that I'm about to launch a React + Node e-commerce app, generate a pre-launch checklist covering security, performance, SEO, and legal basics (privacy policy, terms) I might be missing.<button class="copy">Copy</button></div>
+    </div>
+ 
+    <div class="card">
+      <h3>Future automation opportunities</h3>
+      <ul class="plain">
+        <li>AI-generated product descriptions and alt text at catalog scale once inventory grows.</li>
+        <li>Automated customer support triage (returns, order status) via an AI chatbot trained on your order data.</li>
+        <li>Dynamic pricing/inventory alerts using AI-flagged demand signals from analytics.</li>
+        <li>AI-assisted A/B test generation for checkout flow variants based on funnel drop-off points.</li>
+      </ul>
+    </div>
+ 
+    <div class="stage-nav">
+      <button class="btn" data-nav="s-summary">← Summary & Stack</button>
+      <button class="btn primary" data-nav="s-hero">Back to Introduction</button>
+    </div>
+  </section>
+ 
+  </main>
+</div>
+ 
+<script>
+(function(){
+  const STORAGE_KEY = 'awa_ecom_v1';
+  const stages = ['s-hero','s-1','s-2','s-3','s-4','s-5','s-6','s-7','s-8','s-9','s-summary','s-resources'];
+  const pipelineStages = [
+    {id:'s-1',tag:'01',name:'Planning'},
+    {id:'s-2',tag:'02',name:'Architecture'},
+    {id:'s-3',tag:'03',name:'UI/UX'},
+    {id:'s-4',tag:'04',name:'Frontend'},
+    {id:'s-5',tag:'05',name:'Backend'},
+    {id:'s-6',tag:'06',name:'Payments'},
+    {id:'s-7',tag:'07',name:'Testing'},
+    {id:'s-8',tag:'08',name:'Deploy'},
+    {id:'s-9',tag:'09',name:'Growth'},
+  ];
+ 
+  function loadState(){
+    try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {checks:{}, notes:{}, bookmarks:{}, theme:'dark'}; }
+    catch(e){ return {checks:{}, notes:{}, bookmarks:{}, theme:'dark'}; }
+  }
+  function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+  let state = loadState();
+ 
+  // Theme
+  function applyTheme(){
+    document.documentElement.setAttribute('data-theme', state.theme === 'light' ? 'light' : 'dark');
+    document.getElementById('themeToggle').textContent = state.theme === 'light' ? '☾ Dark' : '☀ Light';
+  }
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    state.theme = state.theme === 'light' ? 'dark' : 'light';
+    saveState(); applyTheme();
+  });
+  applyTheme();
+ 
+  // Print
+  document.getElementById('printBtn').addEventListener('click', function(){
+    document.querySelectorAll('.section').forEach(s=>s.classList.add('visible'));
+    window.print();
+    setTimeout(showSection.bind(null, currentSection), 300);
+  });
+ 
+  // Reset
+  document.getElementById('resetBtn').addEventListener('click', function(){
+    if(confirm('Reset all progress, notes, and bookmarks?')){
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    }
+  });
+ 
+  // Build pipeline diagram
+  const pipelineEl = document.getElementById('pipelineDiagram');
+  pipelineStages.forEach((s, i)=>{
+    const node = document.createElement('div');
+    node.className = 'pipe-node';
+    node.dataset.target = s.id;
+    node.innerHTML = '<div class="stage-tag">STAGE '+s.tag+'</div><div class="stage-name">'+s.name+'</div>' + (i < pipelineStages.length-1 ? '<div class="stage-arrow">→</div>':'');
+    node.addEventListener('click', ()=>showSection(s.id));
+    pipelineEl.appendChild(node);
+  });
+ 
+  // Navigation
+  let currentSection = 's-hero';
+  function showSection(id){
+    stages.forEach(s=>{
+      document.getElementById(s).classList.toggle('visible', s===id);
+    });
+    currentSection = id;
+    document.querySelectorAll('.navitem').forEach(n=>n.classList.toggle('active', n.dataset.target===id));
+    document.querySelectorAll('.pipe-node').forEach(n=>n.classList.toggle('current', n.dataset.target===id));
+    window.scrollTo({top:0, behavior:'smooth'});
+    document.getElementById('sidenav').classList.remove('open');
+  }
+  document.querySelectorAll('.navitem').forEach(n=>{
+    n.addEventListener('click', ()=>showSection(n.dataset.target));
+  });
+  document.querySelectorAll('[data-nav]').forEach(b=>{
+    b.addEventListener('click', ()=>showSection(b.dataset.nav));
+  });
+  document.getElementById('menuToggle').addEventListener('click', ()=>{
+    document.getElementById('sidenav').classList.toggle('open');
+  });
+ 
+  // Checkboxes
+  document.querySelectorAll('.tasklist input[type=checkbox]').forEach((cb, idx)=>{
+    const stage = cb.closest('.tasklist').dataset.stage;
+    const key = stage + '-' + idx;
+    cb.dataset.key = key;
+    if(state.checks[key]){ cb.checked = true; cb.closest('li').classList.add('checked'); }
+    cb.addEventListener('change', ()=>{
+      state.checks[key] = cb.checked;
+      cb.closest('li').classList.toggle('checked', cb.checked);
+      saveState();
+      updateProgress();
+    });
+  });
+ 
+  // Fix per-stage indexing (unique across stages since idx resets per NodeList iteration order overall, so re-key properly)
+  (function reindex(){
+    document.querySelectorAll('.tasklist').forEach(list=>{
+      const stage = list.dataset.stage;
+      list.querySelectorAll('input[type=checkbox]').forEach((cb,i)=>{
+        const key = 'stage'+stage+'-task'+i;
+        cb.dataset.key = key;
+        cb.checked = !!state.checks[key];
+        cb.closest('li').classList.toggle('checked', cb.checked);
+      });
+    });
+  })();
+  document.querySelectorAll('.tasklist input[type=checkbox]').forEach(cb=>{
+    cb.addEventListener('change', ()=>{
+      state.checks[cb.dataset.key] = cb.checked;
+      cb.closest('li').classList.toggle('checked', cb.checked);
+      saveState();
+      updateProgress();
+    });
+  });
+ 
+  function updateProgress(){
+    let startedCount = 0;
+    document.querySelectorAll('.navitem[data-target^="s-"]').forEach(n=>{
+      const target = n.dataset.target;
+      const match = target.match(/^s-(\d)$/);
+      if(!match) return;
+      const stageNum = match[1];
+      const list = document.querySelector('.tasklist[data-stage="'+stageNum+'"]');
+      if(!list) return;
+      const boxes = list.querySelectorAll('input[type=checkbox]');
+      const checkedCount = list.querySelectorAll('input[type=checkbox]:checked').length;
+      n.classList.toggle('done', checkedCount === boxes.length && boxes.length>0);
+      if(checkedCount>0) startedCount++;
+    });
+    const fill = document.getElementById('progressFill');
+    const pct = Math.round((startedCount/9)*100);
+    fill.style.width = pct+'%';
+    document.getElementById('progressText').textContent = startedCount + ' / 9 stages started';
+  }
+  updateProgress();
+ 
+  // Notes
+  document.querySelectorAll('.notes-area').forEach(area=>{
+    const key = area.dataset.notes;
+    if(state.notes[key]) area.value = state.notes[key];
+    area.addEventListener('input', ()=>{
+      state.notes[key] = area.value;
+      saveState();
+    });
+  });
+ 
+  // Bookmarks
+  document.querySelectorAll('.bookmark-btn').forEach(btn=>{
+    const key = btn.dataset.bookmark;
+    if(state.bookmarks[key]){ btn.classList.add('on'); btn.textContent = '★ Bookmarked'; }
+    btn.addEventListener('click', ()=>{
+      state.bookmarks[key] = !state.bookmarks[key];
+      btn.classList.toggle('on', state.bookmarks[key]);
+      btn.textContent = state.bookmarks[key] ? '★ Bookmarked' : '☆ Bookmark this stage';
+      saveState();
+    });
+  });
+ 
+  // Copy buttons
+  document.querySelectorAll('.prompt-block .copy').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const block = btn.closest('.prompt-block');
+      const text = block.textContent.replace('Copy','').trim();
+      navigator.clipboard.writeText(text).then(()=>{
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(()=>btn.textContent = orig, 1500);
+      });
+    });
+  });
+ 
+  // Decision tree
+  const treeAnswers = {
+    yes: 'Go with <b>PostgreSQL + JSONB columns</b> for variant/attribute data, or consider a hybrid: Postgres for orders/users, and a document store (MongoDB) just for the flexible product catalog. Avoid pure MongoDB for orders — you want transactional guarantees there.',
+    no: 'Go with a fully <b>relational schema in PostgreSQL</b> (Product, Variant, Category as normal tables). This keeps queries simple, gives you strong consistency for inventory/orders, and is the easiest to reason about for a solo builder.'
+  };
+  document.querySelectorAll('.tree-branch button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const result = document.getElementById('treeResult');
+      result.innerHTML = treeAnswers[btn.dataset.answer];
+      result.classList.add('show');
+    });
+  });
+ 
+  showSection('s-hero');
+})();
+</script>
+</body>
+</html>
+ 
