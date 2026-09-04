@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Intelligence Studio — Editorial Review Desk</title>
+<style>
+  :root[data-theme="dark"]{
+    --bg:#0B0C10;
+    --bg-2:#0E1015;
+    --surface:#14161C;
+    --surface-2:#1B1E26;
+    --surface-3:#20232C;
+    --border:#272B35;
+    --border-soft:#1E212A;
+    --text:#ECEDF2;
+    --text-dim:#9297A6;
+    --text-faint:#5C616F;
+    --red:#D6483A;
+    --red-soft:rgba(214,72,58,0.14);
+    --gold:#DBAA4C;
+    --gold-soft:rgba(219,170,76,0.14);
+    --green:#4FAE7B;
+    --green-soft:rgba(79,174,123,0.14);
+    --shadow:0 20px 50px -20px rgba(0,0,0,0.6);
+  }
+  :root[data-theme="light"]{
+    --bg:#F2EDE0;
+    --bg-2:#EDE7D6;
+    --surface:#FBF8EF;
+    --surface-2:#F3EDDC;
+    --surface-3:#ECE4CF;
+    --border:#DCD2B6;
+    --border-soft:#E5DCC4;
+    --text:#211E17;
+    --text-dim:#6B6353;
+    --text-faint:#948C77;
+    --red:#B03325;
+    --red-soft:rgba(176,51,37,0.10);
+    --gold:#9C7420;
+    --gold-soft:rgba(156,116,32,0.12);
+    --green:#3D7F58;
+    --green-soft:rgba(61,127,88,0.12);
+    --shadow:0 20px 50px -25px rgba(60,50,20,0.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 15% -10%, var(--bg-2), transparent),
+      var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.5;
+    min-height:100vh;
+    transition:background .4s ease,color .4s ease;
+  }
+  .font-display{font-family:ui-serif,Georgia,"Iowan Old Style","Times New Roman",serif;}
+  .font-mono{font-family:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;}
+  ::selection{background:var(--red);color:#fff;}
+  a{color:inherit;}
+  button{font-family:inherit;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+
+  /* ===== Masthead ===== */
+  .masthead{
+    border-bottom:1px solid var(--border);
+    padding:22px 6vw 18px;
+    position:relative;
+  }
+  .masthead-top{
+    display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap;
+  }
+  .brand{display:flex; flex-direction:column; gap:2px;}
+  .brand .eyebrow{
+    font-family:ui-monospace,monospace; font-size:11px; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--red); font-weight:600;
+  }
+  .brand h1{
+    font-family:ui-serif,Georgia,serif; font-size:clamp(26px,4vw,40px); margin:2px 0 0;
+    letter-spacing:.01em; font-weight:600;
+  }
+  .masthead-meta{
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  }
+  .theme-toggle{
+    display:flex; align-items:center; gap:8px;
+    border:1px solid var(--border); background:var(--surface);
+    border-radius:100px; padding:6px 6px; cursor:pointer;
+  }
+  .theme-toggle button{
+    border:none; background:transparent; color:var(--text-dim); font-size:12px; letter-spacing:.05em;
+    padding:6px 12px; border-radius:100px; cursor:pointer; font-family:ui-monospace,monospace; text-transform:uppercase;
+    transition:.2s;
+  }
+  .theme-toggle button.active{background:var(--red); color:#fff;}
+  .stamp{
+    font-family:ui-monospace,monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+    color:var(--red); border:1.5px solid var(--red); padding:6px 12px;
+    border-radius:3px 9px 5px 10px; transform:rotate(-3deg); display:inline-block;
+    background:var(--red-soft);
+    font-weight:700;
+  }
+  .masthead-rule{
+    margin-top:16px; height:1px; background:linear-gradient(90deg,var(--border),transparent 90%);
+  }
+  .masthead-sub{
+    margin-top:8px; font-size:12.5px; color:var(--text-faint); font-family:ui-monospace,monospace;
+    letter-spacing:.03em;
+  }
+
+  /* ===== Layout ===== */
+  .stage{padding:40px 6vw 100px; max-width:1180px; margin:0 auto;}
+  .view{display:none;}
+  .view.active{display:block; animation:fadeUp .5s ease;}
+  @keyframes fadeUp{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+
+  .panel{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:28px; box-shadow:var(--shadow);
+  }
+  .panel + .panel{margin-top:22px;}
+  .panel h2{
+    font-family:ui-serif,Georgia,serif; font-size:22px; margin:0 0 4px; font-weight:600;
+  }
+  .panel .desc{color:var(--text-dim); font-size:13.5px; margin:0 0 22px;}
+
+  /* ===== Form ===== */
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  @media (max-width:720px){.grid2{grid-template-columns:1fr;}}
+  .field{display:flex; flex-direction:column; gap:7px;}
+  .field label{
+    font-size:11.5px; text-transform:uppercase; letter-spacing:.1em; color:var(--text-faint);
+    font-family:ui-monospace,monospace; font-weight:600;
+  }
+  select, textarea, input[type=text]{
+    background:var(--surface-2); border:1px solid var(--border); color:var(--text);
+    border-radius:8px; padding:11px 13px; font-size:14.5px; font-family:inherit; width:100%;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  select:focus, textarea:focus, input:focus{
+    outline:none; border-color:var(--red); box-shadow:0 0 0 3px var(--red-soft);
+  }
+  textarea{resize:vertical; min-height:130px; line-height:1.55;}
+  .charcount{font-size:11px; color:var(--text-faint); text-align:right; font-family:ui-monospace,monospace;}
+
+  .dropzone{
+    border:1.5px dashed var(--border); border-radius:10px; padding:26px; text-align:center;
+    cursor:pointer; color:var(--text-dim); font-size:13.5px; transition:.2s; background:var(--surface-2);
+  }
+  .dropzone.drag{border-color:var(--red); background:var(--red-soft); color:var(--red);}
+  .dropzone strong{color:var(--text);}
+  .preview-wrap{margin-top:12px; display:none; position:relative;}
+  .preview-wrap.show{display:inline-block;}
+  .preview-wrap img{max-width:220px; max-height:220px; border-radius:10px; border:1px solid var(--border); display:block;}
+  .preview-remove{
+    position:absolute; top:-8px; right:-8px; background:var(--red); color:#fff; border:none;
+    width:24px; height:24px; border-radius:50%; cursor:pointer; font-size:13px; line-height:1;
+  }
+
+  .btn{
+    border:none; border-radius:9px; padding:13px 26px; font-size:14.5px; font-weight:600; cursor:pointer;
+    font-family:inherit; transition:.2s; letter-spacing:.01em;
+  }
+  .btn-primary{background:var(--red); color:#fff;}
+  .btn-primary:hover{filter:brightness(1.08); transform:translateY(-1px);}
+  .btn-primary:disabled{opacity:.5; cursor:not-allowed; transform:none;}
+  .btn-ghost{background:transparent; border:1px solid var(--border); color:var(--text);}
+  .btn-ghost:hover{border-color:var(--text-dim);}
+  .btn-row{display:flex; gap:12px; align-items:center; margin-top:24px; flex-wrap:wrap;}
+  .error-box{
+    background:var(--red-soft); border:1px solid var(--red); color:var(--red); border-radius:9px;
+    padding:14px 16px; font-size:13.5px; margin-top:16px;
+  }
+
+  /* ===== Running view ===== */
+  .roster{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px; margin-top:6px;}
+  .ticket{
+    border:1px solid var(--border); background:var(--surface-2); border-radius:10px; padding:16px;
+    border-left:3px solid var(--text-faint); transition:.3s;
+  }
+  .ticket[data-status="reviewing"]{border-left-color:var(--gold); background:var(--gold-soft);}
+  .ticket[data-status="filed"]{border-left-color:var(--green);}
+  .ticket[data-status="failed"]{border-left-color:var(--red);}
+  .ticket-role{font-weight:700; font-size:14.5px; margin-bottom:4px;}
+  .ticket-mandate{font-size:12.5px; color:var(--text-dim); margin-bottom:10px; min-height:32px;}
+  .ticket-foot{display:flex; justify-content:space-between; align-items:center;}
+  .tag{
+    font-family:ui-monospace,monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--text-faint); border:1px solid var(--border); padding:3px 8px; border-radius:20px;
+  }
+  .status-pill{
+    font-family:ui-monospace,monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.08em;
+    padding:3px 9px; border-radius:20px; display:inline-flex; align-items:center; gap:6px; font-weight:700;
+  }
+  .status-pill .dot{width:6px; height:6px; border-radius:50%; background:currentColor;}
+  .status-pill.queued{color:var(--text-faint); background:var(--surface-3);}
+  .status-pill.reviewing{color:var(--gold); background:var(--gold-soft);}
+  .status-pill.reviewing .dot{animation:pulse 1s infinite;}
+  .status-pill.filed{color:var(--green); background:var(--green-soft);}
+  .status-pill.failed{color:var(--red); background:var(--red-soft);}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:.25;}}
+
+  .log{
+    margin-top:24px; background:var(--bg-2); border:1px solid var(--border); border-radius:10px;
+    padding:16px 18px; height:190px; overflow-y:auto; font-family:ui-monospace,monospace; font-size:12.5px;
+  }
+  .log-line{color:var(--text-dim); margin-bottom:7px; display:flex; gap:8px;}
+  .log-line .t{color:var(--text-faint); flex-shrink:0;}
+  .log-line.warn{color:var(--gold);}
+  .log-line.err{color:var(--red);}
+  .log-line.ok{color:var(--green);}
+
+  /* ===== Verdict dial ===== */
+  .verdict-row{display:flex; gap:32px; align-items:center; flex-wrap:wrap;}
+  .dial-wrap{position:relative; width:168px; height:168px; flex-shrink:0;}
+  .dial-num{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .dial-num .n{font-family:ui-serif,Georgia,serif; font-size:44px; font-weight:700; line-height:1;}
+  .dial-num .of{font-family:ui-monospace,monospace; font-size:11px; color:var(--text-faint); letter-spacing:.1em;}
+  .verdict-text{flex:1; min-width:220px;}
+  .verdict-text .stamp{margin-bottom:10px;}
+  .verdict-text p{font-size:15.5px; margin:0; color:var(--text); font-family:ui-serif,Georgia,serif;}
+
+  /* ===== Reviewer accordion ===== */
+  .case-file{border:1px solid var(--border); border-radius:10px; margin-top:12px; overflow:hidden; background:var(--surface-2);}
+  .case-head{
+    display:flex; align-items:center; justify-content:space-between; padding:16px 18px; cursor:pointer; gap:16px;
+  }
+  .case-head:hover{background:var(--surface-3);}
+  .case-head-left{display:flex; align-items:center; gap:14px; flex:1; min-width:0;}
+  .score-chip{
+    font-family:ui-monospace,monospace; font-weight:700; font-size:14px; width:44px; height:44px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0; border:2px solid var(--border);
+  }
+  .case-role{font-weight:700; font-size:15px;}
+  .case-verdict{font-size:12.5px; color:var(--text-dim); margin-top:2px; font-style:italic;}
+  .chevron{transition:.25s; color:var(--text-faint); flex-shrink:0;}
+  .case-file.open .chevron{transform:rotate(180deg);}
+  .case-body{max-height:0; overflow:hidden; transition:max-height .35s ease;}
+  .case-body-inner{padding:0 18px 20px; display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  @media (max-width:640px){.case-body-inner{grid-template-columns:1fr;}}
+  .col-title{
+    font-family:ui-monospace,monospace; font-size:11px; text-transform:uppercase; letter-spacing:.1em;
+    margin-bottom:8px; font-weight:700;
+  }
+  .col-title.str{color:var(--green);}
+  .col-title.weak{color:var(--red);}
+  .col-title.miss{color:var(--gold);}
+  ul.bullets{margin:0; padding-left:18px; font-size:13.5px; color:var(--text-dim);}
+  ul.bullets li{margin-bottom:6px;}
+  .rec-box{grid-column:1 / -1; background:var(--surface); border:1px solid var(--border-soft); border-radius:8px; padding:14px 16px; font-size:13.5px; color:var(--text);}
+  .rec-box .col-title{color:var(--text-faint);}
+
+  /* ===== Final report grid ===== */
+  .report-grid{display:grid; grid-template-columns:1.4fr 1fr; gap:22px; margin-top:22px;}
+  @media (max-width:900px){.report-grid{grid-template-columns:1fr;}}
+  .imp-list{list-style:none; margin:0; padding:0; counter-reset:imp;}
+  .imp-list li{
+    counter-increment:imp; padding:12px 0 12px 40px; position:relative; border-bottom:1px solid var(--border-soft);
+    font-size:14px;
+  }
+  .imp-list li:last-child{border-bottom:none;}
+  .imp-list li::before{
+    content:counter(imp); position:absolute; left:0; top:10px; width:26px; height:26px; border-radius:50%;
+    background:var(--red-soft); color:var(--red); font-family:ui-monospace,monospace; font-weight:700; font-size:12.5px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .compare{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  @media (max-width:640px){.compare{grid-template-columns:1fr;}}
+  .compare-col{border:1px solid var(--border); border-radius:10px; padding:16px; background:var(--surface-2);}
+  .compare-col.before{border-color:var(--border);}
+  .compare-col.after{border-color:var(--green); background:var(--green-soft);}
+  .compare-label{font-family:ui-monospace,monospace; font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:var(--text-faint); margin-bottom:10px; font-weight:700;}
+  .compare-col.after .compare-label{color:var(--green);}
+  .compare-text{font-size:13.5px; white-space:pre-wrap; line-height:1.6;}
+  .hooks-list{list-style:none; margin:0; padding:0;}
+  .hooks-list li{
+    display:flex; justify-content:space-between; align-items:flex-start; gap:10px; padding:11px 0;
+    border-bottom:1px solid var(--border-soft); font-size:13.5px;
+  }
+  .hooks-list li:last-child{border-bottom:none;}
+  .copy-btn{
+    flex-shrink:0; border:1px solid var(--border); background:var(--surface); color:var(--text-dim);
+    font-size:11px; padding:5px 10px; border-radius:6px; cursor:pointer; font-family:ui-monospace,monospace;
+  }
+  .copy-btn:hover{border-color:var(--red); color:var(--red);}
+  .checklist{list-style:none; margin:0; padding:0;}
+  .checklist li{display:flex; gap:10px; align-items:flex-start; padding:9px 0; font-size:13.5px;}
+  .checklist input{margin-top:3px; accent-color:var(--green); width:16px; height:16px; flex-shrink:0;}
+  .checklist label.done{text-decoration:line-through; color:var(--text-faint);}
+  .perf-card{background:var(--gold-soft); border:1px solid var(--gold); border-radius:10px; padding:16px 18px; font-size:13.5px;}
+  .perf-card .stamp{border-color:var(--gold); color:var(--gold); background:transparent;}
+  .chip-row{display:flex; flex-wrap:wrap; gap:10px;}
+  .chip{
+    border:1px solid var(--border); background:var(--surface-2); border-radius:20px; padding:9px 15px;
+    font-size:12.5px; cursor:pointer; color:var(--text-dim); transition:.2s;
+  }
+  .chip:hover{border-color:var(--red); color:var(--red);}
+
+  .section-title{
+    font-family:ui-monospace,monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:.12em;
+    color:var(--text-faint); margin:0 0 12px; font-weight:700; display:flex; align-items:center; gap:10px;
+  }
+  .section-title::after{content:""; flex:1; height:1px; background:var(--border);}
+  .thumb-row{display:flex; gap:16px; align-items:center; margin-bottom:18px; flex-wrap:wrap;}
+  .thumb-row img{width:64px; height:64px; object-fit:cover; border-radius:8px; border:1px solid var(--border);}
+  .thumb-meta{font-size:12.5px; color:var(--text-dim); font-family:ui-monospace,monospace;}
+
+  .top-actions{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:12px;}
+  .spinner{
+    width:15px; height:15px; border:2px solid rgba(255,255,255,0.35); border-top-color:#fff; border-radius:50%;
+    animation:spin .7s linear infinite; display:inline-block; vertical-align:-2px; margin-right:8px;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .skeleton{background:linear-gradient(90deg,var(--surface-2) 25%,var(--surface-3) 50%,var(--surface-2) 75%); background-size:200% 100%; animation:shimmer 1.4s infinite;}
+  @keyframes shimmer{0%{background-position:200% 0;} 100%{background-position:-200% 0;}}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-top">
+    <div class="brand">
+      <span class="eyebrow">AI Editorial Review Desk</span>
+      <h1 class="font-display">Content Intelligence Studio</h1>
+    </div>
+    <div class="masthead-meta">
+      <span class="stamp" id="critiqueStamp">Brutally Honest</span>
+      <div class="theme-toggle">
+        <button data-theme-btn="dark" class="active">Dark</button>
+        <button data-theme-btn="light">Paper</button>
+      </div>
+    </div>
+  </div>
+  <div class="masthead-rule"></div>
+  <div class="masthead-sub" id="mastheadSub">No submission logged yet — awaiting intake.</div>
+</header>
+
+<main class="stage">
+
+  <!-- INTAKE -->
+  <section class="view active" id="view-intake">
+    <div class="panel">
+      <h2>Submission Intake</h2>
+      <p class="desc">Tell us what we're reviewing. Claude will assemble a bespoke panel of specialist reviewers for this exact brief — nothing generic, nothing canned.</p>
+
+      <div class="grid2">
+        <div class="field">
+          <label for="contentType">Content type</label>
+          <select id="contentType">
+            <option>Social media post (caption/copy)</option>
+            <option>Video (title/thumbnail/script)</option>
+            <option>Blog/article or newsletter</option>
+            <option value="other">Other…</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="platform">Platform</label>
+          <select id="platform">
+            <option>LinkedIn</option>
+            <option>Instagram</option>
+            <option>X (Twitter)</option>
+            <option value="other">Other…</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="goal">Primary goal</label>
+          <select id="goal">
+            <option>Maximize reach/virality</option>
+            <option>Build personal brand/authority</option>
+            <option>Drive engagement (comments/shares)</option>
+            <option value="other">Other…</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="critique">Review intensity</label>
+          <select id="critique">
+            <option value="brutal" selected>Brutally honest (harsh, high bar)</option>
+            <option value="balanced">Balanced and constructive</option>
+            <option value="encouraging">Encouraging but thorough</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field" id="otherTypeWrap" style="display:none; margin-top:16px;">
+        <label for="otherType">Specify content type / platform / goal</label>
+        <input type="text" id="otherType" placeholder="e.g. Podcast trailer for YouTube Shorts, goal: newsletter signups">
+      </div>
+
+      <div class="field" style="margin-top:18px;">
+        <label for="captionText">Content text (caption / copy / script)</label>
+        <textarea id="captionText" placeholder="Paste the exact caption or copy you want reviewed…"></textarea>
+        <div class="charcount" id="charcount">0 characters</div>
+      </div>
+
+      <div class="field" style="margin-top:6px;">
+        <label>Visual asset (optional — image or screenshot)</label>
+        <div class="dropzone" id="dropzone">
+          <strong>Click to upload</strong> or drag an image here — thumbnail, post graphic, or screenshot.
+          <div class="preview-wrap" id="previewWrap">
+            <img id="previewImg" alt="Uploaded preview">
+            <button class="preview-remove" id="previewRemove" title="Remove">✕</button>
+          </div>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" style="display:none;">
+      </div>
+
+      <div id="intakeError"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="runBtn">Run Editorial Review</button>
+        <span style="font-size:12px; color:var(--text-faint);">Live calls to Claude — no placeholder scoring, ever.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- RUNNING -->
+  <section class="view" id="view-running">
+    <div class="panel">
+      <h2>Assembling the Review Board</h2>
+      <p class="desc" id="runningDesc">Claude is designing a review workflow tailored to your submission.</p>
+      <div class="roster" id="roster"></div>
+      <div class="log" id="log"></div>
+      <div id="runningError"></div>
+    </div>
+  </section>
+
+  <!-- REPORT -->
+  <section class="view" id="view-report">
+    <div class="panel">
+      <div class="top-actions">
+        <h2 style="margin:0;">Final Verdict</h2>
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-ghost" id="newReviewBtn">New Review</button>
+        </div>
+      </div>
+      <div class="thumb-row" id="reportThumbRow"></div>
+      <div class="verdict-row">
+        <div class="dial-wrap">
+          <svg width="168" height="168" viewBox="0 0 168 168">
+            <circle cx="84" cy="84" r="72" fill="none" stroke="var(--border)" stroke-width="14"/>
+            <circle id="dialArc" cx="84" cy="84" r="72" fill="none" stroke="var(--red)" stroke-width="14"
+              stroke-linecap="round" stroke-dasharray="452" stroke-dashoffset="452"
+              transform="rotate(-90 84 84)" style="transition:stroke-dashoffset 1.2s ease, stroke 1.2s ease;"/>
+          </svg>
+          <div class="dial-num">
+            <span class="n" id="dialScore">–</span>
+            <span class="of">/ 100</span>
+          </div>
+        </div>
+        <div class="verdict-text">
+          <span class="stamp" id="verdictStamp">Verdict</span>
+          <p id="execSummary">—</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="section-title">Reviewer Case Files</div>
+      <div id="caseFiles"></div>
+    </div>
+
+    <div class="panel">
+      <div class="section-title">Content Health Report</div>
+      <p id="healthReport" style="font-size:14.5px; color:var(--text-dim); margin:0;"></p>
+    </div>
+
+    <div class="report-grid">
+      <div class="panel" style="margin-top:0;">
+        <div class="section-title">Highest-Impact Improvements</div>
+        <ol class="imp-list" id="impList"></ol>
+      </div>
+      <div class="panel" style="margin-top:0;">
+        <div class="section-title">Predicted Performance</div>
+        <div class="perf-card">
+          <span class="stamp" style="margin-bottom:10px;">AI Estimate</span>
+          <p id="perfText" style="margin:0;"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="section-title">Before vs. After</div>
+      <div class="compare">
+        <div class="compare-col before">
+          <div class="compare-label">Original</div>
+          <div class="compare-text" id="beforeText"></div>
+        </div>
+        <div class="compare-col after">
+          <div class="compare-label">Claude Rewrite</div>
+          <div class="compare-text" id="afterText"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="report-grid">
+      <div class="panel" style="margin-top:0;">
+        <div class="section-title">Alternative Hooks</div>
+        <ul class="hooks-list" id="hooksList"></ul>
+      </div>
+      <div class="panel" style="margin-top:0;">
+        <div class="section-title">Publishing Checklist</div>
+        <ul class="checklist" id="checklist"></ul>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="section-title">Go Deeper</div>
+      <p class="desc" style="margin-bottom:14px;">Follow-up prompts to keep refining this content — tap to copy.</p>
+      <div class="chip-row" id="deeperPrompts"></div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  const MODEL = "claude-sonnet-4-6";
+  const API_URL = "https://api.anthropic.com/v1/messages";
+
+  const state = {
+    imageBase64: null,
+    imageMediaType: null,
+    reviewers: [],
+    results: []
+  };
+
+  /* ---------- helpers ---------- */
+  function $(id){ return document.getElementById(id); }
+  function escapeHtml(str){
+    return (str||"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  }
+  function nl2br(str){ return escapeHtml(str).replace(/\n/g,"<br>"); }
+
+  function extractSection(text, marker){
+    const re = new RegExp("###" + marker + "###\\s*([\\s\\S]*?)(?=\\n?###[A-Z_]+###|$)");
+    const m = text.match(re);
+    return m ? m[1].trim() : "";
+  }
+  function bulletsFrom(block, fallbackWhole){
+    let lines = block.split("\n").map(l=>l.trim()).filter(Boolean);
+    let dashed = lines.filter(l=>/^[-•]/.test(l)).map(l=>l.replace(/^[-•]\s*/,"").trim());
+    if (dashed.length) return dashed;
+    if (fallbackWhole && block.trim()) return [block.trim()];
+    return [];
+  }
+  function scoreColor(score){
+    if (score >= 75) return "var(--green)";
+    if (score >= 50) return "var(--gold)";
+    return "var(--red)";
+  }
+
+  /* ---------- theme ---------- */
+  document.querySelectorAll("[data-theme-btn]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const theme = btn.getAttribute("data-theme-btn");
+      document.documentElement.setAttribute("data-theme", theme);
+      document.querySelectorAll("[data-theme-btn]").forEach(b=>b.classList.toggle("active", b===btn));
+    });
+  });
+
+  /* ---------- intake interactivity ---------- */
+  const contentType = $("contentType"), platform = $("platform"), goal = $("goal"), critique = $("critique");
+  const otherTypeWrap = $("otherTypeWrap"), otherType = $("otherType");
+  function syncOther(){
+    const needsOther = contentType.value==="other" || platform.value==="other" || goal.value==="other";
+    otherTypeWrap.style.display = needsOther ? "flex" : "none";
+  }
+  [contentType, platform, goal].forEach(el=>el.addEventListener("change", syncOther));
+
+  const stampLabels = {brutal:"Brutally Honest", balanced:"Balanced Review", encouraging:"Encouraging Review"};
+  critique.addEventListener("change", ()=>{ $("critiqueStamp").textContent = stampLabels[critique.value]; });
+
+  const captionText = $("captionText"), charcount = $("charcount");
+  captionText.addEventListener("input", ()=>{ charcount.textContent = captionText.value.length + " characters"; });
+
+  /* ---------- image upload ---------- */
+  const dropzone = $("dropzone"), fileInput = $("fileInput"), previewWrap = $("previewWrap"),
+        previewImg = $("previewImg"), previewRemove = $("previewRemove");
+
+  dropzone.addEventListener("click", (e)=>{ if(e.target!==previewRemove) fileInput.click(); });
+  dropzone.addEventListener("dragover", e=>{ e.preventDefault(); dropzone.classList.add("drag"); });
+  dropzone.addEventListener("dragleave", ()=> dropzone.classList.remove("drag"));
+  dropzone.addEventListener("drop", e=>{
+    e.preventDefault(); dropzone.classList.remove("drag");
+    if(e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener("change", e=>{ if(e.target.files[0]) handleFile(e.target.files[0]); });
+  previewRemove.addEventListener("click", e=>{
+    e.stopPropagation();
+    state.imageBase64 = null; state.imageMediaType = null;
+    previewWrap.classList.remove("show"); previewImg.src=""; fileInput.value="";
+  });
+
+  function handleFile(file){
+    if(!file.type.startsWith("image/")){ showIntakeError("Please upload an image file."); return; }
+    if(file.size > 8*1024*1024){ showIntakeError("Image is too large — please keep it under 8MB."); return; }
+    clearIntakeError();
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      const dataUrl = reader.result;
+      state.imageBase64 = dataUrl.split(",")[1];
+      state.imageMediaType = file.type;
+      previewImg.src = dataUrl;
+      previewWrap.classList.add("show");
+    };
+    reader.onerror = ()=> showIntakeError("Could not read that image — please try another file.");
+    reader.readAsDataURL(file);
+  }
+
+  function showIntakeError(msg){ $("intakeError").innerHTML = '<div class="error-box">'+escapeHtml(msg)+'</div>'; }
+  function clearIntakeError(){ $("intakeError").innerHTML = ""; }
+  function showRunningError(msg, retryFn){
+    const box = $("runningError");
+    box.innerHTML = '<div class="error-box">'+escapeHtml(msg)+'</div>';
+    if(retryFn){
+      const btn = document.createElement("button");
+      btn.className = "btn btn-ghost"; btn.style.marginTop="12px"; btn.textContent="Retry";
+      btn.addEventListener("click", ()=>{ box.innerHTML=""; retryFn(); });
+      box.querySelector(".error-box").appendChild(document.createElement("br"));
+      box.appendChild(btn);
+    }
+  }
+
+  /* ---------- Claude API ---------- */
+  async function callClaude(system, userContentBlocks, maxTokens, retries){
+    retries = retries===undefined ? 2 : retries;
+    let lastErr;
+    for(let attempt=0; attempt<=retries; attempt++){
+      try{
+        const resp = await fetch(API_URL, {
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({
+            model: MODEL,
+            max_tokens: maxTokens || 1200,
+            system: system,
+            messages: [{ role:"user", content: userContentBlocks }]
+          })
+        });
+        if(!resp.ok){
+          let detail = "";
+          try{ const j = await resp.json(); detail = j?.error?.message || ""; }catch(e){}
+          throw new Error("API error " + resp.status + (detail? (": "+detail) : ""));
+        }
+        const data = await resp.json();
+        const text = (data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("\n").trim();
+        if(!text) throw new Error("Empty response from model");
+        return text;
+      }catch(err){
+        lastErr = err;
+        if(attempt < retries){
+          logLine("Retrying after: " + err.message, "warn");
+          await new Promise(r=>setTimeout(r, 700*(attempt+1)));
+        }
+      }
+    }
+    throw lastErr;
+  }
+
+  function buildUserBlocks(promptText, includeImage){
+    const blocks = [];
+    if(includeImage && state.imageBase64){
+      blocks.push({ type:"image", source:{ type:"base64", media_type: state.imageMediaType, data: state.imageBase64 } });
+    }
+    blocks.push({ type:"text", text: promptText });
+    return blocks;
+  }
+
+  /* ---------- activity log ---------- */
+  function logLine(msg, kind){
+    const log = $("log");
+    const div = document.createElement("div");
+    div.className = "log-line" + (kind? " "+kind : "");
+    const time = new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit",second:"2-digit"});
+    div.innerHTML = '<span class="t">'+time+'</span><span>'+escapeHtml(msg)+'</span>';
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  /* ---------- view switching ---------- */
+  function showView(id){
+    document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+    $(id).classList.add("active");
+    window.scrollTo({top:0, behavior:"smooth"});
+  }
+
+  /* ---------- brief context ---------- */
+  function briefSummary(){
+    const ct = contentType.value==="other" ? (otherType.value||"custom content") : contentType.value;
+    const pl = platform.value==="other" ? (otherType.value||"a custom platform") : platform.value;
+    const gl = goal.value==="other" ? (otherType.value||"a custom goal") : goal.value;
+    const critMap = {
+      brutal: "Brutally honest — apply a high bar as a top-tier publication would, do not soften scores or inflate praise, call out weaknesses specifically and directly.",
+      balanced: "Balanced and constructive — be honest about weaknesses but frame feedback constructively.",
+      encouraging: "Encouraging but thorough — lead with what's working, but never skip real issues."
+    };
+    return {
+      contentType: ct, platform: pl, goal: gl,
+      critiqueLabel: critique.value,
+      critiqueInstruction: critMap[critique.value],
+      hasImage: !!state.imageBase64,
+      text: captionText.value.trim()
+    };
+  }
+
+  /* ---------- Stage 1: orchestrator ---------- */
+  async function planReviewers(brief){
+    const system = "You are the Chief Editorial Strategist at an elite content consultancy that reviews high-stakes content before publication. Given a content brief, design a multi-stage review workflow using specialized reviewer roles, each an expert in one distinct dimension relevant to THIS specific content, platform, and goal. Choose between 4 and 6 reviewers — tailored, not generic filler. If a visual asset is part of the submission, include at least one reviewer whose focus is visual analysis and mark that reviewer as needing the image. Respond in plain text only — no JSON, no markdown, no code fences, no numbering, no extra commentary. Output exactly one line per reviewer using this exact pipe-delimited format and nothing else: ROLE_NAME | ONE_LINE_MANDATE | THREE_WORD_FOCUS_TAG | IMAGE_YES_OR_NO";
+
+    const prompt = "CONTENT BRIEF\nContent type: " + brief.contentType +
+      "\nPlatform: " + brief.platform +
+      "\nCreator's goal: " + brief.goal +
+      "\nVisual asset attached: " + (brief.hasImage ? "yes" : "no") +
+      "\n\nDesign the review board now, following the exact output format specified.";
+
+    const raw = await callClaude(system, buildUserBlocks(prompt, false), 500, 2);
+    const lines = raw.split("\n").map(l=>l.trim()).filter(l=>l.includes("|"));
+    let reviewers = lines.map(l=>{
+      const parts = l.split("|").map(p=>p.trim());
+      return {
+        role: parts[0] || "Specialist Reviewer",
+        mandate: parts[1] || "Reviews the content for quality and fit.",
+        focus: parts[2] || "General Quality",
+        needsImage: /y/i.test(parts[3]||"")
+      };
+    }).filter(r=>r.role.length>1);
+
+    if(reviewers.length < 3){
+      logLine("Board format unclear — falling back to a standard editorial roster.", "warn");
+      reviewers = [
+        { role:"Hook & Structure Reviewer", mandate:"Evaluates opening line strength and structural flow.", focus:"Hook Structure Flow", needsImage:false },
+        { role:"Visual Impact Reviewer", mandate:"Evaluates the attached visual asset's stopping power.", focus:"Visual Impact Fit", needsImage: brief.hasImage },
+        { role:"Algorithmic Fit Reviewer", mandate:"Evaluates fit with platform distribution mechanics.", focus:"Platform Algorithm Fit", needsImage:false },
+        { role:"Voice & Authenticity Reviewer", mandate:"Evaluates tone, credibility, and authenticity.", focus:"Voice Authenticity Trust", needsImage:false }
+      ];
+    }
+    if(!brief.hasImage) reviewers.forEach(r=>r.needsImage=false);
+    return reviewers.slice(0,6);
+  }
+
+  /* ---------- Stage 2: reviewer execution ---------- */
+  async function runReviewer(reviewer, brief, index, total){
+    const system = "You are " + reviewer.role + ", " + reviewer.mandate + " You are conducting stage " + (index+1) + " of " + total + " in an elite editorial review of a " + brief.contentType + " intended for " + brief.platform + ", where the creator's stated goal is: " + brief.goal + ". Review tone: " + brief.critiqueInstruction + " Analyze strictly within your specialized focus (" + reviewer.focus + ") — do not comment outside your lane, other specialists cover other dimensions. If an image is provided, analyze its actual visual content directly. Respond in plain text only. No JSON, no markdown, no asterisks, no code fences. Use exactly this template, each marker on its own line exactly as written, nothing before or after:\n###SCORE###\n<a single integer 0-100>\n###VERDICT###\n<one punchy sentence verdict, in your voice>\n###STRENGTHS###\n<2-4 lines, each starting with a dash>\n###WEAKNESSES###\n<2-4 lines, each starting with a dash>\n###MISSED_OPPORTUNITIES###\n<1-3 lines, each starting with a dash>\n###RECOMMENDATION###\n<one specific, actionable paragraph, 2-4 sentences>";
+
+    const prompt = "Here is the content to review.\n\nCAPTION / COPY:\n\"" + brief.text + "\"" +
+      (reviewer.needsImage && brief.hasImage ? "\n\nA visual asset is attached above — analyze it directly as part of your review." : "");
+
+    const raw = await callClaude(system, buildUserBlocks(prompt, reviewer.needsImage), 900, 2);
+    const scoreRaw = extractSection(raw, "SCORE");
+    const scoreMatch = scoreRaw.match(/\d+/);
+    const score = scoreMatch ? Math.max(0, Math.min(100, parseInt(scoreMatch[0],10))) : null;
+    return {
+      score: score,
+      verdict: extractSection(raw, "VERDICT"),
+      strengths: bulletsFrom(extractSection(raw,"STRENGTHS")),
+      weaknesses: bulletsFrom(extractSection(raw,"WEAKNESSES")),
+      missed: bulletsFrom(extractSection(raw,"MISSED_OPPORTUNITIES")),
+      recommendation: extractSection(raw,"RECOMMENDATION")
+    };
+  }
+
+  /* ---------- Stage 3: synthesis ---------- */
+  async function runSynthesis(brief, results){
+    const digest = results.map(r=>{
+      return "REVIEWER: " + r.role + " (focus: " + r.focus + ")\nScore: " + (r.score!==null? r.score : "n/a") +
+        "\nVerdict: " + r.verdict + "\nStrengths: " + r.strengths.join("; ") +
+        "\nWeaknesses: " + r.weaknesses.join("; ") + "\nMissed opportunities: " + r.missed.join("; ") +
+        "\nRecommendation: " + r.recommendation;
+    }).join("\n\n");
+
+    const system = "You are the Editor-in-Chief delivering the final consolidated report after your specialist reviewers completed independent reviews. Critique tone: " + brief.critiqueInstruction + " Synthesize their findings into one authoritative report for the creator — ultimately constructive, but never sugarcoated. Respond in plain text only. No JSON, no markdown, no asterisks, no code fences. Use exactly this template, each marker on its own line exactly as written, nothing outside these markers:\n###OVERALL_SCORE###\n<integer 0-100, your own synthesized judgment>\n###EXECUTIVE_SUMMARY###\n<3-5 sentences on where this content stands and its biggest risk to virality>\n###HEALTH_REPORT###\n<one paragraph diagnosing hook strength, structural integrity, visual-text alignment, algorithmic fit, and authenticity>\n###TOP_IMPROVEMENTS###\n<exactly 5 dash-prefixed lines, ranked most impactful first>\n###PREDICTED_PERFORMANCE###\n<2-3 sentences, explicitly framed as an AI estimate, not a guarantee>\n###REWRITTEN_CAPTION###\n<a fully rewritten, publish-ready version of the caption optimized for the stated goal>\n###ALTERNATIVE_HOOKS###\n<exactly 4 dash-prefixed alternative opening lines>\n###PUBLISHING_CHECKLIST###\n<exactly 6 short dash-prefixed actionable checklist items to verify before publishing>\n###DEEPER_PROMPTS###\n<exactly 3 dash-prefixed follow-up prompts the creator could ask an AI assistant to further optimize this content>";
+
+    const prompt = "ORIGINAL CONTENT BRIEF\nContent type: " + brief.contentType + " | Platform: " + brief.platform + " | Goal: " + brief.goal +
+      "\n\nORIGINAL CAPTION:\n\"" + brief.text + "\"" +
+      "\n\nSPECIALIST REVIEWS:\n\n" + digest +
+      "\n\nWrite the final report now, following the exact output format specified.";
+
+    const raw = await callClaude(system, buildUserBlocks(prompt, false), 2000, 2);
+    const scoreRaw = extractSection(raw,"OVERALL_SCORE").match(/\d+/);
+    return {
+      overallScore: scoreRaw ? Math.max(0,Math.min(100,parseInt(scoreRaw[0],10))) : null,
+      execSummary: extractSection(raw,"EXECUTIVE_SUMMARY"),
+      healthReport: extractSection(raw,"HEALTH_REPORT"),
+      topImprovements: bulletsFrom(extractSection(raw,"TOP_IMPROVEMENTS")),
+      predictedPerformance: extractSection(raw,"PREDICTED_PERFORMANCE"),
+      rewrittenCaption: extractSection(raw,"REWRITTEN_CAPTION"),
+      alternativeHooks: bulletsFrom(extractSection(raw,"ALTERNATIVE_HOOKS")),
+      checklist: bulletsFrom(extractSection(raw,"PUBLISHING_CHECKLIST")),
+      deeperPrompts: bulletsFrom(extractSection(raw,"DEEPER_PROMPTS"))
+    };
+  }
+
+  /* ---------- roster rendering ---------- */
+  function renderRoster(reviewers){
+    const roster = $("roster");
+    roster.innerHTML = reviewers.map((r,i)=>
+      '<div class="ticket" id="ticket-'+i+'" data-status="queued">' +
+        '<div class="ticket-role">'+escapeHtml(r.role)+'</div>' +
+        '<div class="ticket-mandate">'+escapeHtml(r.mandate)+'</div>' +
+        '<div class="ticket-foot">' +
+          '<span class="tag">'+escapeHtml(r.focus)+'</span>' +
+          '<span class="status-pill queued" id="status-'+i+'"><span class="dot"></span>Queued</span>' +
+        '</div>' +
+      '</div>'
+    ).join("");
+  }
+  function setTicketStatus(i, status, label){
+    const ticket = $("ticket-"+i), pill = $("status-"+i);
+    if(!ticket) return;
+    ticket.setAttribute("data-status", status);
+    pill.className = "status-pill " + status;
+    pill.innerHTML = '<span class="dot"></span>' + label;
+  }
+
+  /* ---------- report rendering ---------- */
+  function renderReport(brief, results, final){
+    // thumbnail row
+    const thumbRow = $("reportThumbRow");
+    thumbRow.innerHTML = "";
+    if(state.imageBase64){
+      thumbRow.innerHTML += '<img src="data:'+state.imageMediaType+';base64,'+state.imageBase64+'" alt="Reviewed asset">';
+    }
+    thumbRow.innerHTML += '<div class="thumb-meta">'+escapeHtml(brief.contentType)+' · '+escapeHtml(brief.platform)+' · Goal: '+escapeHtml(brief.goal)+'</div>';
+
+    // dial
+    const score = final.overallScore !== null ? final.overallScore :
+      Math.round(results.reduce((s,r)=>s+(r.score||0),0) / Math.max(1,results.filter(r=>r.score!==null).length));
+    const circumference = 452;
+    const offset = circumference - (circumference * score/100);
+    $("dialScore").textContent = score;
+    const arc = $("dialArc");
+    arc.style.stroke = scoreColor(score);
+    requestAnimationFrame(()=>{ arc.style.strokeDashoffset = offset; });
+
+    $("verdictStamp").textContent = score>=75 ? "Approved" : score>=50 ? "Needs Revision" : "Send Back";
+    $("verdictStamp").style.color = scoreColor(score);
+    $("verdictStamp").style.borderColor = scoreColor(score);
+    $("execSummary").textContent = final.execSummary || "No executive summary returned.";
+
+    // case files
+    $("caseFiles").innerHTML = results.map((r,i)=>{
+      const sc = r.score !== null ? r.score : "–";
+      const col = r.score!==null ? scoreColor(r.score) : "var(--text-faint)";
+      return (
+      '<div class="case-file" id="case-'+i+'">' +
+        '<div class="case-head" data-idx="'+i+'">' +
+          '<div class="case-head-left">' +
+            '<div class="score-chip" style="color:'+col+'; border-color:'+col+';">'+sc+'</div>' +
+            '<div><div class="case-role">'+escapeHtml(r.role)+'</div><div class="case-verdict">'+escapeHtml(r.verdict||"")+'</div></div>' +
+          '</div>' +
+          '<svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '</div>' +
+        '<div class="case-body" id="case-body-'+i+'">' +
+          '<div class="case-body-inner">' +
+            '<div><div class="col-title str">Strengths</div><ul class="bullets">'+(r.strengths.map(s=>'<li>'+escapeHtml(s)+'</li>').join("")||'<li>None flagged.</li>')+'</ul></div>' +
+            '<div><div class="col-title weak">Weaknesses</div><ul class="bullets">'+(r.weaknesses.map(s=>'<li>'+escapeHtml(s)+'</li>').join("")||'<li>None flagged.</li>')+'</ul></div>' +
+            '<div style="grid-column:1/-1;"><div class="col-title miss">Missed Opportunities</div><ul class="bullets">'+(r.missed.map(s=>'<li>'+escapeHtml(s)+'</li>').join("")||'<li>None flagged.</li>')+'</ul></div>' +
+            '<div class="rec-box"><div class="col-title">Recommendation</div>'+escapeHtml(r.recommendation||"—")+'</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>');
+    }).join("");
+
+    document.querySelectorAll(".case-head").forEach(head=>{
+      head.addEventListener("click", ()=>{
+        const idx = head.getAttribute("data-idx");
+        const file = $("case-"+idx), body = $("case-body-"+idx);
+        const isOpen = file.classList.contains("open");
+        document.querySelectorAll(".case-file.open").forEach(f=>{ f.classList.remove("open"); f.querySelector(".case-body").style.maxHeight=null; });
+        if(!isOpen){ file.classList.add("open"); body.style.maxHeight = body.scrollHeight + "px"; }
+      });
+    });
+
+    $("healthReport").textContent = final.healthReport || "—";
+
+    $("impList").innerHTML = (final.topImprovements.length ? final.topImprovements : ["No improvements returned."])
+      .map(i=>'<li>'+escapeHtml(i)+'</li>').join("");
+
+    $("perfText").textContent = final.predictedPerformance || "—";
+
+    $("beforeText").textContent = brief.text || "—";
+    $("afterText").textContent = final.rewrittenCaption || "—";
+
+    $("hooksList").innerHTML = (final.alternativeHooks.length ? final.alternativeHooks : ["No alternative hooks returned."])
+      .map((h,i)=>'<li><span>'+escapeHtml(h)+'</span><button class="copy-btn" data-copy="'+encodeURIComponent(h)+'">Copy</button></li>').join("");
+
+    $("checklist").innerHTML = (final.checklist.length ? final.checklist : ["No checklist returned."])
+      .map((c,i)=>'<li><input type="checkbox" id="chk-'+i+'"><label for="chk-'+i+'">'+escapeHtml(c)+'</label></li>').join("");
+    document.querySelectorAll('#checklist input[type=checkbox]').forEach(cb=>{
+      cb.addEventListener("change", ()=>{ cb.nextElementSibling.classList.toggle("done", cb.checked); });
+    });
+
+    $("deeperPrompts").innerHTML = (final.deeperPrompts.length ? final.deeperPrompts : []).map(p=>
+      '<button class="chip" data-copy="'+encodeURIComponent(p)+'">'+escapeHtml(p)+'</button>'
+    ).join("");
+
+    document.querySelectorAll("[data-copy]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const text = decodeURIComponent(btn.getAttribute("data-copy"));
+        const original = btn.textContent;
+        navigator.clipboard.writeText(text).then(()=>{
+          btn.textContent = "Copied";
+          setTimeout(()=>{ btn.textContent = original; }, 1400);
+        }).catch(()=>{
+          btn.textContent = "Copy failed";
+          setTimeout(()=>{ btn.textContent = original; }, 1400);
+        });
+      });
+    });
+  }
+
+  /* ---------- full workflow ---------- */
+  async function runWorkflow(){
+    clearIntakeError();
+    const brief = briefSummary();
+    if(!brief.text){ showIntakeError("Please paste the caption or copy you'd like reviewed."); return; }
+
+    $("mastheadSub").textContent = brief.contentType + " · " + brief.platform + " · Goal: " + brief.goal + " · Filed " + new Date().toLocaleString();
+
+    showView("view-running");
+    $("roster").innerHTML = '<div class="ticket skeleton" style="height:100px;"></div><div class="ticket skeleton" style="height:100px;"></div><div class="ticket skeleton" style="height:100px;"></div>';
+    $("log").innerHTML = "";
+    $("runningError").innerHTML = "";
+    $("runningDesc").textContent = "Claude is designing a review workflow tailored to your submission.";
+    logLine("Submission received. Briefing Chief Editorial Strategist…");
+
+    const runBtn = $("runBtn");
+    runBtn.disabled = true; runBtn.innerHTML = '<span class="spinner"></span>Reviewing…';
+
+    let reviewers;
+    try{
+      reviewers = await planReviewers(brief);
+      state.reviewers = reviewers;
+      logLine("Review board assembled: " + reviewers.length + " specialists.", "ok");
+      renderRoster(reviewers);
+    }catch(err){
+      logLine("Failed to assemble review board: " + err.message, "err");
+      showRunningError("Could not assemble the review board — " + err.message, runWorkflow);
+      runBtn.disabled=false; runBtn.textContent="Run Editorial Review";
+      return;
+    }
+
+    $("runningDesc").textContent = "Specialists are reviewing your submission, one dimension at a time.";
+    const results = [];
+    for(let i=0;i<reviewers.length;i++){
+      const r = reviewers[i];
+      setTicketStatus(i, "reviewing", "Reviewing");
+      logLine(r.role + " is reviewing (" + r.focus + ")…");
+      try{
+        const out = await runReviewer(r, brief, i, reviewers.length);
+        results.push(Object.assign({role:r.role, focus:r.focus}, out));
+        setTicketStatus(i, "filed", "Filed");
+        logLine(r.role + " filed a report — score " + (out.score!==null?out.score:"n/a") + "/100.", "ok");
+      }catch(err){
+        setTicketStatus(i, "failed", "Failed");
+        logLine(r.role + " could not complete review: " + err.message, "err");
+        results.push({role:r.role, focus:r.focus, score:null, verdict:"Review unavailable.", strengths:[], weaknesses:[], missed:[], recommendation:"This specialist's review could not be completed."});
+      }
+    }
+    state.results = results;
+
+    const successfulResults = results.filter(r=>r.verdict!=="Review unavailable.");
+    if(successfulResults.length===0){
+      showRunningError("All specialist reviews failed. This is usually a temporary network or API issue.", runWorkflow);
+      runBtn.disabled=false; runBtn.textContent="Run Editorial Review";
+      return;
+    }
+
+    $("runningDesc").textContent = "Editor-in-Chief is consolidating the final report.";
+    logLine("Consolidating specialist findings into final report…");
+    try{
+      const final = await runSynthesis(brief, successfulResults);
+      logLine("Final report complete.", "ok");
+      renderReport(brief, results, final);
+      showView("view-report");
+    }catch(err){
+      logLine("Final synthesis failed: " + err.message, "err");
+      showRunningError("Could not generate the final consolidated report — " + err.message, ()=>{
+        showView("view-running");
+        runSynthesisRetryWrapper(brief, successfulResults, results);
+      });
+    }
+    runBtn.disabled=false; runBtn.textContent="Run Editorial Review";
+  }
+
+  async function runSynthesisRetryWrapper(brief, successfulResults, results){
+    $("runningError").innerHTML = "";
+    logLine("Retrying final synthesis…");
+    try{
+      const final = await runSynthesis(brief, successfulResults);
+      logLine("Final report complete.", "ok");
+      renderReport(brief, results, final);
+      showView("view-report");
+    }catch(err){
+      logLine("Final synthesis failed again: " + err.message, "err");
+      showRunningError("Still unable to generate the final report — " + err.message, ()=>runSynthesisRetryWrapper(brief, successfulResults, results));
+    }
+  }
+
+  $("runBtn").addEventListener("click", runWorkflow);
+  $("newReviewBtn").addEventListener("click", ()=>{ showView("view-intake"); });
+
+  syncOther();
+})();
+</script>
+</body>
+</html>
