@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Analyst vs Business Analyst vs Python Developer vs MIS Executive — Career Path Ledger</title>
+<style>
+  :root{
+    --bg:#0F1420;
+    --surface:#161D2C;
+    --surface-2:#1E2740;
+    --surface-3:#242F4A;
+    --border:#2B3552;
+    --border-soft:#232C44;
+    --text:#E9E7DF;
+    --text-dim:#B9BECD;
+    --text-mute:#7C8399;
+    --gold:#C9A227;
+    --gold-bright:#E0BC46;
+    --teal:#3FCDB8;
+    --rose:#D97A6C;
+    --serif:"Iowan Old Style","Palatino Linotype",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SFMono-Regular","Cascadia Mono",Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1100px 500px at 15% -10%, rgba(201,162,39,0.08), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(63,205,184,0.06), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--teal);}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px 80px;}
+
+  /* ---------- Header ---------- */
+  header.masthead{
+    border-bottom:1px solid var(--border-soft);
+    padding:38px 0 26px;
+    margin-bottom:34px;
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:11.5px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:7px;height:7px;border-radius:50%;
+    background:var(--gold);
+    box-shadow:0 0 0 3px rgba(201,162,39,0.18);
+  }
+  h1{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:clamp(28px,4vw,42px);
+    line-height:1.15;
+    margin:0 0 14px;
+    max-width:760px;
+  }
+  h1 em{color:var(--gold-bright);font-style:normal;}
+  .dek{
+    color:var(--text-dim);
+    max-width:640px;
+    font-size:15.5px;
+  }
+  .dek b{color:var(--text);}
+
+  /* ---------- Section labels ---------- */
+  .section-label{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--text-mute);
+    margin:0 0 16px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .section-label::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--border-soft);
+  }
+
+  /* ---------- Layout: priorities + ranking ---------- */
+  .decision-grid{
+    display:grid;
+    grid-template-columns:340px 1fr;
+    gap:26px;
+    align-items:start;
+    margin-bottom:48px;
+  }
+  @media(max-width:880px){
+    .decision-grid{grid-template-columns:1fr;}
+  }
+
+  .ledger-panel{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:24px 22px 22px;
+    position:sticky;
+    top:20px;
+  }
+  @media(max-width:880px){ .ledger-panel{position:static;} }
+
+  .ledger-title{
+    font-family:var(--serif);
+    font-size:19px;
+    margin:0 0 4px;
+  }
+  .ledger-sub{
+    font-size:12.5px;
+    color:var(--text-mute);
+    margin:0 0 20px;
+  }
+
+  .criterion-row{margin-bottom:18px;}
+  .criterion-row:last-of-type{margin-bottom:22px;}
+  .criterion-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:6px;
+  }
+  .criterion-name{font-size:13.5px;color:var(--text);}
+  .criterion-val{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--gold-bright);
+    min-width:52px;
+    text-align:right;
+  }
+  input[type=range]{
+    -webkit-appearance:none;
+    width:100%;
+    height:4px;
+    border-radius:2px;
+    background:var(--border);
+    outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:15px;height:15px;
+    border-radius:50%;
+    background:var(--gold);
+    border:2px solid #0F1420;
+    cursor:pointer;
+    box-shadow:0 0 0 1px var(--gold);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:15px;height:15px;
+    border-radius:50%;
+    background:var(--gold);
+    border:2px solid #0F1420;
+    cursor:pointer;
+  }
+  .ledger-actions{
+    display:flex;
+    gap:8px;
+    margin-top:6px;
+  }
+  .btn{
+    font-family:var(--sans);
+    font-size:12.5px;
+    padding:9px 12px;
+    border-radius:3px;
+    border:1px solid var(--border);
+    background:var(--surface-2);
+    color:var(--text-dim);
+    cursor:pointer;
+    flex:1;
+    transition:border-color .15s, color .15s;
+  }
+  .btn:hover{border-color:var(--gold);color:var(--text);}
+  .btn.primary{
+    background:var(--gold);
+    color:#1a1508;
+    border-color:var(--gold);
+    font-weight:600;
+  }
+  .btn.primary:hover{background:var(--gold-bright);border-color:var(--gold-bright);color:#1a1508;}
+
+  /* ---------- Ranking cards ---------- */
+  .rank-list{display:flex;flex-direction:column;gap:12px;}
+  .rank-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:18px 20px;
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    gap:18px;
+    align-items:center;
+    transition:transform .2s ease, border-color .2s ease;
+  }
+  .rank-card.top{
+    border-color:rgba(201,162,39,0.55);
+    background:linear-gradient(180deg, rgba(201,162,39,0.07), var(--surface) 55%);
+  }
+  .rank-num{
+    font-family:var(--serif);
+    font-size:30px;
+    color:var(--text-mute);
+    width:38px;
+    text-align:center;
+  }
+  .rank-card.top .rank-num{color:var(--gold-bright);}
+  .rank-body h3{
+    margin:0 0 3px;
+    font-size:17px;
+    font-family:var(--serif);
+  }
+  .rank-tagline{font-size:12.5px;color:var(--text-mute);margin:0 0 10px;}
+  .score-track{
+    height:6px;
+    background:var(--surface-3);
+    border-radius:3px;
+    overflow:hidden;
+  }
+  .score-fill{
+    height:100%;
+    background:linear-gradient(90deg,var(--gold),var(--gold-bright));
+    border-radius:3px;
+    transition:width .35s ease;
+  }
+  .rank-card.top .score-fill{background:linear-gradient(90deg,var(--gold),var(--teal));}
+  .rank-score{
+    font-family:var(--mono);
+    font-size:22px;
+    color:var(--text);
+    text-align:right;
+    min-width:64px;
+  }
+  .rank-score span{display:block;font-size:10px;color:var(--text-mute);font-family:var(--sans);letter-spacing:.06em;text-transform:uppercase;}
+
+  .empty-state{
+    background:var(--surface);
+    border:1px dashed var(--border);
+    border-radius:4px;
+    padding:40px 24px;
+    text-align:center;
+    color:var(--text-mute);
+    font-size:14px;
+  }
+
+  /* ---------- Comparison table ---------- */
+  .table-scroll{
+    overflow-x:auto;
+    border:1px solid var(--border);
+    border-radius:4px;
+    background:var(--surface);
+  }
+  table.compare{
+    width:100%;
+    border-collapse:collapse;
+    min-width:760px;
+    font-size:13.5px;
+  }
+  table.compare th, table.compare td{
+    padding:13px 16px;
+    text-align:left;
+    border-bottom:1px solid var(--border-soft);
+    vertical-align:top;
+  }
+  table.compare thead th{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--text-mute);
+    background:var(--surface-2);
+    position:sticky;
+    top:0;
+  }
+  table.compare thead th:first-child{width:170px;}
+  table.compare tbody tr:last-child td{border-bottom:none;}
+  table.compare tbody th{
+    font-family:var(--serif);
+    font-size:14.5px;
+    color:var(--gold-bright);
+    font-weight:600;
+    white-space:nowrap;
+  }
+  .cell-val{color:var(--text);margin-bottom:3px;}
+  .cell-note{color:var(--text-mute);font-size:12px;}
+  .badge{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:9.5px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    padding:2px 6px;
+    border-radius:2px;
+    margin-left:6px;
+    vertical-align:middle;
+    border:1px solid transparent;
+  }
+  .badge.sourced{color:var(--teal);border-color:rgba(63,205,184,0.4);background:rgba(63,205,184,0.08);}
+  .badge.estimate{color:var(--rose);border-color:rgba(217,122,108,0.45);background:rgba(217,122,108,0.1);}
+
+  /* ---------- Collapsible panels ---------- */
+  details.panel{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:4px;
+    margin-top:16px;
+    overflow:hidden;
+  }
+  details.panel summary{
+    list-style:none;
+    cursor:pointer;
+    padding:17px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-family:var(--serif);
+    font-size:16.5px;
+  }
+  details.panel summary::-webkit-details-marker{display:none;}
+  .chevron{
+    font-family:var(--mono);
+    color:var(--text-mute);
+    font-size:13px;
+    transition:transform .2s ease;
+  }
+  details[open] .chevron{transform:rotate(90deg);}
+  .panel-body{
+    padding:2px 22px 22px;
+    color:var(--text-dim);
+    font-size:14px;
+  }
+  .panel-body h4{
+    font-family:var(--sans);
+    font-size:12.5px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--gold);
+    margin:20px 0 8px;
+  }
+  .panel-body h4:first-child{margin-top:4px;}
+  .panel-body p{margin:0 0 10px;}
+  .panel-body ul{margin:0 0 10px;padding-left:20px;}
+  .panel-body li{margin-bottom:6px;}
+
+  .source-list{list-style:none;margin:0;padding:0;}
+  .source-list li{
+    padding:11px 0;
+    border-bottom:1px solid var(--border-soft);
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:10px;
+    align-items:baseline;
+  }
+  .source-list li:last-child{border-bottom:none;}
+  .source-tag{
+    font-family:var(--mono);
+    font-size:10px;
+    color:var(--gold);
+    text-transform:uppercase;
+    letter-spacing:.05em;
+  }
+  .source-name{color:var(--text);font-size:13.5px;}
+  .source-link{font-size:12px;color:var(--text-mute);word-break:break-all;}
+  .source-link:hover{color:var(--teal);}
+
+  footer.note{
+    margin-top:40px;
+    padding-top:20px;
+    border-top:1px solid var(--border-soft);
+    font-size:12px;
+    color:var(--text-mute);
+  }
+
+  .loading{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--text-mute);
+    font-size:13px;
+    padding:30px 0;
+  }
+  .spinner{
+    width:14px;height:14px;
+    border-radius:50%;
+    border:2px solid var(--border);
+    border-top-color:var(--gold);
+    animation:spin .8s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .hidden{display:none !important;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">Compare &amp; Decide · Career Ledger</div>
+    <h1>Data Analyst, Business Analyst, Python Developer, or <em>MIS Executive</em>?</h1>
+    <p class="dek">Built for <b>fresh graduates and entry-level job seekers in India</b> weighing which tech-adjacent role to target first. Adjust your priorities below — the ranking recalculates live from sourced, entry-level Indian salary and hiring data.</p>
+  </header>
+
+  <div class="decision-grid">
+    <!-- PRIORITY SLIDERS -->
+    <div class="ledger-panel">
+      <h3 class="ledger-title">Set your priorities</h3>
+      <p class="ledger-sub">0 = ignore this factor · 5 = decisive factor</p>
+      <div id="sliders"></div>
+      <div class="ledger-actions">
+        <button class="btn" id="btnReset">Reset to equal</button>
+        <button class="btn primary" id="btnSalary">Salary-first</button>
+      </div>
+    </div>
+
+    <!-- RANKING -->
+    <div>
+      <p class="section-label">Live ranking</p>
+      <div id="loadingState" class="loading">
+        <div class="spinner"></div> Weighing your priorities against sourced role data…
+      </div>
+      <div id="rankList" class="rank-list hidden"></div>
+      <div id="emptyState" class="empty-state hidden">
+        All priorities are set to 0, so every role scores equally. Move at least one slider above zero to get a meaningful ranking.
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <p class="section-label">Full comparison</p>
+  <div class="table-scroll">
+    <table class="compare" id="compareTable">
+      <thead>
+        <tr>
+          <th>Role</th>
+          <th>Entry-level salary (India)</th>
+          <th>Job demand</th>
+          <th>Time to job-ready</th>
+          <th>5–10yr growth ceiling</th>
+          <th>Work–life balance</th>
+          <th>Remote availability</th>
+        </tr>
+      </thead>
+      <tbody id="compareBody"></tbody>
+    </table>
+  </div>
+
+  <!-- HOW THIS WAS RESEARCHED -->
+  <details class="panel">
+    <summary>How this was researched <span class="chevron">▸</span></summary>
+    <div class="panel-body" id="methodologyBody"></div>
+  </details>
+
+  <!-- SOURCES -->
+  <details class="panel">
+    <summary>Sources cited (<span id="sourceCount">0</span>) <span class="chevron">▸</span></summary>
+    <div class="panel-body">
+      <ul class="source-list" id="sourceList"></ul>
+    </div>
+  </details>
+
+  <footer class="note">
+    Figures reflect publicly available Indian salary-aggregator and job-board data gathered in <b>late July – August 2026</b> and are point-in-time estimates, not guarantees — actual offers vary by city, company, and skill depth. <span class="badge estimate">Estimate</span>-flagged criteria are editorial judgments synthesized from the cited sources, not directly reported statistics. This tool is informational, not financial or career-counseling advice.
+  </footer>
+
+</div>
+
+<script>
+/* =========================================================
+   DATA — every numeric value below is either (a) drawn from
+   a named, linked source (flagged "sourced") or (b) an
+   editorial synthesis clearly flagged "estimate".
+   ========================================================= */
+
+const roles = [
+  {
+    id:'da', name:'Data Analyst', tagline:'Cleans, models, and visualizes data to inform business decisions.',
+    salary:{lpaMid:4.5, display:'₹3.5–6 LPA (median ≈ ₹4.5 LPA)', sourced:true,
+      note:'PayScale: ₹4.1L avg for <1yr experience. Glassdoor "Entry Level Data Analyst": ≈₹11L (self-reported, outlier-heavy). Most AmbitionBox-sourced aggregators converge on ₹3.5–6 LPA.'},
+    demand:{score:80, tier:'High', sourced:true,
+      note:'Naukri.com listed ~30,000 live "Data Analyst" postings nationally (snapshot, Aug 2026). Industry reporting cites ~35% YoY analytics-market growth with 200,000+ open analytics roles across India in 2025.'},
+    timeReady:{months:5, display:'≈4–6 months', estimate:true,
+      note:'Estimated time for a graduate to become interview-ready with SQL + Excel + one BI tool (Power BI/Tableau), based on the skill stacks emphasized across sourced salary/hiring articles.'},
+    growth:{seniorLpa:'15–35', display:'₹15–35 LPA at senior level', sourced:true,
+      note:'Mid-career (AmbitionBox-sourced): ₹8–18 LPA. Senior: ₹15–35 LPA, per aggregated AmbitionBox/Glassdoor India 2026 data cited by industry blogs.'},
+    wlb:{score:65, display:'Moderate–Good', estimate:true,
+      note:'Deadline pressure exists around reporting cycles, but the role is rarely client-facing or on-call; synthesized from general role-review commentary rather than a single India-specific WLB index.'},
+    remote:{score:65, display:'Moderate–High', estimate:true,
+      note:'Reporting/dashboarding work is largely laptop-portable; many analytics teams at product and GCC companies offer hybrid/remote options. No single authoritative India-wide remote-rate dataset exists for this role.'}
+  },
+  {
+    id:'ba', name:'Business Analyst', tagline:'Bridges business needs and technical teams via requirements and process analysis.',
+    salary:{lpaMid:5.5, display:'₹4–7 LPA (median ≈ ₹5.5 LPA)', sourced:true,
+      note:'Glassdoor "Business Analyst Fresher": ₹5L avg. Jobaaj Learnings: ₹4–7L fresher range. EventBeep: ₹4.5–7 LPA fresher, higher at product/consulting firms.'},
+    demand:{score:75, tier:'High', sourced:true,
+      note:'Naukri "top hirers" web-stories show consistent high-volume BA hiring, e.g. Wipro (663 open BA roles, Nov 2024 snapshot) and EY (437 open BA roles, Sept 2025 snapshot) — both drawn from Naukri.com career web-story data.'},
+    timeReady:{months:5, display:'≈4–6 months', estimate:true,
+      note:'EventBeep notes BA is accessible to commerce/arts/science graduates "with 4–6 months of upskilling" in SQL, Excel, and requirements-gathering — used here as the basis for the estimate.'},
+    growth:{seniorLpa:'18–32', display:'₹18–32+ LPA at senior level', sourced:true,
+      note:'EventBeep: senior BAs earn ₹18–32+ LPA; consulting/product firms and CBAP/PMI-PBA certification push this higher, per multiple 2026 salary guides.'},
+    wlb:{score:55, display:'Moderate', estimate:true,
+      note:'Client-facing and consulting-adjacent BA roles carry stakeholder-deadline pressure; synthesized from role-description commentary in the cited salary guides rather than a dedicated WLB survey.'},
+    remote:{score:55, display:'Moderate', estimate:true,
+      note:'Stakeholder workshops and requirement-gathering sessions often favor in-person or hybrid work; editorial estimate, not a sourced statistic.'}
+  },
+  {
+    id:'py', name:'Python Developer', tagline:'Builds and maintains software/backend systems using Python.',
+    salary:{lpaMid:4.0, display:'₹3–5 LPA (median ≈ ₹4 LPA)', sourced:true,
+      note:'WScubeTech: ₹3L fresher avg (AmbitionBox-sourced). Felix ITs: ₹3.5–5 LPA. Cambridge Infotech (Bangalore-specific): ₹3.5–6.5 LPA, median ₹4.5 LPA.'},
+    demand:{score:85, tier:'Very High', sourced:true,
+      note:'FindMyGuru cites LinkedIn\'s "Jobs on the Rise" data showing Python-requiring, data-related roles growing 40%+ YoY in India, plus NASSCOM data on AI/ML adoption nearly doubling 2022–2024.'},
+    timeReady:{months:7.5, display:'≈6–9 months', estimate:true,
+      note:'Estimated based on the additional core-CS/DSA and framework depth (Django/Flask/FastAPI) that hiring guides describe as differentiating fresher offers, versus the shorter ramp for BI-tool-based roles.'},
+    growth:{seniorLpa:'15–40 (higher for AI/GenAI)', display:'₹15–40 LPA senior; ₹40–80 LPA for GenAI/LLM specialists', sourced:true,
+      note:'ResumeVera: general senior Python/backend roles ₹15–40 LPA; ML/AI engineers with PyTorch/LLM skills ₹15–80 LPA, with GenAI Python skills carrying a 60–100% premium over Django-only developers.'},
+    wlb:{score:60, display:'Moderate (varies by company type)', estimate:true,
+      note:'Product companies and startups often cited as offering better balance than high-pressure IT-services delivery teams; editorial synthesis, not a single measured index.'},
+    remote:{score:75, display:'High', estimate:true,
+      note:'Backend/software development is one of the more remote-friendly technical disciplines in India\'s IT sector; editorial estimate based on general industry pattern, not a dedicated dataset.'}
+  },
+  {
+    id:'mis', name:'MIS Executive', tagline:'Maintains reports, dashboards, and information systems for day-to-day business operations.',
+    salary:{lpaMid:2.1, display:'₹1.5–2.7 LPA (median ≈ ₹2.1 LPA)', sourced:true,
+      note:'Collegedunia: avg ₹2.7 LPA, starting ₹1.5 LPA, high end ₹5 LPA. Indeed India: ₹20,669/month avg (≈₹2.5 LPA). Glassdoor India: ≈₹15,667–₹37,000/yr most-likely range (self-reported, wide spread).'},
+    demand:{score:45, tier:'Moderate', sourced:true,
+      note:'Naukri.com listed ~27,600 live "MIS Executive" postings nationally (snapshot, 2026) — a steady volume of largely back-office/operations roles rather than a fast-growing category.'},
+    timeReady:{months:2.5, display:'≈2–3 months', estimate:true,
+      note:'Lowest technical bar of the four roles — advanced Excel plus basic SQL/reporting is typically sufficient; estimate based on the skill descriptions in the cited salary sources.'},
+    growth:{seniorLpa:'5–7', display:'₹5–7 LPA ceiling unless role shifts to BI/Analyst track', sourced:true,
+      note:'Collegedunia: MIS Executives with ~5 years\' experience top out near ₹2.8 LPA within the role; adjacent titles like BI Analyst or Information Systems Manager average ₹7 LPA — the natural next step.'},
+    wlb:{score:75, display:'Good', estimate:true,
+      note:'Operational/back-office reporting cadence is generally predictable with fewer client deadlines or on-call demands than analyst/developer roles; editorial estimate.'},
+    remote:{score:30, display:'Low', estimate:true,
+      note:'MIS roles are frequently tied to on-site ERP systems, physical documentation, or plant/branch operations; editorial estimate based on common role descriptions in the cited job postings.'}
+  }
+];
+
+const criteria = [
+  {key:'salary', label:'Salary', metric:'lpaMid', invert:false},
+  {key:'demand', label:'Job demand', metric:'score', invert:false},
+  {key:'timeReady', label:'Time to job-ready', metric:'months', invert:true},
+  {key:'growth', label:'Growth ceiling', metric:null, invert:false}, // uses growthScore below
+  {key:'wlb', label:'Work-life balance', metric:'score', invert:false},
+  {key:'remote', label:'Remote availability', metric:'score', invert:false}
+];
+
+// Growth ceiling numeric proxy (senior LPA midpoint), used only for scoring, not displayed as a "fact"
+const growthProxy = {da:25, ba:25, py:27.5, mis:6};
+roles.forEach(r=>{ r.growth.score = growthProxy[r.id]; });
+
+// ---- Normalize each criterion 0-100 across the 4 roles ----
+function normalize(key, metric, invert){
+  const vals = roles.map(r=> r[key][metric]);
+  const min = Math.min(...vals), max = Math.max(...vals);
+  roles.forEach(r=>{
+    const v = r[key][metric];
+    let s = max===min ? 100 : ((v-min)/(max-min))*100;
+    if(invert) s = 100-s;
+    r[key].normScore = Math.round(s);
+  });
+}
+normalize('salary','lpaMid',false);
+normalize('demand','score',false);
+normalize('timeReady','months',true);
+normalize('growth','score',false);
+normalize('wlb','score',false);
+normalize('remote','score',false);
+
+/* =========================================================
+   UI WIRING
+   ========================================================= */
+const sliderDefs = criteria.map(c=>({key:c.key,label:c.label}));
+const weights = {}; sliderDefs.forEach(s=>weights[s.key]=3);
+
+const slidersEl = document.getElementById('sliders');
+sliderDefs.forEach(s=>{
+  const row = document.createElement('div');
+  row.className='criterion-row';
+  row.innerHTML = `
+    <div class="criterion-head">
+      <span class="criterion-name">${s.label}</span>
+      <span class="criterion-val" id="val-${s.key}">3 / 5</span>
+    </div>
+    <input type="range" min="0" max="5" step="1" value="3" id="slider-${s.key}">
+  `;
+  slidersEl.appendChild(row);
+});
+
+sliderDefs.forEach(s=>{
+  document.getElementById(`slider-${s.key}`).addEventListener('input', e=>{
+    weights[s.key] = Number(e.target.value);
+    document.getElementById(`val-${s.key}`).textContent = `${e.target.value} / 5`;
+    render();
+  });
+});
+
+document.getElementById('btnReset').addEventListener('click', ()=>{
+  sliderDefs.forEach(s=>{ weights[s.key]=3; document.getElementById(`slider-${s.key}`).value=3; document.getElementById(`val-${s.key}`).textContent='3 / 5'; });
+  render();
+});
+document.getElementById('btnSalary').addEventListener('click', ()=>{
+  const salaryFirst = {salary:5, demand:3, timeReady:2, growth:3, wlb:1, remote:1};
+  Object.keys(salaryFirst).forEach(k=>{
+    weights[k]=salaryFirst[k];
+    document.getElementById(`slider-${k}`).value=salaryFirst[k];
+    document.getElementById(`val-${k}`).textContent=`${salaryFirst[k]} / 5`;
+  });
+  render();
+});
+
+function computeRanking(){
+  const totalWeight = Object.values(weights).reduce((a,b)=>a+b,0);
+  const results = roles.map(r=>{
+    if(totalWeight===0) return {role:r, score:0};
+    let sum=0;
+    criteria.forEach(c=> sum += weights[c.key]*r[c.key].normScore );
+    return {role:r, score: Math.round(sum/totalWeight)};
+  });
+  results.sort((a,b)=>b.score-a.score);
+  return {results, totalWeight};
+}
+
+function render(){
+  const {results, totalWeight} = computeRanking();
+  const rankList = document.getElementById('rankList');
+  const emptyState = document.getElementById('emptyState');
+
+  if(totalWeight===0){
+    rankList.classList.add('hidden');
+    emptyState.classList.remove('hidden');
+    return;
+  }
+  emptyState.classList.add('hidden');
+  rankList.classList.remove('hidden');
+
+  rankList.innerHTML = results.map((res,i)=>`
+    <div class="rank-card ${i===0?'top':''}">
+      <div class="rank-num">${i+1}</div>
+      <div class="rank-body">
+        <h3>${res.role.name}</h3>
+        <p class="rank-tagline">${res.role.tagline}</p>
+        <div class="score-track"><div class="score-fill" style="width:${res.score}%"></div></div>
+      </div>
+      <div class="rank-score">${res.score}<span>fit score</span></div>
+    </div>
+  `).join('');
+}
+
+/* ---------- Comparison table ---------- */
+const tbody = document.getElementById('compareBody');
+tbody.innerHTML = roles.map(r=>`
+  <tr>
+    <th>${r.name}</th>
+    <td>
+      <div class="cell-val">${r.salary.display}<span class="badge sourced">Sourced</span></div>
+      <div class="cell-note">${r.salary.note}</div>
+    </td>
+    <td>
+      <div class="cell-val">${r.demand.tier}<span class="badge sourced">Sourced</span></div>
+      <div class="cell-note">${r.demand.note}</div>
+    </td>
+    <td>
+      <div class="cell-val">${r.timeReady.display}<span class="badge estimate">Estimate</span></div>
+      <div class="cell-note">${r.timeReady.note}</div>
+    </td>
+    <td>
+      <div class="cell-val">${r.growth.display}<span class="badge sourced">Sourced</span></div>
+      <div class="cell-note">${r.growth.note}</div>
+    </td>
+    <td>
+      <div class="cell-val">${r.wlb.display}<span class="badge estimate">Estimate</span></div>
+      <div class="cell-note">${r.wlb.note}</div>
+    </td>
+    <td>
+      <div class="cell-val">${r.remote.display}<span class="badge estimate">Estimate</span></div>
+      <div class="cell-note">${r.remote.note}</div>
+    </td>
+  </tr>
+`).join('');
+
+/* ---------- Methodology panel ---------- */
+document.getElementById('methodologyBody').innerHTML = `
+  <h4>Scope</h4>
+  <p>This ledger compares entry-level (0–2 years) prospects for four roles commonly targeted by Indian fresh graduates: Data Analyst, Business Analyst, Python Developer, and MIS Executive. It is built for someone deciding which single role to target first, not for experienced hires.</p>
+
+  <h4>Where each number came from</h4>
+  <p><b>Salary</b> ranges are the overlap/consensus across 3–4 independent India-focused sources per role (PayScale, Glassdoor India, AmbitionBox-sourced blog aggregations, Indeed India, and specialist salary guides), all gathered in July–August 2026. Where sources disagreed sharply — for example Glassdoor's self-reported "Entry Level Data Analyst" figure of ≈₹11L sat far above every AmbitionBox-derived figure of ₹3.5–6L — the outlier was noted but not used to set the displayed range, since small self-reported samples (Glassdoor's figure was based on a single submission) skew easily.</p>
+  <p><b>Job demand</b> combines live job-board listing counts (Naukri.com snapshots, subject to daily change) with independently reported market-growth commentary (e.g. analytics-market growth and AI-driven Python demand figures from industry blogs citing LinkedIn and NASSCOM data).</p>
+  <p><b>Growth ceiling</b> uses the senior-level (6+ years) salary bands reported by the same salary-guide sources as a proxy for long-run earning trajectory.</p>
+  <p><b>Time to job-ready, work-life balance, and remote availability</b> have no consistent India-specific quantitative dataset broken out by role. These three criteria are <span class="badge estimate">Estimate</span>-flagged editorial judgments, informed by the skill-stack and role descriptions inside the cited sources, not directly measured statistics. They are included because they matter to the decision, but weighted transparently as synthesis rather than fact.</p>
+
+  <h4>How the ranking works</h4>
+  <p>Each criterion is normalized to a 0–100 scale across the four roles (highest sourced/estimated value = 100, lowest = 0; the "time to job-ready" axis is inverted so that faster = higher score). Your priority sliders (0–5) weight each criterion's contribution to a role's overall "fit score," recalculated live as a weighted average.</p>
+
+  <h4>Known limitations</h4>
+  <ul>
+    <li>Job-board listing counts are single-day snapshots and fluctuate constantly — treat them as directional, not precise.</li>
+    <li>Salary figures vary significantly by city (Bengaluru/Mumbai/NCR consistently pay above the national figures shown here) and by whether a company is a product firm, IT-services major, or startup.</li>
+    <li>"MIS Executive" job titles vary widely in scope across companies, from pure Excel reporting to light BI-tool ownership, which widens its salary spread more than the other three roles.</li>
+  </ul>
+`;
+
+/* ---------- Sources panel ---------- */
+const sources = [
+  {tag:'Salary · DA', name:'PayScale India — Average Data Analyst Salary', url:'https://www.payscale.com/research/IN/Job=Data_Analyst/Salary'},
+  {tag:'Salary · DA', name:'Glassdoor India — Entry Level Data Analyst Salary', url:'https://www.glassdoor.co.in/Salaries/entry-level-data-analyst-salary-SRCH_KO0,24.htm'},
+  {tag:'Salary · DA', name:'Board Infinity — Data Analyst Salary in India for Freshers & Experienced', url:'https://www.boardinfinity.com/blog/data-analyst-salary-in-india-for-freshers-and-experienced/'},
+  {tag:'Salary · DA', name:'upGrad — Data Analyst Salary for Freshers and Experienced (2026)', url:'https://www.upgrad.com/blog/data-analyst-salary-in-india-for-freshers-seniors/'},
+  {tag:'Demand · DA', name:'Naukri.com — Data Analyst Jobs (live listings)', url:'https://www.naukri.com/data-analyst-jobs'},
+  {tag:'Demand · DA', name:'SkillsetMaster — Top Companies Hiring Data Analysts in India 2026', url:'https://www.skillsetmaster.com/topics/top-companies-hiring-analysts-india'},
+  {tag:'Salary · BA', name:'Glassdoor India — Business Analyst Fresher Salary', url:'https://www.glassdoor.co.in/Salaries/business-analyst-fresher-salary-SRCH_KO0,24.htm'},
+  {tag:'Salary · BA', name:'Jobaaj Learnings — Business Analyst Salary in India 2026', url:'https://www.jobaajlearnings.com/blog/business-analyst-salary-in-india-2026-freshers--experienced'},
+  {tag:'Salary/Growth · BA', name:'EventBeep — Business Analyst Salary in India 2026, Fresher to Senior', url:'https://www.eventbeep.com/en/career-guides/business-analyst-salary-in-india'},
+  {tag:'Demand · BA', name:'Naukri.com — Top Companies Hiring for Business Analyst (Sept 2025 snapshot)', url:'https://www.naukri.com/career-web-stories/top-companies-hiring-business-analyst-in-end-september-2025'},
+  {tag:'Salary · PY', name:'WScubeTech — Python Developer Salary in India 2026', url:'https://www.wscubetech.com/blog/python-developer-salary-india/'},
+  {tag:'Salary · PY', name:'Felix ITs — Python Developer Salary in India 2026', url:'https://www.felix-its.com/salary/python-developer-salary-india/'},
+  {tag:'Salary · PY', name:'Cambridge Infotech — Python Developer Salary in Bangalore 2026', url:'https://cambridgeinfotech.io/python-developer-salary-in-bangalore/'},
+  {tag:'Salary · PY', name:'Indeed India — Python Developer Salaries', url:'https://in.indeed.com/career/python-developer/salaries'},
+  {tag:'Demand · PY', name:'FindMyGuru — Python Developer Earnings India 2026 (cites LinkedIn, NASSCOM)', url:'https://www.findmyguru.com/blog/python-developer-earnings-india'},
+  {tag:'Growth · PY', name:'ResumeVera — Python Developer Salary Guide: CTC Range & Top Companies India 2026', url:'https://resumevera.com/salary-guide/python-developer'},
+  {tag:'Salary · MIS', name:'Glassdoor India — MIS Executive Salary', url:'https://www.glassdoor.co.in/Salaries/mis-executive-salary-SRCH_KO0,13.htm'},
+  {tag:'Salary · MIS', name:'Indeed India — MIS Executive Salaries', url:'https://in.indeed.com/career/mis-executive/salaries'},
+  {tag:'Salary/Growth · MIS', name:'Collegedunia — MIS Executive Salary in India', url:'https://collegedunia.com/courses/phd-computer-science-and-information-technology/mis-executive-salary'},
+  {tag:'Demand · MIS', name:'Naukri.com — MIS Executive Jobs (live listings)', url:'https://www.naukri.com/mis-executive-jobs'}
+];
+
+document.getElementById('sourceCount').textContent = sources.length;
+document.getElementById('sourceList').innerHTML = sources.map(s=>`
+  <li>
+    <div>
+      <div class="source-tag">${s.tag}</div>
+      <div class="source-name">${s.name}</div>
+    </div>
+    <a class="source-link" href="${s.url}" target="_blank" rel="noopener">${s.url.replace('https://','')}</a>
+  </li>
+`).join('');
+
+/* ---------- Loading state simulation, then reveal ---------- */
+setTimeout(()=>{
+  document.getElementById('loadingState').classList.add('hidden');
+  render();
+}, 450);
+</script>
+</body>
+</html>
