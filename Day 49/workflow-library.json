@@ -1,0 +1,781 @@
+[
+  {
+    "id": "wf_p8zd5puj8ud",
+    "category": "custom",
+    "builtin": false,
+    "favorite": false,
+    "title": "Custom prompt — 8/4/2026",
+    "description": "Saved from the Prompt Builder.",
+    "tags": [
+      "prompt-builder"
+    ],
+    "template": "You are acting as: Expert Data Analyst.",
+    "variables": [],
+    "bestPractices": [],
+    "example": ""
+  },
+  {
+    "id": "wf_spec_builder",
+    "category": "app-building",
+    "builtin": true,
+    "title": "Feature Spec Prompt",
+    "description": "Turn a rough app idea into a complete, unambiguous build spec before you ask the AI to write any code.",
+    "tags": [
+      "spec",
+      "planning",
+      "claude",
+      "chatgpt"
+    ],
+    "template": "You are a senior product engineer. I want to build: {{app_idea}}.\n\nTarget user: {{target_user}}\nCore feature to spec out: {{core_feature}}\n\nBefore writing any code, produce a build spec with these sections:\n1. User flow (step by step)\n2. UI states (empty, loading, error, success)\n3. Data model (fields + types)\n4. Edge cases to handle\n5. Explicit technical constraints: {{constraints}}\n\nStop after the spec — do not write code yet. Ask me to confirm before proceeding.",
+    "variables": [
+      {
+        "key": "app_idea",
+        "label": "App idea",
+        "type": "textarea",
+        "default": "a single-file HTML tool that..."
+      },
+      {
+        "key": "target_user",
+        "label": "Target user",
+        "type": "text",
+        "default": "me, for personal use"
+      },
+      {
+        "key": "core_feature",
+        "label": "Core feature to spec",
+        "type": "text",
+        "default": ""
+      },
+      {
+        "key": "constraints",
+        "label": "Constraints",
+        "type": "dropdown",
+        "options": [
+          "Vanilla HTML/CSS/JS only, no backend",
+          "Single file, CDN libraries allowed",
+          "React + Tailwind, single file",
+          "Must work fully offline"
+        ],
+        "default": "Vanilla HTML/CSS/JS only, no backend"
+      }
+    ],
+    "bestPractices": [
+      "Always get the spec confirmed before code generation starts — it's 10x cheaper to fix a spec than a finished build.",
+      "Name the exact UI states explicitly; 'error' and 'empty' are the two AI tools forget most often.",
+      "Keep one feature per spec prompt instead of the whole app at once."
+    ],
+    "example": "Spec for a Pomodoro timer: user flow starts on Idle state, has Running/Paused/Break states, data model tracks {sessionsCompleted, currentDuration}, edge cases include tab close mid-session...",
+    "favorite": false
+  },
+  {
+    "id": "wf_debug_fix",
+    "category": "app-building",
+    "builtin": true,
+    "title": "Debug & Fix Prompt",
+    "description": "Get a targeted fix for broken code without triggering a full unwanted rewrite.",
+    "tags": [
+      "debugging",
+      "code",
+      "fix"
+    ],
+    "template": "Act as a {{debug_role}}. Here is the error / broken behavior:\n{{error_description}}\n\nRelevant code:\n{{code_snippet}}\n\nConstraints:\n- Fix only what's necessary to resolve this issue\n- Do not refactor unrelated code\n- Explain the root cause in 1-2 sentences before the fix\n- Output format: {{output_format}}",
+    "variables": [
+      {
+        "key": "debug_role",
+        "label": "Debugging persona",
+        "type": "dropdown",
+        "options": [
+          "meticulous senior debugger",
+          "performance-focused engineer",
+          "security-conscious reviewer",
+          "browser-compatibility specialist"
+        ],
+        "default": "meticulous senior debugger"
+      },
+      {
+        "key": "error_description",
+        "label": "Error / broken behavior",
+        "type": "textarea",
+        "default": ""
+      },
+      {
+        "key": "code_snippet",
+        "label": "Relevant code",
+        "type": "textarea",
+        "default": ""
+      },
+      {
+        "key": "output_format",
+        "label": "Output format",
+        "type": "dropdown",
+        "options": [
+          "Full corrected file",
+          "Only the changed lines with context",
+          "Diff-style (before/after)"
+        ],
+        "default": "Only the changed lines with context"
+      }
+    ],
+    "bestPractices": [
+      "Paste the exact error text, not a paraphrase — exact wording often contains the real clue.",
+      "Explicitly say 'don't refactor unrelated code' to stop scope creep in the fix.",
+      "Ask for root cause explanation first so you actually learn the pattern, not just paste a fix."
+    ],
+    "example": "Root cause: the loop mutates the array it's iterating over. Fix: iterate over a copy using [...array] instead of array directly.",
+    "favorite": false
+  },
+  {
+    "id": "wf_ui_brief",
+    "category": "app-building",
+    "builtin": true,
+    "title": "UI/UX Design Brief Prompt",
+    "description": "Brief the AI to design a premium, distinctive dark-themed interface instead of a generic template look.",
+    "tags": [
+      "ui",
+      "design",
+      "dark-theme"
+    ],
+    "template": "Design the UI for: {{screen_name}}.\n\nStyle direction: {{style_direction}}\nTheme: {{theme}}\nMust include: {{must_include}}\n\nAvoid generic AI-default looks (plain center-aligned cards, default blue accent, no visual identity). Pick a deliberate 4-6 color token palette and a type pairing that fits this specific product, not a generic SaaS template. Explain the palette and type choice in 2-3 sentences before the code.",
+    "variables": [
+      {
+        "key": "screen_name",
+        "label": "Screen / component name",
+        "type": "text",
+        "default": ""
+      },
+      {
+        "key": "style_direction",
+        "label": "Style direction",
+        "type": "dropdown",
+        "options": [
+          "Premium dark SaaS dashboard",
+          "Minimal utility tool",
+          "Playful and colorful",
+          "Technical / data-dense",
+          "Editorial / content-first"
+        ],
+        "default": "Premium dark SaaS dashboard"
+      },
+      {
+        "key": "theme",
+        "label": "Theme",
+        "type": "dropdown",
+        "options": [
+          "Dark mode only",
+          "Dark with light mode toggle",
+          "Light mode only"
+        ],
+        "default": "Dark with light mode toggle"
+      },
+      {
+        "key": "must_include",
+        "label": "Must include",
+        "type": "text",
+        "default": "responsive layout, hover states, empty states"
+      }
+    ],
+    "bestPractices": [
+      "Ask for the color/type reasoning before code — it forces a deliberate choice instead of a default.",
+      "Name a style direction explicitly; 'make it look nice' defaults to the same template every time.",
+      "Always request empty, loading, and error states in the same brief."
+    ],
+    "example": "Palette: near-black #0B0F1A base, amber #F2A93B accent for actions, teal #4FD1C5 for secondary info — chosen to feel technical but warm, avoiding the common neon-on-black look.",
+    "favorite": false
+  },
+  {
+    "id": "wf_api_integration",
+    "category": "app-building",
+    "builtin": true,
+    "title": "System Prompt / API Integration Prompt",
+    "description": "Get correct, working Claude API integration code inside a single-file HTML app.",
+    "tags": [
+      "api",
+      "system-prompt",
+      "claude-api"
+    ],
+    "template": "Add a Claude API integration to this single-file HTML app for: {{feature_purpose}}.\n\nRequirements:\n- Use fetch to https://api.anthropic.com/v1/messages\n- Model: claude-sonnet-4-6, max_tokens: 1000\n- Never include an API key in the code\n- Input from user: {{input_source}}\n- Expected output shape: {{output_shape}}\n- Handle loading and error states in the UI\n\nReturn only the JS function plus the minimal UI hook needed, not the whole file.",
+    "variables": [
+      {
+        "key": "feature_purpose",
+        "label": "Feature purpose",
+        "type": "text",
+        "default": ""
+      },
+      {
+        "key": "input_source",
+        "label": "Input source",
+        "type": "dropdown",
+        "options": [
+          "a textarea the user types into",
+          "an uploaded file's text content",
+          "a form with multiple fields",
+          "the result of a previous API call"
+        ],
+        "default": "a textarea the user types into"
+      },
+      {
+        "key": "output_shape",
+        "label": "Expected output shape",
+        "type": "dropdown",
+        "options": [
+          "Plain text to display",
+          "Structured JSON to render as UI",
+          "Markdown to render",
+          "A list of items"
+        ],
+        "default": "Structured JSON to render as UI"
+      }
+    ],
+    "bestPractices": [
+      "Always explicitly forbid hardcoded API keys in the prompt.",
+      "Ask for loading/error UI states in the same request, not as an afterthought.",
+      "Request only the relevant function, not the whole file, to avoid it silently rewriting other parts."
+    ],
+    "example": "async function callClaude(userInput) { const res = await fetch(...); const data = await res.json(); return data.content.map(b=>b.text).join(''); }",
+    "favorite": false
+  },
+  {
+    "id": "wf_structured_content",
+    "category": "app-building",
+    "builtin": true,
+    "title": "Structured Content Generator Prompt",
+    "description": "Force clean, parseable JSON output for dynamic UI rendering instead of prose you have to clean up.",
+    "tags": [
+      "json",
+      "structured-output",
+      "content"
+    ],
+    "template": "Generate {{content_type}} as JSON only — no preamble, no markdown fences, no commentary.\n\nSchema:\n{{json_schema}}\n\nContext / source material:\n{{source_material}}\n\nNumber of items: {{item_count}}\nIf a field cannot be determined, use null rather than inventing a value.",
+    "variables": [
+      {
+        "key": "content_type",
+        "label": "Content type",
+        "type": "text",
+        "default": "a list of quiz questions"
+      },
+      {
+        "key": "json_schema",
+        "label": "JSON schema",
+        "type": "textarea",
+        "default": "{ \"question\": string, \"options\": string[4], \"correctIndex\": number }"
+      },
+      {
+        "key": "source_material",
+        "label": "Source / context material",
+        "type": "textarea",
+        "default": ""
+      },
+      {
+        "key": "item_count",
+        "label": "Number of items",
+        "type": "dropdown",
+        "options": [
+          "5",
+          "10",
+          "15",
+          "20"
+        ],
+        "default": "10"
+      }
+    ],
+    "bestPractices": [
+      "Explicitly say 'no markdown fences, no commentary' or the response will need cleanup before JSON.parse.",
+      "Tell it to use null instead of inventing data — this is the #1 cause of silently wrong structured output.",
+      "Give the exact schema with types, not a description in words."
+    ],
+    "example": "[{\"question\":\"What year was HTML5 released?\",\"options\":[\"2008\",\"2014\",\"2010\",\"2012\"],\"correctIndex\":1}]",
+    "favorite": false
+  },
+  {
+    "id": "wf_resume_rewrite",
+    "category": "job-search",
+    "builtin": true,
+    "title": "Resume Bullet Rewriter",
+    "description": "Turn a flat task description into an achievement-focused resume bullet with metrics.",
+    "tags": [
+      "resume",
+      "career",
+      "ats"
+    ],
+    "template": "Rewrite this resume bullet to be achievement-focused and ATS-friendly for a {{target_role}} role.\n\nOriginal: {{original_bullet}}\n\nRules:\n- Start with a strong action verb\n- Include a metric or outcome if one can reasonably be inferred, marked as [estimate] if not confirmed\n- Keep to one line\n- Tone: {{tone}}\n- Include these keywords naturally if relevant: {{keywords}}",
+    "variables": [
+      {
+        "key": "target_role",
+        "label": "Target role",
+        "type": "dropdown",
+        "options": [
+          "Data Analyst",
+          "Business Analyst",
+          "Python Developer",
+          "MIS Executive",
+          "Software Engineer"
+        ],
+        "default": "Data Analyst"
+      },
+      {
+        "key": "original_bullet",
+        "label": "Original bullet",
+        "type": "textarea",
+        "default": ""
+      },
+      {
+        "key": "tone",
+        "label": "Tone",
+        "type": "dropdown",
+        "options": [
+          "Confident and metric-driven",
+          "Concise and technical",
+          "Leadership-oriented"
+        ],
+        "default": "Confident and metric-driven"
+      },
+      {
+        "key": "keywords",
+        "label": "Keywords to include",
+        "type": "text",
+        "default": "Python, SQL, Power BI"
+      }
+    ],
+    "bestPractices": [
+      "Mark inferred metrics as [estimate] so you remember to verify before submitting.",
+      "Feed it one bullet at a time for higher quality than batching ten at once.",
+      "Always specify the target role — the same bullet reads differently for Analyst vs Engineer roles."
+    ],
+    "example": "Built 5 interactive Power BI dashboards, cutting manual reporting time by an estimated 40% [estimate] across the internship team.",
+    "favorite": false
+  },
+  {
+    "id": "wf_cover_letter",
+    "category": "job-search",
+    "builtin": true,
+    "title": "Cover Letter Generator",
+    "description": "Generate a tailored, non-generic cover letter draft from a job description and your background.",
+    "tags": [
+      "cover-letter",
+      "career",
+      "application"
+    ],
+    "template": "Write a cover letter for this role.\n\nJob description:\n{{job_description}}\n\nMy background:\n{{my_background}}\n\nLength: {{length}}\nTone: {{tone}}\n\nAvoid generic filler phrases like 'I am writing to express my interest.' Open with a specific, relevant detail instead. End with a clear, low-pressure call to action.",
+    "variables": [
+      {
+        "key": "job_description",
+        "label": "Job description",
+        "type": "textarea",
+        "default": ""
+      },
+      {
+        "key": "my_background",
+        "label": "My background (2-3 lines)",
+        "type": "textarea",
+        "default": "MCA graduate, 6 months Data Analyst internship, Python/SQL/Power BI"
+      },
+      {
+        "key": "length",
+        "label": "Length",
+        "type": "dropdown",
+        "options": [
+          "3 short paragraphs",
+          "1 concise paragraph",
+          "4-5 paragraphs, detailed"
+        ],
+        "default": "3 short paragraphs"
+      },
+      {
+        "key": "tone",
+        "label": "Tone",
+        "type": "dropdown",
+        "options": [
+          "Professional & concise",
+          "Warm & enthusiastic",
+          "Direct & confident"
+        ],
+        "default": "Professional & concise"
+      }
+    ],
+    "bestPractices": [
+      "Paste the real job description, not a summary — specific phrases from it help the letter feel tailored.",
+      "Explicitly ban filler openers; this is the single biggest tell of an AI-written letter.",
+      "Always request a low-pressure call to action, not a demanding one."
+    ],
+    "example": "Your posting's emphasis on 'turning raw data into stakeholder-ready dashboards' matches exactly what I did in my six months at PySpiders, where...",
+    "favorite": false
+  },
+  {
+    "id": "wf_job_redflag",
+    "category": "job-search",
+    "builtin": true,
+    "title": "Job Posting Fit & Red-Flag Analyzer",
+    "description": "Screen a job posting for mismatches, vague requirements, or red flags before you apply.",
+    "tags": [
+      "job-search",
+      "screening",
+      "fit"
+    ],
+    "template": "Analyze this job posting for fit against my profile, and flag any red flags.\n\nJob posting:\n{{job_posting}}\n\nMy profile: {{my_profile}}\n\nOutput as:\n1. Fit score (1-10) with reasoning\n2. Red flags (vague titles, unrealistic requirement combos, unpaid trial work, salary omission, etc.)\n3. 3 tailored questions I could ask in an interview to clarify ambiguity",
+    "variables": [
+      {
+        "key": "job_posting",
+        "label": "Job posting text",
+        "type": "textarea",
+        "default": ""
+      },
+      {
+        "key": "my_profile",
+        "label": "My profile summary",
+        "type": "textarea",
+        "default": "MCA graduate, Data Analyst internship, targeting Data Analyst / Business Analyst / Python Developer roles"
+      }
+    ],
+    "bestPractices": [
+      "Always ask for a reasoned fit score, not just yes/no — the reasoning is what's actually useful.",
+      "Have it generate clarifying interview questions, not just flag problems, so you leave with next steps.",
+      "Re-run this on postings that feel 'too good' — vague scope is the most common red flag."
+    ],
+    "example": "Fit score: 7/10. Red flag: '3-5 years experience' combined with 'entry-level salary' — scope mismatch worth clarifying.",
+    "favorite": false
+  },
+  {
+    "id": "wf_interview_prep",
+    "category": "job-search",
+    "builtin": true,
+    "title": "Interview Prep Q&A Simulator",
+    "description": "Practice likely interview questions for a specific role with structured feedback on your answers.",
+    "tags": [
+      "interview",
+      "practice",
+      "career"
+    ],
+    "template": "Act as an interviewer for a {{role}} position at a {{company_type}}. Ask me one question at a time from this category: {{question_category}}. After each answer I give, rate it 1-10 on structure and specificity, then give one concrete improvement before asking the next question.",
+    "variables": [
+      {
+        "key": "role",
+        "label": "Role",
+        "type": "dropdown",
+        "options": [
+          "Data Analyst",
+          "Business Analyst",
+          "Python Developer",
+          "MIS Executive"
+        ],
+        "default": "Data Analyst"
+      },
+      {
+        "key": "company_type",
+        "label": "Company type",
+        "type": "dropdown",
+        "options": [
+          "large Indian IT services firm",
+          "fast-growing startup",
+          "MNC product company"
+        ],
+        "default": "large Indian IT services firm"
+      },
+      {
+        "key": "question_category",
+        "label": "Question category",
+        "type": "dropdown",
+        "options": [
+          "Behavioral (STAR method)",
+          "Technical SQL/Python",
+          "Case-study / analytical thinking",
+          "Resume deep-dive"
+        ],
+        "default": "Behavioral (STAR method)"
+      }
+    ],
+    "bestPractices": [
+      "Ask for one question at a time — batching questions kills the realism of interview practice.",
+      "Request a concrete improvement, not just a score, so each round actually compounds.",
+      "Rotate question categories across sessions instead of drilling only one type."
+    ],
+    "example": "Q: Tell me about a time you found an error in a dataset. Feedback: 7/10 — good structure, add the quantified impact of catching it.",
+    "favorite": false
+  },
+  {
+    "id": "wf_linkedin_optimize",
+    "category": "job-search",
+    "builtin": true,
+    "title": "LinkedIn Post / Profile Optimizer",
+    "description": "Improve a LinkedIn profile section or draft post for visibility and credibility without sounding generic.",
+    "tags": [
+      "linkedin",
+      "personal-brand",
+      "content"
+    ],
+    "template": "Improve this LinkedIn {{content_type}} for a {{target_role}} job seeker.\n\nCurrent version:\n{{current_text}}\n\nGoals: {{goals}}\n\nKeep it specific and avoid buzzword-heavy generic phrasing ('passionate,' 'results-driven,' 'synergy'). Ground claims in the concrete example given above.",
+    "variables": [
+      {
+        "key": "content_type",
+        "label": "Content type",
+        "type": "dropdown",
+        "options": [
+          "About section",
+          "Headline",
+          "Post about a project",
+          "Experience bullet"
+        ],
+        "default": "About section"
+      },
+      {
+        "key": "target_role",
+        "label": "Target role",
+        "type": "dropdown",
+        "options": [
+          "Data Analyst",
+          "Business Analyst",
+          "Python Developer",
+          "MIS Executive"
+        ],
+        "default": "Data Analyst"
+      },
+      {
+        "key": "current_text",
+        "label": "Current text",
+        "type": "textarea",
+        "default": ""
+      },
+      {
+        "key": "goals",
+        "label": "Goals",
+        "type": "text",
+        "default": "get noticed by recruiters, sound specific not generic"
+      }
+    ],
+    "bestPractices": [
+      "Explicitly ban buzzwords — LinkedIn copy defaults to them heavily otherwise.",
+      "Anchor every claim to a real example so the output stays specific.",
+      "Match content type to intent: headline for search visibility, About for narrative."
+    ],
+    "example": "Before: 'Passionate data professional.' After: 'I turn messy spreadsheets into Power BI dashboards leadership actually opens.'",
+    "favorite": false
+  },
+  {
+    "id": "wf_eda_kickoff",
+    "category": "data-analysis",
+    "builtin": true,
+    "title": "EDA Kickoff Prompt",
+    "description": "Get a structured exploratory data analysis plan for a new dataset before touching any code.",
+    "tags": [
+      "eda",
+      "python",
+      "pandas"
+    ],
+    "template": "I have a dataset: {{dataset_description}}.\nColumns: {{columns}}\nGoal of the analysis: {{analysis_goal}}\n\nGive me an EDA plan with:\n1. Data quality checks to run first (nulls, dtypes, duplicates, outliers)\n2. 5 exploratory questions worth answering given the goal\n3. Suggested chart type for each question\n4. Any red flags to watch for given the column names above\n\nDo not write code yet — plan first.",
+    "variables": [
+      {
+        "key": "dataset_description",
+        "label": "Dataset description",
+        "type": "text",
+        "default": ""
+      },
+      {
+        "key": "columns",
+        "label": "Columns (comma separated)",
+        "type": "textarea",
+        "default": ""
+      },
+      {
+        "key": "analysis_goal",
+        "label": "Analysis goal",
+        "type": "text",
+        "default": ""
+      }
+    ],
+    "bestPractices": [
+      "Always plan before coding — it prevents a wall of undirected pandas exploration.",
+      "List actual column names; generic prompts without them produce generic EDA plans.",
+      "Ask for red flags specifically — it catches issues like mixed types or suspicious constant columns early."
+    ],
+    "example": "Q: Does fuel type correlate with region? Chart: grouped bar chart of fuel_type by region. Red flag: 'year' column stored as string.",
+    "favorite": false
+  },
+  {
+    "id": "wf_sql_generator",
+    "category": "data-analysis",
+    "builtin": true,
+    "title": "SQL Query Generator from Plain English",
+    "description": "Convert a plain-language data question into a correct, readable SQL query for your schema.",
+    "tags": [
+      "sql",
+      "query",
+      "database"
+    ],
+    "template": "Write a {{sql_dialect}} query for this question: {{question}}\n\nSchema:\n{{schema}}\n\nRequirements:\n- Use readable table aliases\n- Add a one-line comment explaining any non-obvious join or subquery\n- Optimize for readability over cleverness",
+    "variables": [
+      {
+        "key": "sql_dialect",
+        "label": "SQL dialect",
+        "type": "dropdown",
+        "options": [
+          "MySQL",
+          "PostgreSQL",
+          "SQL Server",
+          "SQLite",
+          "Generic ANSI SQL"
+        ],
+        "default": "MySQL"
+      },
+      {
+        "key": "question",
+        "label": "Question in plain English",
+        "type": "textarea",
+        "default": ""
+      },
+      {
+        "key": "schema",
+        "label": "Schema (tables + columns)",
+        "type": "textarea",
+        "default": ""
+      }
+    ],
+    "bestPractices": [
+      "Always paste the real schema — guessed column names is the #1 cause of wrong SQL.",
+      "Ask for comments on non-obvious joins so you can learn the pattern, not just copy it.",
+      "Specify the dialect; window functions and date handling differ a lot between engines."
+    ],
+    "example": "SELECT c.customer_name, SUM(o.amount) AS total_spend FROM customers c JOIN orders o ON o.customer_id = c.id GROUP BY c.customer_name ORDER BY total_spend DESC;",
+    "favorite": false
+  },
+  {
+    "id": "wf_powerbi_brief",
+    "category": "data-analysis",
+    "builtin": true,
+    "title": "Power BI Dashboard Design Brief",
+    "description": "Plan a dashboard's layout, visuals, and DAX measures before opening Power BI.",
+    "tags": [
+      "power-bi",
+      "dashboard",
+      "dax"
+    ],
+    "template": "Design a Power BI dashboard for: {{dashboard_purpose}}.\nAudience: {{audience}}\nAvailable fields: {{fields}}\n\nGive me:\n1. Page layout (top KPIs, main visuals, filters panel)\n2. Chart type for each key metric with reasoning\n3. 3 DAX measures I'll likely need, with formulas\n4. Filter/slicer recommendations",
+    "variables": [
+      {
+        "key": "dashboard_purpose",
+        "label": "Dashboard purpose",
+        "type": "text",
+        "default": ""
+      },
+      {
+        "key": "audience",
+        "label": "Audience",
+        "type": "dropdown",
+        "options": [
+          "Executives / leadership",
+          "Operations team",
+          "My own portfolio project",
+          "Sales team"
+        ],
+        "default": "My own portfolio project"
+      },
+      {
+        "key": "fields",
+        "label": "Available fields",
+        "type": "textarea",
+        "default": ""
+      }
+    ],
+    "bestPractices": [
+      "Specify the audience — an exec dashboard and an ops dashboard need very different density.",
+      "Ask for DAX formulas directly rather than just measure names, to save a build-test cycle.",
+      "Request layout structure (KPI row, filters panel) before picking individual charts."
+    ],
+    "example": "KPI row: Total Revenue, YoY Growth %, Active Customers. DAX: YoY Growth % = DIVIDE([Revenue] - [Revenue LY], [Revenue LY])",
+    "favorite": false
+  },
+  {
+    "id": "wf_insight_narrative",
+    "category": "data-analysis",
+    "builtin": true,
+    "title": "Insight-to-Narrative Prompt",
+    "description": "Turn raw analysis findings into a clear, stakeholder-ready narrative summary.",
+    "tags": [
+      "storytelling",
+      "reporting",
+      "insights"
+    ],
+    "template": "Turn these findings into a stakeholder-ready summary.\n\nFindings:\n{{findings}}\n\nAudience: {{audience}}\nFormat: {{format}}\n\nLead with the single most important insight. Support with 2-3 supporting data points. End with one clear recommendation, not a list of five.",
+    "variables": [
+      {
+        "key": "findings",
+        "label": "Raw findings",
+        "type": "textarea",
+        "default": ""
+      },
+      {
+        "key": "audience",
+        "label": "Audience",
+        "type": "dropdown",
+        "options": [
+          "Non-technical leadership",
+          "Technical team",
+          "General portfolio reviewer"
+        ],
+        "default": "Non-technical leadership"
+      },
+      {
+        "key": "format",
+        "label": "Format",
+        "type": "dropdown",
+        "options": [
+          "3-paragraph summary",
+          "Slide-ready bullet points",
+          "Email update"
+        ],
+        "default": "3-paragraph summary"
+      }
+    ],
+    "bestPractices": [
+      "Force a single lead insight — reports that open with five findings bury the important one.",
+      "Cap recommendations at one; more reads as indecision to leadership audiences.",
+      "Match format to how it'll actually be consumed (email vs slide vs report)."
+    ],
+    "example": "The biggest driver of churn is support response time, not price — accounts with >24hr first response show 3x higher churn.",
+    "favorite": false
+  },
+  {
+    "id": "wf_data_cleaning",
+    "category": "data-analysis",
+    "builtin": true,
+    "title": "Data Cleaning Checklist Prompt",
+    "description": "Get a systematic cleaning plan for a messy dataset, tailored to its actual quality issues.",
+    "tags": [
+      "cleaning",
+      "pandas",
+      "data-quality"
+    ],
+    "template": "Here's a sample/description of a messy dataset: {{dataset_sample}}\n\nKnown issues: {{known_issues}}\n\nGive me a step-by-step cleaning plan in {{tool}}, in the order operations should happen (structural fixes before value fixes), with the reasoning for the order.",
+    "variables": [
+      {
+        "key": "dataset_sample",
+        "label": "Dataset sample / description",
+        "type": "textarea",
+        "default": ""
+      },
+      {
+        "key": "known_issues",
+        "label": "Known issues",
+        "type": "text",
+        "default": "missing values, inconsistent date formats, duplicate rows"
+      },
+      {
+        "key": "tool",
+        "label": "Tool",
+        "type": "dropdown",
+        "options": [
+          "Python (pandas)",
+          "Power Query (Power BI)",
+          "SQL",
+          "Excel"
+        ],
+        "default": "Python (pandas)"
+      }
+    ],
+    "bestPractices": [
+      "Ask for the reasoning behind step order — structural issues (dtypes, duplicates) should be fixed before value-level cleaning.",
+      "List known issues explicitly so the plan targets your actual data, not a generic checklist.",
+      "Specify the tool; pandas and Power Query solve the same problem very differently."
+    ],
+    "example": "Step 1: standardize date formats (structural) before Step 4: impute missing values (value-level) — imputation on bad dtypes silently fails.",
+    "favorite": false
+  }
+]
